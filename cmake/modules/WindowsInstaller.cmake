@@ -2,8 +2,46 @@ set(WINDOWS_INSTALL_FILES "veyon-${VEYON_WINDOWS_ARCH}-${VERSION_MAJOR}.${VERSIO
 
 set(DLLDIR "${MINGW_PREFIX}/bin")
 set(DLLDIR_LIB "${MINGW_PREFIX}/lib")
+
+# Check if MXE_PATH is provided (either as a CMake variable or environment variable)
+if(NOT MXE_PATH AND DEFINED ENV{MXE_PATH})
+	set(MXE_PATH "$ENV{MXE_PATH}")
+endif()
+
 string(REGEX MATCH "^[^.]+" GCC_VERSION_MAJOR ${CMAKE_CXX_COMPILER_VERSION})
-set(DLLDIR_GCC "/usr/lib/gcc/${MINGW_TARGET}/${GCC_VERSION_MAJOR}-posix")
+
+if(NOT DLLDIR_GCC)
+	if(MXE_PATH)
+		# Search in MINGW_PREFIX/bin first (MXE shared builds copy them there)
+		if(EXISTS "${MINGW_PREFIX}/bin/libstdc++-6.dll")
+			set(DLLDIR_GCC "${MINGW_PREFIX}/bin")
+		else()
+			# Otherwise look in MXE's internal gcc directory
+			set(DLLDIR_GCC "${MXE_PATH}/usr/lib/gcc/${MINGW_TARGET}/${GCC_VERSION_MAJOR}")
+			if(NOT EXISTS "${DLLDIR_GCC}/libstdc++-6.dll")
+				set(DLLDIR_GCC "${MINGW_PREFIX}/bin")
+			endif()
+		endif()
+	else()
+		set(DLLDIR_GCC "/usr/lib/gcc/${MINGW_TARGET}/${GCC_VERSION_MAJOR}-posix")
+	endif()
+endif()
+
+# For MXE shared target, zlib and winpthread DLLs are under MINGW_PREFIX/bin instead of MINGW_PREFIX/lib
+if(MXE_PATH)
+	set(DLLDIR_ZLIB "${DLLDIR}")
+	set(DLLDIR_PTHREAD "${DLLDIR}")
+	if(EXISTS "${DLLDIR}/qca-qt6/crypto/libqca-ossl.dll")
+		set(DLLDIR_QCA "${DLLDIR}")
+	else()
+		set(DLLDIR_QCA "${DLLDIR_LIB}")
+	endif()
+else()
+	set(DLLDIR_ZLIB "${DLLDIR_LIB}")
+	set(DLLDIR_PTHREAD "${DLLDIR_LIB}")
+	set(DLLDIR_QCA "${DLLDIR_LIB}")
+endif()
+
 if(VEYON_BUILD_WIN64)
 	set(DLL_GCC "libgcc_s_seh-1.dll")
 	set(DLL_DDENGINE "ddengine64.dll")
@@ -26,23 +64,23 @@ add_custom_target(windows-binaries
 	COMMAND mv ${WINDOWS_INSTALL_FILES}/plugins/vnchooks.dll ${WINDOWS_INSTALL_FILES}
 	COMMAND mkdir -p ${WINDOWS_INSTALL_FILES}/translations
 	COMMAND cp translations/*qm ${WINDOWS_INSTALL_FILES}/translations/
-	COMMAND cp ${DLLDIR}/libjpeg-62.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR}/libpng16-16.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR}/libcrypto-3*.dll ${DLLDIR}/libssl-3*.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR}/libqca-qt6.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR}/libsasl2-3.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR}/libldap.dll ${DLLDIR}/liblber.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/libjpeg*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/libpng*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/libcrypto*.dll ${DLLDIR}/libssl*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/libqca*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/libsasl*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/libldap*.dll ${DLLDIR}/liblber*.dll ${WINDOWS_INSTALL_FILES}
 	COMMAND cp ${DLLDIR}/interception.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR}/liblzo2-2.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR}/libvncclient.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR}/libvncserver.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR_LIB}/zlib1.dll ${WINDOWS_INSTALL_FILES}
-	COMMAND cp ${DLLDIR_LIB}/libwinpthread-1.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/liblzo*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/libvncclient*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR}/libvncserver*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR_ZLIB}/zlib*.dll ${WINDOWS_INSTALL_FILES}
+	COMMAND cp ${DLLDIR_PTHREAD}/libwinpthread*.dll ${WINDOWS_INSTALL_FILES}
 	COMMAND cp ${DLLDIR_GCC}/libstdc++-6.dll ${WINDOWS_INSTALL_FILES}
 	COMMAND cp ${DLLDIR_GCC}/libssp-0.dll ${WINDOWS_INSTALL_FILES}
 	COMMAND cp ${DLLDIR_GCC}/${DLL_GCC} ${WINDOWS_INSTALL_FILES}
 	COMMAND mkdir -p ${WINDOWS_INSTALL_FILES}/crypto
-	COMMAND cp ${DLLDIR_LIB}/qca-qt6/crypto/libqca-ossl.dll ${WINDOWS_INSTALL_FILES}/crypto
+	COMMAND cp ${DLLDIR_QCA}/qca-qt6/crypto/libqca-ossl.dll ${WINDOWS_INSTALL_FILES}/crypto
 	COMMAND cp ${DLLDIR}/Qt6Core.dll
 				${DLLDIR}/Qt6Core5Compat.dll
 				${DLLDIR}/Qt6Gui.dll
