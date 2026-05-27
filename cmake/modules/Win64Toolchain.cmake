@@ -6,5 +6,5 @@ set(CMAKE_SYSTEM_PROCESSOR x86_64)
 set(WIN64 TRUE)
 
 
-include(MinGWCrossCompile)
+include(${CMAKE_CURRENT_LIST_DIR}/MinGWCrossCompile.cmake)
 

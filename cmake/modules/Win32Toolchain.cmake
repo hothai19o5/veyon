@@ -3,4 +3,4 @@ set(MINGW_PLATFORM win32)
 
 set(CMAKE_SYSTEM_PROCESSOR i686)
 
-include(MinGWCrossCompile)
+include(${CMAKE_CURRENT_LIST_DIR}/MinGWCrossCompile.cmake)
