@@ -23,7 +23,10 @@
  */
 
 #include <QDesktopServices>
+#include <QDialogButtonBox>
 #include <QFile>
+#include <QIcon>
+#include <QPushButton>
 
 #include "AboutDialog.h"
 #include "VeyonCore.h"
@@ -36,6 +39,7 @@ AboutDialog::AboutDialog( QWidget *parent ) :
 	ui( new Ui::AboutDialog )
 {
 	ui->setupUi( this );
+	ui->buttonBox->button( QDialogButtonBox::Ok )->setIcon( QIcon() );
 
 	setWindowTitle(tr("About Veyon %1").arg(VeyonCore::versionString()));
 

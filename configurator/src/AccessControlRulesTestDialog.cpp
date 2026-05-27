@@ -22,7 +22,10 @@
  *
  */
 
+#include <QDialogButtonBox>
+#include <QIcon>
 #include <QMessageBox>
+#include <QPushButton>
 
 #include "AccessControlRulesTestDialog.h"
 #include "AccessControlProvider.h"
@@ -37,6 +40,8 @@ AccessControlRulesTestDialog::AccessControlRulesTestDialog(QWidget *parent) :
 	ui(new Ui::AccessControlRulesTestDialog)
 {
 	ui->setupUi(this);
+	ui->buttonBox->button( QDialogButtonBox::Ok )->setIcon( QIcon() );
+	ui->buttonBox->button( QDialogButtonBox::Close )->setIcon( QIcon() );
 
 	ui->localUserLineEdit->setText(VeyonCore::platform().userFunctions().queryCurrentUserProperty(PlatformUserFunctions::UserProperty::LoginName));
 	ui->localComputerLineEdit->setText( HostAddress::localFQDN() );

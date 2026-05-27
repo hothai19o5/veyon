@@ -23,7 +23,10 @@
  */
 
 #include <QApplication>
+#include <QFontDatabase>
 #include <QMessageBox>
+#include <QFile>
+#include <QTextStream>
 
 #include "VeyonConfiguration.h"
 #include "VeyonCore.h"
@@ -40,6 +43,18 @@ int main( int argc, char **argv )
 	QApplication app( argc, argv );
 
 	VeyonCore core( &app, VeyonCore::Component::Configurator, QStringLiteral("Configurator") );
+
+	QFontDatabase::addApplicationFont( QStringLiteral( ":/configurator/style/fonts/JetBrainsMono-Regular.ttf" ) );
+	QFontDatabase::addApplicationFont( QStringLiteral( ":/configurator/style/fonts/JetBrainsMono-Bold.ttf" ) );
+
+	// Load and apply modern UI stylesheet
+	QFile styleFile( QStringLiteral(":/configurator/style/modern.qss") );
+	if( styleFile.open( QFile::ReadOnly | QFile::Text ) )
+	{
+		QTextStream ts( &styleFile );
+		app.setStyleSheet( ts.readAll() );
+	}
+
 
 	// make sure to run as admin
 	if( qEnvironmentVariableIntValue( "VEYON_CONFIGURATOR_NO_ELEVATION" ) == 0 &&

@@ -640,83 +640,61 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Features</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <layout class="QGridLayout" name="gridLayout_6">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>All features</string>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Features</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayoutFeatures">
+        <item>
+         <widget class="QGroupBox" name="groupBoxAllFeatures">
+          <property name="title">
+           <string>Available features</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayoutAllFeatures">
+           <property name="leftMargin">
+            <number>10</number>
            </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Disabled features</string>
+           <property name="topMargin">
+            <number>10</number>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QListWidget" name="allFeaturesListWidget"/>
-         </item>
-         <item row="1" column="1">
-          <layout class="QVBoxLayout" name="verticalLayout_18">
+           <property name="rightMargin">
+            <number>10</number>
+           </property>
+           <property name="bottomMargin">
+            <number>10</number>
+           </property>
            <item>
-            <spacer name="verticalSpacer_15">
-             <property name="orientation">
-              <enum>Qt::Orientation::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QToolButton" name="disableFeatureButton">
-             <property name="icon">
-              <iconset resource="../../core/resources/core.qrc">
-               <normaloff>:/core/go-next.png</normaloff>:/core/go-next.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="enableFeatureButton">
-             <property name="icon">
-              <iconset resource="../../core/resources/core.qrc">
-               <normaloff>:/core/go-previous.png</normaloff>:/core/go-previous.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_16">
-             <property name="orientation">
-              <enum>Qt::Orientation::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
+            <widget class="QListWidget" name="allFeaturesListWidget"/>
            </item>
           </layout>
-         </item>
-         <item row="1" column="2">
-          <widget class="QListWidget" name="disabledFeaturesListWidget"/>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxDisabledFeatures">
+          <property name="title">
+           <string>Disabled features</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayoutDisabledFeatures">
+           <property name="leftMargin">
+            <number>10</number>
+           </property>
+           <property name="topMargin">
+            <number>10</number>
+           </property>
+           <property name="rightMargin">
+            <number>10</number>
+           </property>
+           <property name="bottomMargin">
+            <number>10</number>
+           </property>
+           <item>
+            <widget class="QListWidget" name="disabledFeaturesListWidget"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
     </widget>
    </item>
   </layout>
@@ -757,10 +735,8 @@
   <tabstop>confirmUnsafeActions</tabstop>
   <tabstop>showFeatureWindowsOnSameScreen</tabstop>
   <tabstop>computerDoubleClickFeature</tabstop>
-  <tabstop>allFeaturesListWidget</tabstop>
-  <tabstop>disableFeatureButton</tabstop>
-  <tabstop>enableFeatureButton</tabstop>
-  <tabstop>disabledFeaturesListWidget</tabstop>
+   <tabstop>allFeaturesListWidget</tabstop>
+    <tabstop>disabledFeaturesListWidget</tabstop>
  </tabstops>
  <resources>
   <include location="../../core/resources/core.qrc"/>
@@ -813,40 +789,8 @@
      <y>413</y>
     </hint>
    </hints>
-  </connection>
-  <connection>
-   <sender>disableFeatureButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MasterConfigurationPage</receiver>
-   <slot>disableFeature()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>461</x>
-     <y>723</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>444</x>
-     <y>413</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>enableFeatureButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MasterConfigurationPage</receiver>
-   <slot>enableFeature()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>461</x>
-     <y>766</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>444</x>
-     <y>413</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+   </connection>
+  </connections>
  <slots>
   <slot>enableFeature()</slot>
   <slot>disableFeature()</slot>

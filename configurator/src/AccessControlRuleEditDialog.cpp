@@ -25,6 +25,10 @@
 #include "AccessControlRuleEditDialog.h"
 #include "AccessControlProvider.h"
 
+#include <QDialogButtonBox>
+#include <QIcon>
+#include <QPushButton>
+
 #include "ui_AccessControlRuleEditDialog.h"
 
 AccessControlRuleEditDialog::AccessControlRuleEditDialog(AccessControlRule &rule, QWidget *parent) :
@@ -39,6 +43,8 @@ AccessControlRuleEditDialog::AccessControlRuleEditDialog(AccessControlRule &rule
 					  } )
 {
 	ui->setupUi(this);
+	ui->buttonBox->button( QDialogButtonBox::Ok )->setIcon( QIcon() );
+	ui->buttonBox->button( QDialogButtonBox::Cancel )->setIcon( QIcon() );
 
 	AccessControlProvider accessControlProvider;
 

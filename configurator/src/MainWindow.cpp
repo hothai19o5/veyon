@@ -27,11 +27,13 @@
 #include <QProcess>
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QIcon>
 #include <QPushButton>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
 #include <QTimer>
+#include <QGroupBox>
 
 #include "Configuration/JsonStore.h"
 #include "Configuration/UiMapping.h"
@@ -52,6 +54,8 @@ MainWindow::MainWindow( QWidget* parent ) :
 	m_configChanged( false )
 {
 	ui->setupUi( this );
+	ui->buttonBox->button( QDialogButtonBox::Reset )->setIcon( QIcon() );
+	ui->buttonBox->button( QDialogButtonBox::Apply )->setIcon( QIcon() );
 
 	setWindowTitle(tr("Veyon Configurator %1").arg(VeyonCore::versionString()));
 
@@ -86,7 +90,7 @@ MainWindow::MainWindow( QWidget* parent ) :
 
 	connect( viewModeGroup, &QActionGroup::triggered, this, &MainWindow::updateView );
 
-	connect( ui->actionAboutQt, &QAction::triggered, QApplication::instance(), &QApplication::aboutQt );
+	connect( ui->actionAboutQt, &QAction::triggered, this, &MainWindow::aboutQt );
 
 	connect( &VeyonCore::config(), &VeyonConfiguration::configurationChanged, this, &MainWindow::configurationChanged );
 
@@ -94,6 +98,12 @@ MainWindow::MainWindow( QWidget* parent ) :
 
 	resize( ui->pageSelector->width() + ui->generalConfigurationPage->minimumSizeHint().width(),
 			ui->generalConfigurationPage->minimumSizeHint().height() );
+
+	const auto groupBoxes = findChildren<QGroupBox *>();
+	for( auto groupBox : groupBoxes )
+	{
+		groupBox->setTitle( groupBox->title().toUpper() );
+	}
 
 	updateView();
 }
@@ -254,6 +264,23 @@ void MainWindow::aboutVeyon()
 
 
 
+void MainWindow::aboutQt()
+{
+	QTimer::singleShot( 0, this, []() {
+		if( auto* msgBox = qobject_cast<QMessageBox *>( QApplication::activeModalWidget() ) )
+		{
+			if( auto* btn = msgBox->button( QMessageBox::Ok ) )
+			{
+				btn->setIcon( QIcon() );
+			}
+		}
+	} );
+
+	QApplication::aboutQt();
+}
+
+
+
 void MainWindow::updateSizes()
 {
 	ui->configPages->setMinimumSize( ui->scrollArea->width() - ui->scrollArea->verticalScrollBar()->width(),
@@ -370,15 +397,21 @@ void MainWindow::loadConfigurationPagePlugins()
 
 void MainWindow::closeEvent( QCloseEvent *closeEvent )
 {
-	if( m_configChanged &&
-		QMessageBox::question( this, tr( "Unsaved settings" ),
-							   tr( "There are unsaved settings. "
-								   "Quit anyway?" ),
-							   QMessageBox::Yes | QMessageBox::No ) !=
-		QMessageBox::Yes )
+	if( m_configChanged )
 	{
-		closeEvent->ignore();
-		return;
+		QMessageBox msgBox( this );
+		msgBox.setWindowTitle( tr( "Unsaved settings" ) );
+		msgBox.setText( tr( "There are unsaved settings. "
+							 "Quit anyway?" ) );
+		msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+		msgBox.button( QMessageBox::Yes )->setIcon( QIcon() );
+		msgBox.button( QMessageBox::No )->setIcon( QIcon() );
+
+		if( msgBox.exec() != QMessageBox::Yes )
+		{
+			closeEvent->ignore();
+			return;
+		}
 	}
 
 	closeEvent->accept();

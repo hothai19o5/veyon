@@ -37,8 +37,8 @@
          <string>Test</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+         <iconset resource="../resources/configurator.qrc">
+          <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
         </property>
        </widget>
       </item>
@@ -51,8 +51,8 @@
          <string>Test</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+         <iconset resource="../resources/configurator.qrc">
+          <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
         </property>
        </widget>
       </item>
@@ -117,15 +117,15 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="authorizedUserGroups">
-        <property name="text">
-         <string>Authorized user groups</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QListWidget" name="accessGroupsList">
+       <item row="1" column="1">
+        <widget class="QLabel" name="authorizedUserGroups">
+         <property name="text">
+          <string>Authorized user groups</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QListWidget" name="accessGroupsList">
         <property name="sizeAdjustPolicy">
          <enum>QAbstractScrollArea::AdjustToContents</enum>
         </property>
@@ -141,52 +141,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <layout class="QVBoxLayout" name="verticalLayout_18">
-        <item>
-         <spacer name="verticalSpacer_15">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QToolButton" name="addAccessGroupButton">
-          <property name="icon">
-           <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/go-next.png</normaloff>:/core/go-next.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="removeAccessGroupButton">
-          <property name="icon">
-           <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/go-previous.png</normaloff>:/core/go-previous.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_16">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
+
      </layout>
     </widget>
    </item>
@@ -218,8 +173,8 @@
          <string>Move selected rule up</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/go-up.png</normaloff>:/core/go-up.png</iconset>
+         <iconset resource="../resources/configurator.qrc">
+          <normaloff>:/configurator/style/icons/arrow_up.svg</normaloff>:/configurator/style/icons/arrow_up.svg</iconset>
         </property>
        </widget>
       </item>
@@ -232,8 +187,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/document-edit.png</normaloff>:/core/document-edit.png</iconset>
+         <iconset resource="../resources/configurator.qrc">
+          <normaloff>:/configurator/style/icons/edit.svg</normaloff>:/configurator/style/icons/edit.svg</iconset>
         </property>
        </widget>
       </item>
@@ -246,8 +201,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/list-add.png</normaloff>:/core/list-add.png</iconset>
+         <iconset resource="../resources/configurator.qrc">
+          <normaloff>:/configurator/style/icons/plus.svg</normaloff>:/configurator/style/icons/plus.svg</iconset>
         </property>
        </widget>
       </item>
@@ -260,8 +215,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/edit-delete.png</normaloff>:/core/edit-delete.png</iconset>
+         <iconset resource="../resources/configurator.qrc">
+          <normaloff>:/configurator/style/icons/trash.svg</normaloff>:/configurator/style/icons/trash.svg</iconset>
         </property>
        </widget>
       </item>
@@ -281,8 +236,8 @@
          <string>Move selected rule down</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/go-down.png</normaloff>:/core/go-down.png</iconset>
+         <iconset resource="../resources/configurator.qrc">
+          <normaloff>:/configurator/style/icons/arrow_down.svg</normaloff>:/configurator/style/icons/arrow_down.svg</iconset>
         </property>
        </widget>
       </item>
@@ -305,9 +260,7 @@
   <tabstop>testUserGroupsAccessControlButton</tabstop>
   <tabstop>testAccessControlRulesButton</tabstop>
   <tabstop>allGroupsList</tabstop>
-  <tabstop>addAccessGroupButton</tabstop>
-  <tabstop>removeAccessGroupButton</tabstop>
-  <tabstop>accessGroupsList</tabstop>
+   <tabstop>accessGroupsList</tabstop>
   <tabstop>accessControlRulesView</tabstop>
   <tabstop>addAccessControlRuleButton</tabstop>
   <tabstop>removeAccessControlRule</tabstop>
@@ -317,41 +270,10 @@
  </tabstops>
  <resources>
   <include location="../../core/resources/core.qrc"/>
+  <include location="../resources/configurator.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>addAccessGroupButton</sender>
-   <signal>clicked()</signal>
-   <receiver>AccessControlPage</receiver>
-   <slot>addAccessGroup()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>494</x>
-     <y>412</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>494</x>
-     <y>404</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>removeAccessGroupButton</sender>
-   <signal>clicked()</signal>
-   <receiver>AccessControlPage</receiver>
-   <slot>removeAccessGroup()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>494</x>
-     <y>455</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>494</x>
-     <y>404</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
+  <connections>
+   <connection>
    <sender>addAccessControlRuleButton</sender>
    <signal>clicked()</signal>
    <receiver>AccessControlPage</receiver>

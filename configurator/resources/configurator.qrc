@@ -10,5 +10,16 @@
         <file>vcs-normal.png</file>
         <file>vcs-removed.png</file>
         <file>access-rule-ask.png</file>
+        <file>style/modern.qss</file>
+        <file>style/fonts/JetBrainsMono-Regular.ttf</file>
+        <file>style/fonts/JetBrainsMono-Bold.ttf</file>
+        <file>style/icons/checkbox_checked.svg</file>
+        <file>style/icons/radio_checked.svg</file>
+        <file>style/icons/check.svg</file>
+        <file>style/icons/plus.svg</file>
+        <file>style/icons/trash.svg</file>
+        <file>style/icons/edit.svg</file>
+        <file>style/icons/arrow_up.svg</file>
+        <file>style/icons/arrow_down.svg</file>
     </qresource>
 </RCC>
