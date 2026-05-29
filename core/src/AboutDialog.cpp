@@ -41,7 +41,7 @@ AboutDialog::AboutDialog( QWidget *parent ) :
 	ui->setupUi( this );
 	ui->buttonBox->button( QDialogButtonBox::Ok )->setIcon( QIcon() );
 
-	setWindowTitle(tr("About VinaNSS %1").arg(VeyonCore::versionString()));
+	setWindowTitle(tr("About EduMonitor %1").arg(VeyonCore::versionString()));
 
 	ui->versionLabel->setText( VeyonCore::versionString() );
 
@@ -69,5 +69,5 @@ AboutDialog::~AboutDialog()
 
 void AboutDialog::openDonationWebsite()
 {
-	  QDesktopServices::openUrl( QUrl( QStringLiteral( "https://www.paypal.com/cgi-bin/webscr?item_name=Donation+to+VinaNSS+-+OpenSource+classroom+management&cmd=_donations&business=donate%40vinanss.io" ) ) );
+	  QDesktopServices::openUrl( QUrl( QStringLiteral( "https://www.paypal.com/cgi-bin/webscr?item_name=Donation+to+EduMonitor+-+OpenSource+classroom+management&cmd=_donations&business=donate%40edumonitor.io" ) ) );
 }

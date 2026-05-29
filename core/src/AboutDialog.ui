@@ -57,7 +57,7 @@
         </font>
        </property>
        <property name="text">
-        <string>About VinaNSS</string>
+        <string>About EduMonitor</string>
        </property>
       </widget>
      </item>
@@ -91,7 +91,7 @@
        <item row="0" column="0" colspan="2">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string notr="true">VinaNSS - Vietnam NetSupportSchool</string>
+          <string notr="true">EduMonitor - Educational Monitoring Solution</string>
          </property>
         </widget>
        </item>
@@ -112,7 +112,7 @@
        <item row="5" column="1">
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string notr="true">&lt;a href=&quot;https://vinanss.io&quot;&gt;https://vinanss.io&lt;/a&gt;</string>
+          <string notr="true">&lt;a href=&quot;https://edumonitor.io&quot;&gt;https://edumonitor.io&lt;/a&gt;</string>
          </property>
          <property name="openExternalLinks">
           <bool>true</bool>
@@ -122,7 +122,7 @@
        <item row="3" column="0" colspan="2">
         <widget class="QLabel" name="label_8">
          <property name="text">
-          <string notr="true">Copyright © 2004-2026 D2S / VinaNSS Solutions</string>
+          <string notr="true">Copyright © 2026 ITelecom</string>
          </property>
         </widget>
        </item>
@@ -149,7 +149,7 @@
        <item row="6" column="0" colspan="2">
         <widget class="QPushButton" name="donateButton">
          <property name="text">
-          <string>Support VinaNSS project with a donation</string>
+          <string>Support EduMonitor project with a donation</string>
          </property>
         </widget>
        </item>
@@ -212,7 +212,7 @@
          <property name="text">
           <string>Current language not translated yet (or native English).
 
-If you're interested in translating VinaNSS into your local or another language or want to improve an existing translation, please contact a VinaNSS developer!</string>
+If you're interested in translating EduMonitor into your local or another language or want to improve an existing translation, please contact an EduMonitor developer!</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

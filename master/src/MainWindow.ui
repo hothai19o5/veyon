@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">VinaNSS Master</string>
+   <string notr="true">EduMonitor Master</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../core/resources/core.qrc">
