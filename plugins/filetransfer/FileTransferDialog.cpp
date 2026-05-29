@@ -22,6 +22,7 @@
  *
  */
 
+#include <QIcon>
 #include <QPushButton>
 
 #include "FileTransferController.h"
@@ -38,6 +39,10 @@ FileTransferDialog::FileTransferDialog( FileTransferController* controller, QWid
 {
 	ui->setupUi( this );
 	ui->buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Start" ) );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 
 	ui->fileListView->setModel( m_listModel );
 
@@ -63,6 +68,10 @@ void FileTransferDialog::accept()
 {
 	ui->optionsGroupBox->setDisabled( true );
 	ui->buttonBox->setStandardButtons( QDialogButtonBox::Cancel );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 
 	FileTransferController::Flags flags( FileTransferController::Transfer );
 
@@ -102,6 +111,10 @@ void FileTransferDialog::reject()
 void FileTransferDialog::finish()
 {
 	ui->buttonBox->setStandardButtons( QDialogButtonBox::Close );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 	connect( ui->buttonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked,
 			 this, &FileTransferDialog::close );
 }

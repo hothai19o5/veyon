@@ -136,8 +136,8 @@
          <string>Add selected computers</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/go-up.png</normaloff>:/core/go-up.png</iconset>
+          <iconset resource="../resources/master.qrc">
+           <normaloff>:/master/fa/arrow-up.svg</normaloff>:/master/fa/arrow-up.svg</iconset>
         </property>
        </widget>
       </item>
@@ -147,8 +147,8 @@
          <string>Remove selected computers</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/go-down.png</normaloff>:/core/go-down.png</iconset>
+          <iconset resource="../resources/master.qrc">
+           <normaloff>:/master/fa/arrow-down.svg</normaloff>:/master/fa/arrow-down.svg</iconset>
         </property>
        </widget>
       </item>
@@ -171,9 +171,9 @@
          <string>Update computers in realtime</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/master.qrc">
-          <normaloff>:/master/update-realtime-disabled.png</normaloff>
-          <normalon>:/master/update-realtime-enabled.png</normalon>:/master/update-realtime-disabled.png</iconset>
+          <iconset resource="../resources/master.qrc">
+           <normaloff>:/master/fa/arrows-rotate.svg</normaloff>
+           <normalon>:/master/fa/arrows-rotate.svg</normalon>:/master/fa/arrows-rotate.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>

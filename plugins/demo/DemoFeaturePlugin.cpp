@@ -50,7 +50,7 @@ DemoFeaturePlugin::DemoFeaturePlugin( QObject* parent ) :
 				   Feature::Uid(),
 				   tr( "Demo" ), tr( "Stop demo" ),
 				   tr( "Share your screen or allow a user to share his screen with other users." ),
-				   QStringLiteral(":/demo/demo.png") ),
+				   QStringLiteral(":/master/fa/person-chalkboard.svg") ),
 	m_demoClientFullScreenFeature( QStringLiteral( "FullScreenDemo" ),
 								   Feature::Flag::Meta | Feature::Flag::AllComponents,
 								   Feature::Uid( "7b6231bd-eb89-45d3-af32-f70663b2f878" ),
@@ -67,7 +67,7 @@ DemoFeaturePlugin::DemoFeaturePlugin( QObject* parent ) :
 									   tr( "In this mode your screen is being displayed in "
 										   "full screen mode on all computers while the input "
 										   "devices of the users are locked." ),
-									   QStringLiteral(":/demo/presentation-fullscreen.png") ),
+								   QStringLiteral(":/master/fa/expand.svg") ),
 	m_shareOwnScreenWindowFeature( QStringLiteral( "ShareOwnScreenWindow" ),
 								   Feature::Flag::Mode | Feature::Flag::AllComponents,
 								   Feature::Uid( "68c55fb9-127e-4c9f-9c90-28b998bf1a47" ),
@@ -76,7 +76,7 @@ DemoFeaturePlugin::DemoFeaturePlugin( QObject* parent ) :
 								   tr( "In this mode your screen being displayed in a "
 									   "window on all computers. The users are "
 									   "able to switch to other windows as needed." ),
-								   QStringLiteral(":/demo/presentation-window.png") ),
+								   QStringLiteral(":/master/fa/window-restore.svg") ),
 	m_shareUserScreenFullScreenFeature( QStringLiteral( "ShareUserScreenFullScreen" ),
 										Feature::Flag::Mode | Feature::Flag::AllComponents,
 										Feature::Uid( "b4e542e2-1deb-48ac-910a-bbf8ac9a0bde" ),
@@ -85,7 +85,7 @@ DemoFeaturePlugin::DemoFeaturePlugin( QObject* parent ) :
 										tr( "In this mode the screen of the selected user is being displayed "
 											"in full screen mode on all computers while the input "
 											"devices of the users are locked." ),
-										QStringLiteral(":/demo/presentation-fullscreen.png") ),
+										QStringLiteral(":/master/fa/expand.svg") ),
 	m_shareUserScreenWindowFeature( QStringLiteral( "ShareUserScreenWindow" ),
 									Feature::Flag::Mode | Feature::Flag::AllComponents,
 									Feature::Uid( "ebfc5ec4-f725-4bfc-a93a-c6d4864c6806" ),
@@ -94,7 +94,7 @@ DemoFeaturePlugin::DemoFeaturePlugin( QObject* parent ) :
 									tr( "In this mode the screen of the selected user being displayed "
 										"in a window on all computers. The users are "
 										"able to switch to other windows as needed." ),
-									QStringLiteral(":/demo/presentation-window.png") ),
+									QStringLiteral(":/master/fa/window-restore.svg") ),
 	m_demoServerFeature( QStringLiteral( "DemoServer" ),
 						 Feature::Flag::Session | Feature::Flag::Service | Feature::Flag::Worker,
 						 Feature::Uid( "e4b6e743-1f5b-491d-9364-e091086200f4" ),

@@ -23,6 +23,7 @@
 
 #include <QActionGroup>
 #include <QBitmap>
+#include <QIcon>
 #include <QLayout>
 #include <QMenu>
 #include <QPainter>
@@ -49,12 +50,12 @@ RemoteAccessWidgetToolBar::RemoteAccessWidgetToolBar( RemoteAccessWidget* parent
 	QWidget( parent ),
 	m_parent( parent ),
 	m_showHideTimeLine( ShowHideAnimationDuration, this ),
-	m_viewOnlyButton( showViewOnlyToggleButton ? new ToolButton( QPixmap( QStringLiteral(":/remoteaccess/kmag.png") ), tr( "View only" ), tr( "Remote control" ) ) : nullptr ),
-	m_selectScreenButton( new ToolButton( QPixmap( QStringLiteral(":/remoteaccess/preferences-system-windows-effect-desktopgrid.png") ), tr( "Select screen" ) ) ),
-	m_sendShortcutButton( new ToolButton( QPixmap( QStringLiteral(":/remoteaccess/preferences-desktop-keyboard.png") ), tr( "Send shortcut" ) ) ),
-	m_screenshotButton( new ToolButton( QPixmap( QStringLiteral(":/remoteaccess/camera-photo.png") ), tr( "Screenshot" ) ) ),
-	m_fullScreenButton( new ToolButton( QPixmap( QStringLiteral(":/core/view-fullscreen.png") ), tr( "Fullscreen" ), tr( "Window" ) ) ),
-	m_exitButton( new ToolButton( QPixmap( QStringLiteral(":/remoteaccess/application-exit.png") ), tr( "Exit" ) ) ),
+	m_viewOnlyButton( showViewOnlyToggleButton ? new ToolButton( QIcon(), tr( "View only" ), tr( "Remote control" ) ) : nullptr ),
+	m_selectScreenButton( new ToolButton( QIcon(), tr( "Select screen" ) ) ),
+	m_sendShortcutButton( new ToolButton( QIcon(), tr( "Send shortcut" ) ) ),
+	m_screenshotButton( new ToolButton( QIcon(), tr( "Screenshot" ) ) ),
+	m_fullScreenButton( new ToolButton( QIcon(), tr( "Fullscreen" ), tr( "Window" ) ) ),
+	m_exitButton( new ToolButton( QIcon(), tr( "Exit" ) ) ),
 	m_screenSelectActions( new QActionGroup(this) )
 {
 	setAttribute( Qt::WA_NoSystemBackground, true );
@@ -63,6 +64,7 @@ RemoteAccessWidgetToolBar::RemoteAccessWidgetToolBar( RemoteAccessWidget* parent
 
 	if( m_viewOnlyButton )
 	{
+		m_viewOnlyButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
 		m_viewOnlyButton->setCheckable( true );
 		m_viewOnlyButton->setChecked( startViewOnly );
 		connect( m_viewOnlyButton, &ToolButton::toggled, this, &RemoteAccessWidgetToolBar::updateControls );
@@ -71,6 +73,11 @@ RemoteAccessWidgetToolBar::RemoteAccessWidgetToolBar( RemoteAccessWidget* parent
 
 	m_fullScreenButton->setCheckable( true );
 	m_fullScreenButton->setChecked( false );
+	m_selectScreenButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
+	m_sendShortcutButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
+	m_screenshotButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
+	m_fullScreenButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
+	m_exitButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
 
 	connect( m_fullScreenButton, &QAbstractButton::toggled, parent, &RemoteAccessWidget::toggleFullScreen );
 	connect( m_screenshotButton, &QAbstractButton::clicked, parent, &RemoteAccessWidget::takeScreenshot );
@@ -100,8 +107,8 @@ RemoteAccessWidgetToolBar::RemoteAccessWidgetToolBar( RemoteAccessWidget* parent
 	m_sendShortcutButton->setObjectName( QStringLiteral("shortcuts") );
 
 	auto layout = new QHBoxLayout( this );
-	layout->setContentsMargins( 1, 1, 1, 1 );
-	layout->setSpacing( 1 );
+	layout->setContentsMargins( 6, 4, 6, 4 );
+	layout->setSpacing( 8 );
 	layout->addStretch( 0 );
 	layout->addWidget( m_selectScreenButton );
 	layout->addWidget( m_sendShortcutButton );
@@ -319,7 +326,7 @@ RemoteAccessWidget::RemoteAccessWidget( const ComputerControlInterface::Pointer&
 	updateRemoteAccessTitle();
 	connect( m_computerControlInterface.data(), &ComputerControlInterface::userChanged, this, &RemoteAccessWidget::updateRemoteAccessTitle );
 
-	setWindowIcon( QPixmap( QStringLiteral(":/remoteaccess/kmag.png") ) );
+	setWindowIcon( QPixmap( QStringLiteral(":/master/fa/magnifying-glass.svg") ) );
 	setAttribute( Qt::WA_DeleteOnClose, true );
 
 	m_vncView->move( 0, 0 );

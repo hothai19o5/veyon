@@ -22,6 +22,7 @@
  *
  */
 
+#include <QIcon>
 #include <QPushButton>
 #include <QUrl>
 
@@ -37,6 +38,10 @@ OpenWebsiteDialog::OpenWebsiteDialog( QWidget* parent ) :
 	m_presetName()
 {
 	ui->setupUi( this );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 
 	connect( ui->websiteLineEdit, &QLineEdit::textChanged, this, &OpenWebsiteDialog::validate );
 	connect( ui->rememberCheckBox, &QCheckBox::toggled, this, &OpenWebsiteDialog::validate );

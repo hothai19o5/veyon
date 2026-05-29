@@ -25,7 +25,11 @@
 #include <QApplication>
 #include <QBuffer>
 #include <QClipboard>
+#include <QDialogButtonBox>
+#include <QIcon>
 #include <QInputDialog>
+#include <QPushButton>
+#include <QTimer>
 
 #include "AuthenticationCredentials.h"
 #include "FeatureWorkerManager.h"
@@ -45,14 +49,14 @@ RemoteAccessFeaturePlugin::RemoteAccessFeaturePlugin( QObject* parent ) :
 						 Feature::Uid(),
 						 tr( "Remote view" ), {},
 						 tr( "Open a remote view for a computer without interaction." ),
-						 QStringLiteral(":/remoteaccess/kmag.png") ),
+						 QStringLiteral(":/master/fa/magnifying-glass.svg") ),
 	m_remoteControlFeature( QStringLiteral( "RemoteControl" ),
 							Feature::Flag::Session | Feature::Flag::Master,
 							Feature::Uid( "ca00ad68-1709-4abe-85e2-48dff6ccf8a2" ),
 							Feature::Uid(),
 							tr( "Remote control" ), {},
 							tr( "Open a remote control window for a computer." ),
-							QStringLiteral(":/remoteaccess/krdc.png") ),
+							QStringLiteral(":/master/fa/desktop.svg") ),
 	m_clipboardExchangeFeature(QStringLiteral("ClipboardExchange"),
 								Feature::Flag::Meta,
 								Feature::Uid("8fa73e19-3d66-4d59-9783-c2a1bb07e20e"),
@@ -123,10 +127,32 @@ bool RemoteAccessFeaturePlugin::startFeature( VeyonMasterInterface& master, cons
 	}
 	else
 	{
-		const auto hostAddress = QInputDialog::getText(master.mainWindow(),
-													   tr("Remote access"),
-													   tr("No computer has been selected so you can enter a hostname "
-														  "or IP address of a computer for manual access:"));
+		QInputDialog dialog(master.mainWindow());
+		dialog.setWindowTitle(tr("Remote access"));
+		dialog.setLabelText(tr("No computer has been selected so you can enter a hostname "
+								   "or IP address of a computer for manual access:"));
+		const auto removeButtonIcons = [&dialog]() {
+			if (auto buttonBox = dialog.findChild<QDialogButtonBox *>())
+			{
+				for (auto button : buttonBox->buttons())
+				{
+					button->setIcon(QIcon());
+				}
+			}
+		};
+		removeButtonIcons();
+		QTimer::singleShot(0, &dialog, removeButtonIcons);
+		for (auto button : dialog.findChildren<QPushButton *>())
+		{
+			button->setIcon(QIcon());
+		}
+
+		if (dialog.exec() != QDialog::Accepted)
+		{
+			return false;
+		}
+
+		const auto hostAddress = dialog.textValue();
 		if (hostAddress.isEmpty())
 		{
 			return false;

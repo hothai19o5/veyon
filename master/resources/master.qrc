@@ -22,5 +22,49 @@
         <file>update-realtime-enabled-dark.png</file>
         <file>update-realtime-disabled.png</file>
         <file>update-realtime-disabled-dark.png</file>
+        <file>style/modern-master.qss</file>
+        <file alias="style/fonts/JetBrainsMono-Regular.ttf">../../configurator/resources/style/fonts/JetBrainsMono-Regular.ttf</file>
+        <file alias="style/fonts/JetBrainsMono-Bold.ttf">../../configurator/resources/style/fonts/JetBrainsMono-Bold.ttf</file>
+        <file alias="style/icons/checkbox_checked.svg">../../configurator/resources/style/icons/checkbox_checked.svg</file>
+        <file>style/icons/checkbox_indeterminate.svg</file>
+        <file>fa/arrow-down.svg</file>
+        <file>fa/arrow-up.svg</file>
+        <file>fa/arrows-rotate.svg</file>
+        <file>fa/arrows-up-down-left-right.svg</file>
+        <file>fa/ban.svg</file>
+        <file>fa/bullseye.svg</file>
+        <file>fa/camera.svg</file>
+        <file>fa/chevron-left.svg</file>
+        <file>fa/chevron-right.svg</file>
+        <file>fa/circle-check.svg</file>
+        <file>fa/circle-info.svg</file>
+        <file>fa/circle-xmark.svg</file>
+        <file>fa/desktop.svg</file>
+        <file>fa/expand.svg</file>
+        <file>fa/expand-arrows.svg</file>
+        <file>fa/file-export.svg</file>
+        <file>fa/file-import.svg</file>
+        <file>fa/floppy-disk.svg</file>
+        <file>fa/folder-open.svg</file>
+        <file>fa/globe.svg</file>
+        <file>fa/images.svg</file>
+        <file>fa/lock.svg</file>
+        <file>fa/magnifying-glass.svg</file>
+        <file>fa/message.svg</file>
+        <file>fa/pause.svg</file>
+        <file>fa/pen-to-square.svg</file>
+        <file>fa/person-chalkboard.svg</file>
+        <file>fa/play.svg</file>
+        <file>fa/plug-circle-bolt.svg</file>
+        <file>fa/power-off.svg</file>
+        <file>fa/right-from-bracket.svg</file>
+        <file>fa/right-to-bracket.svg</file>
+        <file>fa/rocket.svg</file>
+        <file>fa/rotate-right.svg</file>
+        <file>fa/screwdriver-wrench.svg</file>
+        <file>fa/table-cells.svg</file>
+        <file>fa/triangle-exclamation.svg</file>
+        <file>fa/users.svg</file>
+        <file>fa/window-restore.svg</file>
     </qresource>
 </RCC>

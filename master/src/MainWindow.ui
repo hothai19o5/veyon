@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Veyon Master</string>
+   <string notr="true">VinaNSS Master</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../core/resources/core.qrc">
@@ -53,7 +53,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources/master.qrc">
-         <normaloff>:/master/zoom-fit-best.png</normaloff>:/master/zoom-fit-best.png</iconset>
+          <normaloff>:/master/fa/expand-arrows.svg</normaloff>:/master/fa/expand-arrows.svg</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -116,8 +116,8 @@
         <string>About</string>
        </property>
        <property name="icon">
-        <iconset resource="../../core/resources/core.qrc">
-         <normaloff>:/core/help-about.png</normaloff>:/core/help-about.png</iconset>
+         <iconset resource="../resources/master.qrc">
+          <normaloff>:/master/fa/circle-info.svg</normaloff>:/master/fa/circle-info.svg</iconset>
        </property>
       </widget>
       <widget class="QLabel" name="spacerLabel3">
@@ -156,58 +156,6 @@
         <string/>
        </property>
       </widget>
-      <widget class="QToolButton" name="alignComputersButton">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>1110</x>
-         <y>570</y>
-         <width>69</width>
-         <height>37</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Align computers to grid</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources/master.qrc">
-         <normaloff>:/master/align-grid.png</normaloff>:/master/align-grid.png</iconset>
-       </property>
-      </widget>
-      <widget class="QToolButton" name="useCustomComputerPositionsButton">
-       <property name="geometry">
-        <rect>
-         <x>1010</x>
-         <y>570</y>
-         <width>69</width>
-         <height>37</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Use custom computer arrangement.
-
-Press and hold to load arrangement from a file or save current arrangement to a file.</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources/master.qrc">
-         <normaloff>:/master/exchange-positions-zorder.png</normaloff>:/master/exchange-positions-zorder.png</iconset>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="spacerLabel4">
-       <property name="geometry">
-        <rect>
-         <x>1170</x>
-         <y>570</y>
-         <width>99</width>
-         <height>30</height>
-        </rect>
-       </property>
-      </widget>
       <widget class="QToolButton" name="filterPoweredOnComputersButton">
        <property name="geometry">
         <rect>
@@ -222,7 +170,7 @@ Press and hold to load arrangement from a file or save current arrangement to a 
        </property>
        <property name="icon">
         <iconset resource="../resources/master.qrc">
-         <normaloff>:/master/powered-on.png</normaloff>:/master/powered-on.png</iconset>
+          <normaloff>:/master/fa/power-off.svg</normaloff>:/master/fa/power-off.svg</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -303,7 +251,7 @@ Press and hold to load arrangement from a file or save current arrangement to a 
           </property>
           <property name="icon">
            <iconset resource="../resources/master.qrc">
-            <normaloff>:/master/computer-slideshow.png</normaloff>:/master/computer-slideshow.png</iconset>
+             <normaloff>:/master/fa/images.svg</normaloff>:/master/fa/images.svg</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -320,7 +268,7 @@ Press and hold to load arrangement from a file or save current arrangement to a 
           </property>
           <property name="icon">
            <iconset resource="../resources/master.qrc">
-            <normaloff>:/master/spotlight.png</normaloff>:/master/spotlight.png</iconset>
+             <normaloff>:/master/fa/bullseye.svg</normaloff>:/master/fa/bullseye.svg</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -345,8 +293,8 @@ Press and hold to load arrangement from a file or save current arrangement to a 
         <string>Only show computers with logged on users</string>
        </property>
        <property name="icon">
-        <iconset resource="../../core/resources/core.qrc">
-         <normaloff>:/core/user-group-new.png</normaloff>:/core/user-group-new.png</iconset>
+         <iconset resource="../resources/master.qrc">
+          <normaloff>:/master/fa/users.svg</normaloff>:/master/fa/users.svg</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -383,8 +331,8 @@ Press and hold to load arrangement from a file or save current arrangement to a 
   <include location="../../core/resources/core.qrc"/>
   <include location="../resources/master.qrc"/>
  </resources>
- <connections>
-  <connection>
+  <connections>
+   <connection>
    <sender>aboutButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
@@ -400,23 +348,7 @@ Press and hold to load arrangement from a file or save current arrangement to a 
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>useCustomComputerPositionsButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>alignComputersButton</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>994</x>
-     <y>615</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1134</x>
-     <y>615</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+  </connections>
  <slots>
   <slot>showAboutDialog()</slot>
  </slots>

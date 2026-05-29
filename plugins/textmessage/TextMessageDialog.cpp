@@ -22,6 +22,7 @@
  *
  */
 
+#include <QIcon>
 #include <QMessageBox>
 
 #include "TextMessageDialog.h"
@@ -36,6 +37,10 @@ TextMessageDialog::TextMessageDialog( QString &msgStr, QWidget *parent ) :
 	m_msgStr( msgStr )
 {
 	ui->setupUi( this );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 }
 
 

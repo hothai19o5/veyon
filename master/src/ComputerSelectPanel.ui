@@ -4,6 +4,21 @@
  <widget class="QWidget" name="ComputerSelectPanel">
   <layout class="QVBoxLayout">
    <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="font">
+      <font>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #1a73e8;</string>
+     </property>
+     <property name="text">
+      <string>LOCATIONS &amp;&amp; COMPUTERS</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTreeView" name="treeView">
      <property name="sizeAdjustPolicy">
       <enum>QAbstractScrollArea::AdjustToContents</enum>

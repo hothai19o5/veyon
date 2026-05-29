@@ -346,7 +346,7 @@ void DocumentationFigureCreator::createWebsiteMenuFigure()
 	QMenu menu;
 	menu.addAction( QStringLiteral("Intranet") );
 	menu.addAction( QStringLiteral("Wikipedia") );
-	menu.addAction( QIcon( QStringLiteral(":/core/document-edit.png") ), tr("Custom website") );
+	menu.addAction( QIcon( QStringLiteral(":/master/fa/pen-to-square.svg") ), tr("Custom website") );
 
 	openWebsiteButton->setMenu( &menu );
 
@@ -378,7 +378,7 @@ void DocumentationFigureCreator::createAppMenuFigure()
 	menu.addAction( tr("Open file manager") );
 	menu.addAction( tr("Start learning tool") );
 	menu.addAction( tr("Play tutorial video") );
-	menu.addAction( QIcon( QStringLiteral(":/core/document-edit.png") ), tr("Custom application") );
+	menu.addAction( QIcon( QStringLiteral(":/master/fa/pen-to-square.svg") ), tr("Custom application") );
 
 	runProgramButton->setMenu( &menu );
 

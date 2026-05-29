@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QPushButton>
 
 #include "Filesystem.h"
 #include "ScreenshotManagementPanel.h"
@@ -40,6 +41,10 @@ ScreenshotManagementPanel::ScreenshotManagementPanel( QWidget *parent ) :
 	ui( new Ui::ScreenshotManagementPanel )
 {
 	ui->setupUi( this );
+	ui->showBtn->setIcon( QIcon() );
+	ui->deleteBtn->setIcon( QIcon() );
+	ui->list->setMouseTracking( true );
+	ui->previewLbl->setObjectName( QStringLiteral( "screenshotPreview" ) );
 
 	VeyonCore::filesystem().ensurePathExists( VeyonCore::config().screenshotDirectory() );
 
@@ -61,11 +66,6 @@ ScreenshotManagementPanel::ScreenshotManagementPanel( QWidget *parent ) :
 
 	connect( ui->showBtn, &QPushButton::clicked, this, &ScreenshotManagementPanel::showScreenshot );
 	connect( ui->deleteBtn, &QPushButton::clicked, this, &ScreenshotManagementPanel::deleteScreenshot );
-
-	if (VeyonCore::useDarkMode())
-	{
-		ui->showBtn->setIcon(QIcon(QStringLiteral(":/core/edit-find-dark.png")));
-	}
 
 	updateModel();
 }
@@ -157,12 +157,26 @@ void ScreenshotManagementPanel::showScreenshot()
 void ScreenshotManagementPanel::deleteScreenshot()
 {
 	const auto selection = ui->list->selectionModel()->selectedIndexes();
-	if( selection.size() > 1 &&
-		QMessageBox::question( this,
-							   tr("Screenshot"),
-							   tr("Do you really want to delete all selected screenshots?") ) != QMessageBox::Yes )
+	if( selection.size() > 1 )
 	{
-		return;
+		QMessageBox messageBox( QMessageBox::NoIcon,
+								tr("Screenshot"),
+								tr("Do you really want to delete all selected screenshots?"),
+								QMessageBox::No | QMessageBox::Yes,
+								this );
+		if( auto button = messageBox.button( QMessageBox::No ) )
+		{
+			button->setIcon( QIcon() );
+		}
+		if( auto button = messageBox.button( QMessageBox::Yes ) )
+		{
+			button->setIcon( QIcon() );
+		}
+
+		if( messageBox.exec() != QMessageBox::Yes )
+		{
+			return;
+		}
 	}
 
 	for( const auto& index : selection )

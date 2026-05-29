@@ -23,6 +23,7 @@
  */
 
 #include <QPainter>
+#include <QPainterPath>
 
 #include "ComputerControlListModel.h"
 #include "ComputerItemDelegate.h"
@@ -39,36 +40,106 @@ ComputerItemDelegate::ComputerItemDelegate(QObject* parent) :
 
 void ComputerItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-	QStyledItemDelegate::paint(painter, option, index);
-
-	if (index.isValid() && index.model())
-	{
-		drawFeatureIcons(painter, option.rect.topLeft(),
-						 index.model()->data(index, ComputerControlListModel::ControlInterfaceRole).value<ComputerControlInterface::Pointer>());
-	}
+	drawComputerCard(painter, option, index);
 }
 
 
 
 QSize ComputerItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-	QStyleOptionViewItem opt = option;
-	const auto style = QApplication::style();
+	Q_UNUSED(option);
 
-	if (index.model())
+	if( index.model() )
 	{
-		QSize maxSize;
-		for (int i = 0; i < index.model()->rowCount(); ++i)
+		const auto image = index.model()->data(index, Qt::DecorationRole).value<QImage>();
+		if( image.isNull() == false )
 		{
-			initStyleOption(&opt, index.model()->index(i, 0));
-			const auto rowSize = style->sizeFromContents(QStyle::CT_ItemViewItem, &opt, QSize(), nullptr);
-			maxSize = maxSize.expandedTo(rowSize);
+			return image.size() + QSize( ( CardPadding + ShadowSize ) * 2,
+									 LabelBarHeight + ( CardPadding + ShadowSize ) * 2 );
 		}
-		return maxSize;
 	}
 
-	initStyleOption(&opt, index);
-	return style->sizeFromContents(QStyle::CT_ItemViewItem, &opt, QSize(), nullptr);
+	return { 260, 190 };
+}
+
+
+
+void ComputerItemDelegate::drawComputerCard(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+	if( painter == nullptr || index.isValid() == false || index.model() == nullptr )
+	{
+		return;
+	}
+
+	const auto image = index.model()->data(index, Qt::DecorationRole).value<QImage>();
+	const auto label = index.model()->data(index, Qt::DisplayRole).toString();
+	const auto controlInterface = index.model()->data(index, ComputerControlListModel::ControlInterfaceRole).value<ComputerControlInterface::Pointer>();
+
+	painter->save();
+	painter->setRenderHint(QPainter::Antialiasing);
+
+	const auto cardRect = option.rect.adjusted(CardPadding, CardPadding, -CardPadding, -CardPadding);
+	const QRect thumbnailRect(cardRect.left(), cardRect.top(), cardRect.width(), cardRect.height() - LabelBarHeight);
+	const QRect labelRect(cardRect.left(), thumbnailRect.bottom() + 1, cardRect.width(), LabelBarHeight);
+	const auto selected = option.state.testFlag(QStyle::State_Selected);
+	const auto hovered = option.state.testFlag(QStyle::State_MouseOver);
+
+	for( int i = ShadowSize; i > 0; --i )
+	{
+		const auto alpha = 24 - i;
+		painter->setPen(Qt::NoPen);
+		painter->setBrush(QColor(0, 0, 0, qMax(0, alpha)));
+		painter->drawRoundedRect(cardRect.adjusted(-i / 2, 2, i / 2, i + 2), CardRadius + i / 2, CardRadius + i / 2);
+	}
+
+	QPainterPath cardPath;
+	cardPath.addRoundedRect(cardRect, CardRadius, CardRadius);
+	painter->fillPath(cardPath, QColor(QStringLiteral("#ffffff")));
+	painter->setClipPath(cardPath);
+
+	QPainterPath thumbnailPath;
+	thumbnailPath.addRoundedRect(thumbnailRect, CardRadius, CardRadius);
+	painter->fillPath(thumbnailPath, QColor(QStringLiteral("#202124")));
+
+	if( image.isNull() == false )
+	{
+		const auto scaled = QPixmap::fromImage(image).scaled(thumbnailRect.size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+		const QRect sourceRect((scaled.width() - thumbnailRect.width()) / 2,
+						   (scaled.height() - thumbnailRect.height()) / 2,
+						   thumbnailRect.width(), thumbnailRect.height());
+
+		painter->save();
+		painter->setClipPath(thumbnailPath);
+		painter->drawPixmap(thumbnailRect.topLeft(), scaled, sourceRect);
+		painter->restore();
+	}
+
+	painter->setPen(Qt::NoPen);
+	painter->setBrush(QColor(QStringLiteral("#ffffff")));
+	painter->drawRect(labelRect);
+
+	painter->setClipping(false);
+	painter->setPen(QColor(QStringLiteral("#dadce0")));
+	painter->setBrush(Qt::NoBrush);
+	painter->drawRoundedRect(QRectF(cardRect).adjusted(0.5, 0.5, -0.5, -0.5), CardRadius, CardRadius);
+
+	if( hovered || selected )
+	{
+		const auto penWidth = selected ? 2 : 1;
+		painter->setPen(QPen(QColor(selected ? QStringLiteral("#1a73e8") : QStringLiteral("#bdc1c6")), penWidth));
+		const auto inset = penWidth / 2.0;
+		painter->drawRoundedRect(QRectF(cardRect).adjusted(inset, inset, -inset, -inset), CardRadius, CardRadius);
+	}
+
+	QFont labelFont(option.font);
+	labelFont.setBold(true);
+	painter->setFont(labelFont);
+	painter->setPen(QColor(QStringLiteral("#202124")));
+	painter->drawText(labelRect.adjusted(12, 0, -12, 0), Qt::AlignCenter | Qt::TextSingleLine, label);
+
+	drawFeatureIcons(painter, thumbnailRect.topLeft(), controlInterface);
+
+	painter->restore();
 }
 
 
@@ -110,9 +181,9 @@ void ComputerItemDelegate::drawFeatureIcons(QPainter* painter, const QPoint& pos
 		const int y = pos.y() + OverlayIconsPadding;
 
 		painter->setRenderHint(QPainter::Antialiasing);
-		painter->setBrush(QColor(255, 255, 255, 192));
-		painter->setPen(QColor(25, 140, 179));
-		painter->drawRoundedRect(QRect(x, y, count * (OverlayIconSize + OverlayIconSpacing), OverlayIconSize),
+		painter->setBrush(QColor(255, 255, 255, 220));
+		painter->setPen(QColor(QStringLiteral("#dadce0")));
+		painter->drawRoundedRect(QRect(x, y, count * OverlayIconSize + qMax(0, count - 1) * OverlayIconSpacing, OverlayIconSize),
 								 OverlayIconsRadius, OverlayIconsRadius);
 
 		for (const auto& feature : controlInterface->activeFeatures())

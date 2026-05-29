@@ -49,12 +49,15 @@ ComputerMonitoringWidget::ComputerMonitoringWidget( QWidget *parent ) :
 	setDefaultDropAction( Qt::MoveAction );
 	setSelectionMode( QAbstractItemView::ExtendedSelection );
 	setFlow( QListView::LeftToRight );
+	setMouseTracking( true );
 	setWrapping( true );
 	setResizeMode( QListView::Adjust );
 	setSpacing( computerMonitoringThumbnailSpacing  );
 	setViewMode( QListView::IconMode );
 	setUniformItemSizes( true );
 	setSelectionRectVisible( true );
+	m_featureMenu->setAttribute( Qt::WA_TranslucentBackground );
+	m_featureMenu->setWindowFlag( Qt::NoDropShadowWindowHint );
 
 	setItemDelegate(new ComputerItemDelegate(this));
 
@@ -238,13 +241,6 @@ void ComputerMonitoringWidget::populateFeatureMenu( const ComputerControlInterfa
 
 		Plugin::Uid pluginUid = VeyonCore::featureManager().pluginUid( feature.uid() );
 
-		if( previousPluginUid.isNull() == false &&
-			pluginUid != previousPluginUid &&
-			feature.testFlag( Feature::Flag::Mode ) == false )
-		{
-			m_featureMenu->addSeparator();
-		}
-
 		previousPluginUid = pluginUid;
 
 		if( feature.displayNameActive().isEmpty() == false &&
@@ -271,20 +267,20 @@ void ComputerMonitoringWidget::populateFeatureMenu( const ComputerControlInterfa
 
 void ComputerMonitoringWidget::addFeatureToMenu( const Feature& feature, const QString& label )
 {
-	m_featureMenu->addAction(QIcon(feature.iconUrl()),
-							 label,
-							 this, [=, this] () { runFeature(feature); });
+	m_featureMenu->addAction(label, this, [=, this] () { runFeature(feature); });
 }
 
 
 
 void ComputerMonitoringWidget::addSubFeaturesToMenu( const Feature& parentFeature, const FeatureList& subFeatures, const QString& label )
 {
-	auto menu = m_featureMenu->addMenu( QIcon( parentFeature.iconUrl() ), label );
+	auto menu = m_featureMenu->addMenu( label );
+	menu->setAttribute( Qt::WA_TranslucentBackground );
+	menu->setWindowFlag( Qt::NoDropShadowWindowHint );
 
 	for( const auto& subFeature : subFeatures )
 	{
-		menu->addAction(QIcon(subFeature.iconUrl()), subFeature.displayName(),
+		menu->addAction(subFeature.displayName(),
 				#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
 						subFeature.shortcut(),
 				#endif
