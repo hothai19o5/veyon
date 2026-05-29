@@ -52,14 +52,14 @@ DesktopServicesFeaturePlugin::DesktopServicesFeaturePlugin( QObject* parent ) :
 						 Feature::Uid(),
 						 tr( "Start application" ), {},
 						 tr( "Click this button to start an application on all computers." ),
-						 QStringLiteral(":/desktopservices/preferences-desktop-launch-feedback.png") ),
+						 QStringLiteral(":/master/fa/rocket.svg") ),
 	m_openWebsiteFeature( QStringLiteral( "OpenWebsite" ),
 						  Feature::Flag::Action | Feature::Flag::AllComponents,
 						  Feature::Uid( "8a11a75d-b3db-48b6-b9cb-f8422ddd5b0c" ),
 						  Feature::Uid(),
 						  tr( "Open website" ), {},
 						  tr( "Click this button to open a website on all computers." ),
-						  QStringLiteral(":/desktopservices/internet-web-browser.png") ),
+						  QStringLiteral(":/master/fa/globe.svg") ),
 	m_features( { m_startAppFeature, m_openWebsiteFeature } )
 {
 	connect( VeyonCore::instance(), &VeyonCore::applicationLoaded,
@@ -479,7 +479,7 @@ void DesktopServicesFeaturePlugin::updatePredefinedApplicationFeatures()
 		}
 
 		auto primaryFeature = m_startAppFeature;
-		primaryFeature.setIconUrl( QStringLiteral(":/core/document-edit.png") );
+		primaryFeature.setIconUrl( QStringLiteral(":/master/fa/pen-to-square.svg") );
 		primaryFeature.setParentUid( m_startAppFeature.uid() );
 		primaryFeature.setDisplayName( tr("Custom application") );
 		m_predefinedAppsFeatures.append( primaryFeature );
@@ -508,7 +508,7 @@ void DesktopServicesFeaturePlugin::updatePredefinedWebsiteFeatures()
 		}
 
 		auto primaryFeature = m_openWebsiteFeature;
-		primaryFeature.setIconUrl( QStringLiteral(":/core/document-edit.png") );
+		primaryFeature.setIconUrl( QStringLiteral(":/master/fa/pen-to-square.svg") );
 		primaryFeature.setParentUid( m_openWebsiteFeature.uid() );
 		primaryFeature.setDisplayName( tr("Custom website") );
 		m_predefinedWebsitesFeatures.append( primaryFeature );

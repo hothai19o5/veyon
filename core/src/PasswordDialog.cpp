@@ -22,6 +22,7 @@
  *
  */
 
+#include <QIcon>
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -36,6 +37,8 @@ PasswordDialog::PasswordDialog( QWidget *parent ) :
 	ui( new Ui::PasswordDialog )
 {
 	ui->setupUi( this );
+	ui->buttonBox->button( QDialogButtonBox::Ok )->setIcon( QIcon() );
+	ui->buttonBox->button( QDialogButtonBox::Cancel )->setIcon( QIcon() );
 
 	ui->username->setText(VeyonCore::platform().userFunctions().queryCurrentUserProperty(PlatformUserFunctions::UserProperty::LoginName));
 
@@ -103,4 +106,3 @@ void PasswordDialog::updateOkButton()
 	ui->buttonBox->button( QDialogButtonBox::Ok )->
 					setEnabled( !username().isEmpty() && !password().isEmpty() );
 }
-

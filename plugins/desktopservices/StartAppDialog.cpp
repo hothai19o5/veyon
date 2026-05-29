@@ -22,6 +22,7 @@
  *
  */
 
+#include <QIcon>
 #include <QPushButton>
 
 #include "StartAppDialog.h"
@@ -36,6 +37,10 @@ StartAppDialog::StartAppDialog( QWidget* parent ) :
 	m_presetName()
 {
 	ui->setupUi( this );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 
 	connect( ui->appInputTextEdit, &QTextEdit::textChanged, this, &StartAppDialog::validate );
 	connect( ui->rememberCheckBox, &QCheckBox::toggled, this, &StartAppDialog::validate );

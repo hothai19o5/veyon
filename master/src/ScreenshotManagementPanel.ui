@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ScreenshotManagementPanel</class>
- <widget class="QWidget" name="ScreenshotManagementPanel">
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QListView" name="list">
+  <widget class="QWidget" name="ScreenshotManagementPanel">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="titleLabel">
+      <property name="font">
+       <font>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: #1a73e8;</string>
+      </property>
+      <property name="text">
+       <string>SCREENSHOTS</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListView" name="list">
      <property name="toolTip">
       <string>All screenshots taken by you are listed here. You can take screenshots by clicking the &quot;Screenshot&quot; item in the context menu of a computer. The screenshots can be managed using the buttons below.</string>
      </property>
@@ -100,20 +115,12 @@
        <property name="text">
         <string>Show</string>
        </property>
-       <property name="icon">
-        <iconset resource="../../core/resources/core.qrc">
-         <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
-       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="deleteBtn">
        <property name="text">
         <string>Delete</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../core/resources/core.qrc">
-         <normaloff>:/core/edit-delete.png</normaloff>:/core/edit-delete.png</iconset>
        </property>
       </widget>
      </item>
@@ -137,8 +144,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../core/resources/core.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

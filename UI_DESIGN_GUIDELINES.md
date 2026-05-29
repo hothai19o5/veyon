@@ -216,3 +216,113 @@ QCheckBox::indicator:checked {
 Because Veyon features a pluggable architecture, it is absolutely vital that:
 1. **Never hardcode styles** inside specific configuration `.cpp` files. Use standard widgets, layouts, and assign distinct object names (`setObjectName`) if custom overrides are needed.
 2. Rely on **QSS inheritance**. Styling base classes like `QLineEdit`, `QComboBox`, and `QGroupBox` ensures that any new or third-party plugin page loaded dynamically inherits the modern design theme automatically with zero integration code!
+
+---
+
+## 🖥️ 7. Veyon Master UI Specifications (Quy chuẩn riêng cho Veyon Master)
+
+Để đảm bảo màn hình điều khiển lớp học (Master) đạt được giao diện trực quan, hiện đại giống như bản thiết kế `modern_classroom_monitor_dashboard_v1.png`, lập trình viên và AI cần áp dụng các quy chuẩn QSS và cách dựng Layout dưới đây.
+
+### A. Phân tách khu vực & Màu nền
+*   **Khu vực Sidebar trái (Rooms/Computers Tree):** Màu nền `#ffffff`. Viền phải `1px solid #dadce0`.
+*   **Khu vực Dashboard Grid:** Màu nền `#f1f3f4` hoặc `#f5f6f8` để tạo độ tương phản nổi bật cho các Card máy tính.
+
+### B. Thẻ màn hình máy tính (Computer Screen Card)
+Mỗi card máy tính là một widget phức hợp bao gồm phần Screenshot/Thumbnail phía trên và một Widget Nhãn (Label Bar) phía dưới.
+*   **Đổ bóng (Drop Shadow):** Phải áp dụng hiệu ứng đổ bóng cho toàn bộ Card để tạo chiều sâu bằng cách dùng `QGraphicsDropShadowEffect` trong mã nguồn C++:
+    ```cpp
+    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect();
+    shadow->setBlurRadius(12);
+    shadow->setColor(QColor(0, 0, 0, 40)); // Bóng mờ nhẹ
+    shadow->setOffset(0, 2);
+    cardWidget->setGraphicsEffect(shadow);
+    ```
+*   **Bo góc QSS cho Card:**
+    ```css
+    /* Phần chứa thumbnail màn hình */
+    QWidget#computerThumbnail {
+        background-color: #202124;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        border: 1px solid #dadce0;
+        border-bottom: none;
+    }
+    /* Thanh nhãn thông tin bên dưới */
+    QWidget#computerLabelBar {
+        background-color: #ffffff;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border: 1px solid #dadce0;
+        border-top: none;
+        min-height: 36px;
+    }
+    QLabel#computerLabel {
+        color: #202124;
+        font-weight: bold;
+        alignment: AlignCenter;
+    }
+    ```
+
+### C. Menu chuột phải hiện đại (QMenu)
+Giao diện `QMenu` của chuột phải trên Master cần đồng nhất, thoáng đãng và có bo góc:
+```css
+QMenu {
+    background-color: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    padding: 6px 0px;
+}
+QMenu::item {
+    background-color: transparent;
+    color: #202124;
+    padding: 8px 24px 8px 12px; /* Khoảng cách thoáng */
+    margin: 2px 6px;
+    border-radius: 4px;
+}
+QMenu::item:selected {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+QMenu::separator {
+    height: 1px;
+    background-color: #dadce0;
+    margin: 6px 12px;
+}
+```
+
+### D. Thanh công cụ dưới cùng (Bottom Bar)
+```css
+QWidget#bottomBar {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dadce0;
+    min-height: 50px;
+}
+/* Các nút chuyển đổi chế độ */
+QPushButton#bottomTabButton {
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: #5f6368;
+}
+QPushButton#bottomTabButton:hover {
+    background-color: #f1f3f4;
+}
+QPushButton#bottomTabButton:checked {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    font-weight: bold;
+}
+```
+
+### E. Nguyên lý Tối giản hóa Header & Loại bỏ Toolbar chính (Header-Free & Context-Driven)
+
+Để đạt được giao diện siêu thoáng đãng như thiết kế mới, Veyon Master sẽ chuyển đổi từ mô hình "Thanh công cụ tập trung phía trên" sang mô hình "Tương tác theo ngữ cảnh chuột phải".
+
+*   **Loại bỏ Toolbar chính (`QToolBar`):** 
+    *   Hoàn toàn ẩn hoặc loại bỏ thanh `QToolBar` mặc định ở phía trên cùng của cửa sổ chính (`MainWindow`) trong veyon-master.
+    *   *Kỹ thuật thực hiện trong code:* Không add toolbar vào MainWindow hoặc gọi `mainToolBar->hide()` / `removeToolBar(mainToolBar)` để giải phóng không gian phía trên.
+*   **Chuyển đổi luồng tính năng:**
+    *   **Tính năng điều khiển máy đơn lẻ:** Chuyển toàn bộ vào Menu chuột phải (Context Menu) của từng Computer Card (như `Lock`, `Remote view`, `Power on`, `Reboot`, v.v.).
+    *   **Tính năng điều khiển/Lọc chung:** Chuyển xuống thanh điều hướng dưới cùng (**Bottom Bar**) hoặc tích hợp gọn gàng vào sidebar trái (ví dụ thanh tìm kiếm phòng học và máy tính).
+

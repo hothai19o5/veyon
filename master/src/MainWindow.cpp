@@ -30,6 +30,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSplitter>
+#include <QVBoxLayout>
 
 #include "AboutDialog.h"
 #include "AccessControlProvider.h"
@@ -45,8 +46,6 @@
 #include "NetworkObjectDirectory.h"
 #include "NetworkObjectDirectoryManager.h"
 #include "PlatformUserFunctions.h"
-#include "SlideshowPanel.h"
-#include "SpotlightPanel.h"
 #include "ToolButton.h"
 #include "VeyonConfiguration.h"
 #include "VeyonMaster.h"
@@ -62,12 +61,19 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 	m_modeGroup( new QButtonGroup( this ) )
 {
 	ui->setupUi( this );
+	ui->statusBar->setObjectName( QStringLiteral("bottomBar") );
+	ui->computerMonitoringWidget->setObjectName( QStringLiteral("computerMonitoringWidget") );
+	ui->computerSelectPanelButton->setIcon( QIcon() );
+	ui->computerSelectPanelButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
+	ui->screenshotManagementPanelButton->setIcon( QIcon() );
+	ui->screenshotManagementPanelButton->setToolButtonStyle( Qt::ToolButtonTextOnly );
 
 	restoreState( QByteArray::fromBase64( m_master.userConfig().windowState().toUtf8() ) );
 	restoreGeometry( QByteArray::fromBase64( m_master.userConfig().windowGeometry().toUtf8() ) );
 
 	// add widgets to status bar
 	ui->statusBar->addWidget( ui->panelButtons );
+	ui->panelButtons->layout()->setContentsMargins( 12, 0, 0, 0 );
 	ui->statusBar->addWidget( ui->spacerLabel1 );
 	ui->statusBar->addWidget( ui->filterLineEdit, 2 );
 	ui->statusBar->addWidget( ui->filterPoweredOnComputersButton );
@@ -76,65 +82,58 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 	ui->statusBar->addWidget( ui->gridSizeSlider, 2 );
 	ui->statusBar->addWidget( ui->autoAdjustComputerIconSizeButton );
 	ui->statusBar->addWidget( ui->spacerLabel3 );
-	ui->statusBar->addWidget( ui->useCustomComputerPositionsButton );
-	ui->statusBar->addWidget( ui->alignComputersButton );
-	ui->statusBar->addWidget( ui->spacerLabel4 );
-	ui->statusBar->addWidget( ui->aboutButton );
+	ui->slideshowPanelButton->hide();
+	ui->spotlightPanelButton->hide();
+	ui->aboutButton->hide();
 
 	// create all views
 	auto mainSplitter = new QSplitter( Qt::Horizontal, ui->centralWidget );
 	mainSplitter->setChildrenCollapsible( false );
 	mainSplitter->setObjectName( QStringLiteral("MainSplitter") );
 
-	auto monitoringSplitter = new QSplitter( Qt::Vertical, mainSplitter );
-	monitoringSplitter->setChildrenCollapsible( false );
-	monitoringSplitter->setObjectName( QStringLiteral("MonitoringSplitter") );
-
-	auto slideshowSpotlightSplitter = new QSplitter( Qt::Horizontal, monitoringSplitter );
-	slideshowSpotlightSplitter->setChildrenCollapsible( false );
-	slideshowSpotlightSplitter->setObjectName( QStringLiteral("SlideshowSpotlightSplitter") );
-
 	auto computerSelectPanel = new ComputerSelectPanel( m_master.computerManager() );
 	auto screenshotManagementPanel = new ScreenshotManagementPanel();
-	auto slideshowPanel = new SlideshowPanel( m_master.userConfig(), ui->computerMonitoringWidget );
-	auto spotlightPanel = new SpotlightPanel( m_master.userConfig(), ui->computerMonitoringWidget );
+	auto sidebarIslandContainer = new QWidget( mainSplitter );
+	sidebarIslandContainer->setObjectName( QStringLiteral( "sidebarIslandContainer" ) );
+	sidebarIslandContainer->setMinimumWidth( 176 );
+	sidebarIslandContainer->setMaximumWidth( 300 );
+	auto sidebarIslandLayout = new QVBoxLayout( sidebarIslandContainer );
+	sidebarIslandLayout->setContentsMargins( 10, 10, 10, 10 );
+	sidebarIslandLayout->setSpacing( 0 );
+	sidebarIslandLayout->addWidget( computerSelectPanel );
+	sidebarIslandLayout->addWidget( screenshotManagementPanel );
+	computerSelectPanel->setMinimumWidth( 148 );
+	computerSelectPanel->setMaximumWidth( 280 );
+	screenshotManagementPanel->setMinimumWidth( 148 );
+	screenshotManagementPanel->setMaximumWidth( 280 );
 
-	slideshowSpotlightSplitter->addWidget( slideshowPanel );
-	slideshowSpotlightSplitter->addWidget( spotlightPanel );
-	slideshowSpotlightSplitter->setStretchFactor( slideshowSpotlightSplitter->indexOf(slideshowPanel), 1 );
-	slideshowSpotlightSplitter->setStretchFactor( slideshowSpotlightSplitter->indexOf(spotlightPanel), 1 );
+	mainSplitter->addWidget( sidebarIslandContainer );
+	mainSplitter->addWidget( ui->computerMonitoringWidget );
 
-	monitoringSplitter->addWidget( slideshowSpotlightSplitter );
-	monitoringSplitter->addWidget( ui->computerMonitoringWidget );
-	monitoringSplitter->setStretchFactor( monitoringSplitter->indexOf(slideshowSpotlightSplitter), 1 );
-	monitoringSplitter->setStretchFactor( monitoringSplitter->indexOf(ui->computerMonitoringWidget), 1 );
-
-	mainSplitter->addWidget( computerSelectPanel );
-	mainSplitter->addWidget( screenshotManagementPanel );
-	mainSplitter->addWidget( monitoringSplitter );
-
-	mainSplitter->setStretchFactor( mainSplitter->indexOf(monitoringSplitter), 1 );
+	mainSplitter->setStretchFactor( mainSplitter->indexOf(ui->computerMonitoringWidget), 1 );
 
 
-	static const QHash<QWidget *, QAbstractButton *> panelButtons{
-		{ computerSelectPanel, ui->computerSelectPanelButton },
-		{ screenshotManagementPanel, ui->screenshotManagementPanelButton },
-		{ slideshowPanel, ui->slideshowPanelButton },
-		{ spotlightPanel, ui->spotlightPanelButton }
-	};
+	auto panelButtonGroup = new QButtonGroup( this );
+	panelButtonGroup->addButton( ui->computerSelectPanelButton );
+	panelButtonGroup->addButton( ui->screenshotManagementPanelButton );
+	panelButtonGroup->setExclusive( true );
+	connect( ui->computerSelectPanelButton, &QAbstractButton::toggled,
+			 computerSelectPanel, &QWidget::setVisible );
+	connect( ui->screenshotManagementPanelButton, &QAbstractButton::toggled,
+			 screenshotManagementPanel, &QWidget::setVisible );
+	connect( ui->computerSelectPanelButton, &QAbstractButton::toggled,
+			 screenshotManagementPanel, [screenshotManagementPanel]( bool checked ) { screenshotManagementPanel->setHidden( checked ); } );
+	connect( ui->screenshotManagementPanelButton, &QAbstractButton::toggled,
+			 computerSelectPanel, [computerSelectPanel]( bool checked ) { computerSelectPanel->setHidden( checked ); } );
+	screenshotManagementPanel->hide();
+	ui->computerSelectPanelButton->setChecked( true );
 
-	for( auto it = panelButtons.constBegin(), end = panelButtons.constEnd(); it != end; ++it )
-	{
-		it.key()->hide();
-		it.key()->installEventFilter( this );
-		connect( *it, &QAbstractButton::toggled, it.key(), &QWidget::setVisible );
-	}
+	static const QHash<QWidget *, QAbstractButton *> panelButtons;
 
 	QList<int> splitterSizes;
-	for( auto* splitter : { slideshowSpotlightSplitter, monitoringSplitter, mainSplitter } )
+	for( auto* splitter : { mainSplitter } )
 	{
-		splitter->setHandleWidth( 7 );
-		splitter->setStyleSheet( QStringLiteral("QSplitter::handle:hover{background-color:#66a0b3;}") );
+		splitter->setHandleWidth( 0 );
 
 		splitter->installEventFilter( this );
 
@@ -146,6 +145,11 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 
 		for( const auto& sizeObject : splitterStates )
 		{
+			if( index >= splitter->count() )
+			{
+				break;
+			}
+
 			auto size = sizeObject.toInt();
 			const auto widget = splitter->widget( index );
 			const auto button = panelButtons.value( widget );
@@ -173,20 +177,6 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 			++index;
 		}
 		splitter->setSizes( splitterSizes );
-	}
-
-	const auto SplitterContentBaseSize = 500;
-
-	if( spotlightPanel->property( originalSizePropertyName() ).isNull() ||
-		slideshowPanel->property( originalSizePropertyName() ).isNull() )
-	{
-		slideshowSpotlightSplitter->setSizes( { SplitterContentBaseSize, SplitterContentBaseSize } );
-	}
-
-	if( slideshowSpotlightSplitter->property( originalSizePropertyName() ).isNull() ||
-		ui->computerMonitoringWidget->property( originalSizePropertyName() ).isNull() )
-	{
-		monitoringSplitter->setSizes( { SplitterContentBaseSize, SplitterContentBaseSize } );
 	}
 
 	ui->centralLayout->addWidget( mainSplitter );
@@ -231,24 +221,6 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 	ui->gridSizeSlider->setValue( size );
 	ui->computerMonitoringWidget->setComputerScreenSize( size );
 
-	// initialize computer placement controls
-	auto customComputerPositionsControlMenu = new QMenu;
-	const auto darkSuffix = VeyonCore::useDarkMode() ? QStringLiteral("-dark") : QString();
-	customComputerPositionsControlMenu->addAction(QIcon(QStringLiteral(":/core/document-open%1.png").arg(darkSuffix)),
-													tr("Load computer positions"),
-													this, &MainWindow::loadComputerPositions);
-	customComputerPositionsControlMenu->addAction(QIcon(QStringLiteral(":/core/document-save%1.png").arg(darkSuffix)),
-													tr("Save computer positions"),
-													this, &MainWindow::saveComputerPositions);
-	ui->useCustomComputerPositionsButton->setMenu(customComputerPositionsControlMenu);
-
-	ui->useCustomComputerPositionsButton->setChecked(m_master.userConfig().useCustomComputerPositions());
-	connect(ui->useCustomComputerPositionsButton, &QToolButton::toggled,
-			ui->computerMonitoringWidget, &ComputerMonitoringWidget::setUseCustomComputerPositions);
-	connect(ui->alignComputersButton, &QToolButton::clicked,
-			ui->computerMonitoringWidget, &ComputerMonitoringWidget::alignComputers);
-
-
 	const auto toolButtons = findChildren<QToolButton*>();
 	for(auto* btn : toolButtons)
 	{
@@ -257,19 +229,16 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 
 	if (VeyonCore::useDarkMode())
 	{
-		ui->aboutButton->setIcon(QIcon(QStringLiteral(":/core/help-about-dark.png")));
-		ui->filterComputersWithLoggedOnUsersButton->setIcon(QIcon(QStringLiteral(":/core/user-group-new-dark.png")));
-		ui->autoAdjustComputerIconSizeButton->setIcon(QIcon(QStringLiteral(":/master/zoom-fit-best-dark.png")));
-		ui->alignComputersButton->setIcon(QIcon(QStringLiteral(":/master/align-grid-dark.png")));
-		ui->useCustomComputerPositionsButton->setIcon(QIcon(QStringLiteral(":/master/exchange-positions-zorder-dark.png")));
-		ui->filterPoweredOnComputersButton->setIcon(QIcon(QStringLiteral(":/master/powered-on-dark.png")));
+		ui->aboutButton->setIcon(QIcon(QStringLiteral(":/master/fa/circle-info.svg")));
+		ui->filterComputersWithLoggedOnUsersButton->setIcon(QIcon(QStringLiteral(":/master/fa/users.svg")));
+		ui->autoAdjustComputerIconSizeButton->setIcon(QIcon(QStringLiteral(":/master/fa/expand-arrows.svg")));
+		ui->filterPoweredOnComputersButton->setIcon(QIcon(QStringLiteral(":/master/fa/power-off.svg")));
 	}
 
-	// create the main toolbar
+	// Keep toolbar actions available internally, but use the spacious context-driven master layout.
 	ui->toolBar->layout()->setSpacing( 2 );
 	ui->toolBar->toggleViewAction()->setEnabled( false );
-
-	addToolBar( Qt::TopToolBarArea, ui->toolBar );
+	ui->toolBar->hide();
 
 	addFeaturesToToolBar();
 	reloadSubFeatures();

@@ -23,6 +23,7 @@
  */
 
 #include <QDesktopServices>
+#include <QIcon>
 #include <QInputDialog>
 #include <QPushButton>
 #include <QScreen>
@@ -43,6 +44,10 @@ FileCollectDialog::FileCollectDialog(FileCollectController* controller, QWidget*
 {
 	ui->setupUi(this);
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
+	for (auto button : ui->buttonBox->buttons())
+	{
+		button->setIcon(QIcon());
+	}
 
 	ui->collectionsTreeView->setItemDelegateForColumn(int(FileCollectTreeModel::Column::Progress),
 													  new ProgressItemDelegate(ui->collectionsTreeView));
@@ -55,9 +60,17 @@ FileCollectDialog::FileCollectDialog(FileCollectController* controller, QWidget*
 	});
 	connect (m_controller, &FileCollectController::started, this, [this]() {
 		ui->buttonBox->setStandardButtons(QDialogButtonBox::Cancel);
+		for (auto button : ui->buttonBox->buttons())
+		{
+			button->setIcon(QIcon());
+		}
 	});
 	connect (m_controller, &FileCollectController::finished, this, [this]() {
 		ui->buttonBox->setStandardButtons(QDialogButtonBox::Close);
+		for (auto button : ui->buttonBox->buttons())
+		{
+			button->setIcon(QIcon());
+		}
 	});
 
 	const auto availableSize = screen()->availableVirtualSize();
@@ -87,8 +100,20 @@ void FileCollectDialog::accept()
 	{
 	case FileCollectController::CollectionDirectory::PromptUserForName:
 	{
-		const auto collectionName = QInputDialog::getText(this, tr("Enter collection name" ),
-														  tr("Please enter a name for this file collection:"));
+		QInputDialog dialog(this);
+		dialog.setWindowTitle(tr("Enter collection name"));
+		dialog.setLabelText(tr("Please enter a name for this file collection:"));
+		for (auto button : dialog.findChildren<QPushButton *>())
+		{
+			button->setIcon(QIcon());
+		}
+
+		if (dialog.exec() != QDialog::Accepted)
+		{
+			return;
+		}
+
+		const auto collectionName = dialog.textValue();
 		if (collectionName.isEmpty())
 		{
 			return;
@@ -126,6 +151,10 @@ void FileCollectDialog::reject()
 	{
 		m_controller->stop();
 		ui->buttonBox->setStandardButtons(QDialogButtonBox::Close);
+		for (auto button : ui->buttonBox->buttons())
+		{
+			button->setIcon(QIcon());
+		}
 	}
 	else
 	{

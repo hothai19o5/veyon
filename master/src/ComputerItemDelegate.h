@@ -40,12 +40,17 @@ public:
 	QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 private:
+	void drawComputerCard(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 	void initFeaturePixmaps();
 	void drawFeatureIcons(QPainter* painter, const QPoint& pos, ComputerControlInterface::Pointer controlInterface) const;
 
-	static constexpr int OverlayIconSize = 32;
+	static constexpr int CardPadding = 12;
+	static constexpr int CardRadius = 8;
+	static constexpr int LabelBarHeight = 36;
+	static constexpr int ShadowSize = 0;
+	static constexpr int OverlayIconSize = 24;
 	static constexpr int OverlayIconSpacing = 4;
-	static constexpr int OverlayIconsPadding = 8;
+	static constexpr int OverlayIconsPadding = 10;
 	static constexpr int OverlayIconsRadius = 6;
 
 	QMap<QUuid, QPixmap> m_featurePixmaps;

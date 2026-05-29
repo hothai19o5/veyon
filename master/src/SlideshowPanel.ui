@@ -3,8 +3,8 @@
  <class>SlideshowPanel</class>
  <widget class="QWidget" name="SlideshowPanel">
   <property name="windowIcon">
-   <iconset resource="../resources/master.qrc">
-    <normaloff>:/master/computer-slideshow.png</normaloff>:/master/computer-slideshow.png</iconset>
+    <iconset resource="../resources/master.qrc">
+     <normaloff>:/master/fa/images.svg</normaloff>:/master/fa/images.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -46,8 +46,8 @@
          <string>Previous</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/go-previous.png</normaloff>:/core/go-previous.png</iconset>
+          <iconset resource="../resources/master.qrc">
+           <normaloff>:/master/fa/chevron-left.svg</normaloff>:/master/fa/chevron-left.svg</iconset>
         </property>
        </widget>
       </item>
@@ -57,9 +57,9 @@
          <string>Start/pause</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/media-playback-start.png</normaloff>
-          <normalon>:/core/media-playback-pause.png</normalon>:/core/media-playback-start.png</iconset>
+          <iconset resource="../resources/master.qrc">
+           <normaloff>:/master/fa/play.svg</normaloff>
+           <normalon>:/master/fa/pause.svg</normalon>:/master/fa/play.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -75,8 +75,8 @@
          <string>Next</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/go-next.png</normaloff>:/core/go-next.png</iconset>
+          <iconset resource="../resources/master.qrc">
+           <normaloff>:/master/fa/chevron-right.svg</normaloff>:/master/fa/chevron-right.svg</iconset>
         </property>
        </widget>
       </item>
@@ -135,8 +135,8 @@
          <string>View in separate window</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/view-fullscreen.png</normaloff>:/core/view-fullscreen.png</iconset>
+          <iconset resource="../resources/master.qrc">
+           <normaloff>:/master/fa/expand.svg</normaloff>:/master/fa/expand.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>

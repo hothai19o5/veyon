@@ -53,11 +53,11 @@ SpotlightPanel::SpotlightPanel( UserConfig& config, ComputerMonitoringWidget* co
 	if (VeyonCore::useDarkMode())
 	{
 		QIcon realtimeViewIcon;
-		realtimeViewIcon.addPixmap(QPixmap(QStringLiteral(":/master/update-realtime-enabled-dark.png")), QIcon::Mode::Normal, QIcon::State::On);
-		realtimeViewIcon.addPixmap(QPixmap(QStringLiteral(":/master/update-realtime-disabled-dark.png")), QIcon::Mode::Normal, QIcon::State::Off);
+		realtimeViewIcon.addPixmap(QPixmap(QStringLiteral(":/master/fa/arrows-rotate.svg")), QIcon::Mode::Normal, QIcon::State::On);
+		realtimeViewIcon.addPixmap(QPixmap(QStringLiteral(":/master/fa/arrows-rotate.svg")), QIcon::Mode::Normal, QIcon::State::Off);
 		ui->realtimeViewButton->setIcon(realtimeViewIcon);
-		ui->addButton->setIcon(QIcon(QStringLiteral(":/core/go-up-dark.png")));
-		ui->removeButton->setIcon(QIcon(QStringLiteral(":/core/go-down-dark.png")));
+		ui->addButton->setIcon(QIcon(QStringLiteral(":/master/fa/arrow-up.svg")));
+		ui->removeButton->setIcon(QIcon(QStringLiteral(":/master/fa/arrow-down.svg")));
 	}
 
 	connect( ui->addButton, &QAbstractButton::clicked, this, &SpotlightPanel::add );

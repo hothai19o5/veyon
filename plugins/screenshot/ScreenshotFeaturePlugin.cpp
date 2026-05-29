@@ -22,7 +22,9 @@
  *
  */
 
+#include <QIcon>
 #include <QMessageBox>
+#include <QPushButton>
 
 #include "ScreenshotFeaturePlugin.h"
 #include "ComputerControlInterface.h"
@@ -38,7 +40,7 @@ ScreenshotFeaturePlugin::ScreenshotFeaturePlugin( QObject* parent ) :
 								  Feature::Uid(),
 								  tr( "Screenshot" ), {},
 								  tr( "Use this function to take a screenshot of selected computers." ),
-								  QStringLiteral(":/screenshot/camera-photo.png") ) ),
+								  QStringLiteral(":/master/fa/camera.svg") ) ),
 	m_features( { m_screenshotFeature } )
 {
 }
@@ -78,10 +80,14 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 {
 	if( controlFeature( feature.uid(), Operation::Start, {}, computerControlInterfaces ) )
 	{
-		QMessageBox::information( master.mainWindow(),
-								  tr( "Screenshots taken" ),
-								  tr( "Screenshot of %1 computer have been taken successfully." ).
-								  arg( computerControlInterfaces.count() ) );
+		QMessageBox messageBox(QMessageBox::Information,
+							   tr( "Screenshots taken" ),
+							   tr( "Screenshot of %1 computer have been taken successfully." ).
+							   arg( computerControlInterfaces.count() ),
+							   QMessageBox::Ok,
+							   master.mainWindow());
+		messageBox.button(QMessageBox::Ok)->setIcon(QIcon());
+		messageBox.exec();
 
 		return true;
 	}

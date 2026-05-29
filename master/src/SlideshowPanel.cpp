@@ -50,12 +50,12 @@ SlideshowPanel::SlideshowPanel( UserConfig& config, ComputerMonitoringWidget* co
 	if (VeyonCore::useDarkMode())
 	{
 		QIcon startStopIcon;
-		startStopIcon.addPixmap(QPixmap(QStringLiteral(":/core/media-playback-pause-dark.png")), QIcon::Mode::Normal, QIcon::State::On);
-		startStopIcon.addPixmap(QPixmap(QStringLiteral(":/core/media-playback-start-dark.png")), QIcon::Mode::Normal, QIcon::State::Off);
+		startStopIcon.addPixmap(QPixmap(QStringLiteral(":/master/fa/pause.svg")), QIcon::Mode::Normal, QIcon::State::On);
+		startStopIcon.addPixmap(QPixmap(QStringLiteral(":/master/fa/play.svg")), QIcon::Mode::Normal, QIcon::State::Off);
 		ui->startStopButton->setIcon(startStopIcon);
-		ui->showPreviousButton->setIcon(QIcon(QStringLiteral(":/core/go-previous-dark.png")));
-		ui->showNextButton->setIcon(QIcon(QStringLiteral(":/core/go-next-dark.png")));
-		ui->viewInSeparateWindowButton->setIcon(QIcon(QStringLiteral(":/core/view-fullscreen-dark.png")));
+		ui->showPreviousButton->setIcon(QIcon(QStringLiteral(":/master/fa/chevron-left.svg")));
+		ui->showNextButton->setIcon(QIcon(QStringLiteral(":/master/fa/chevron-right.svg")));
+		ui->viewInSeparateWindowButton->setIcon(QIcon(QStringLiteral(":/master/fa/expand.svg")));
 	}
 
 	connect( ui->startStopButton, &QAbstractButton::toggled, this, &SlideshowPanel::updateDuration );

@@ -39,11 +39,11 @@
 ComputerControlListModel::ComputerControlListModel( VeyonMaster* masterCore, QObject* parent ) :
 	ComputerListModel( parent ),
 	m_master( masterCore ),
-	m_iconHostOffline(QStringLiteral(":/master/host-offline.png")),
-	m_iconHostOnline(QStringLiteral(":/master/host-online.png")),
-	m_iconHostNameResolutionFailed(QStringLiteral(":/master/host-dns-error.png")),
-	m_iconHostAccessDenied(QStringLiteral(":/master/host-access-denied.png")),
-	m_iconHostServiceError(QStringLiteral(":/master/host-service-error.png"))
+	m_iconHostOffline(QStringLiteral(":/master/fa/circle-xmark.svg")),
+	m_iconHostOnline(QStringLiteral(":/master/fa/circle-check.svg")),
+	m_iconHostNameResolutionFailed(QStringLiteral(":/master/fa/triangle-exclamation.svg")),
+	m_iconHostAccessDenied(QStringLiteral(":/master/fa/ban.svg")),
+	m_iconHostServiceError(QStringLiteral(":/master/fa/screwdriver-wrench.svg"))
 {
 #if defined(QT_TESTLIB_LIB)
 	new QAbstractItemModelTester( this, QAbstractItemModelTester::FailureReportingMode::Warning, this );
@@ -400,17 +400,20 @@ double ComputerControlListModel::averageAspectRatio() const
 
 
 
-QImage ComputerControlListModel::scaleAndAlignIcon( const QImage& icon, QSize size ) const
+QImage ComputerControlListModel::scaleAndAlignIcon( const QIcon& icon, QSize size ) const
 {
-	const auto scaledIcon = icon.scaled(size.width(), size.height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	const int iconSize = int( qMin( size.width(), size.height() ) * 0.5 );
+	const auto pixmap = icon.pixmap( QSize( iconSize, iconSize ) );
 
 	QImage scaledAndAlignedIcon( size, QImage::Format_ARGB32 );
 	scaledAndAlignedIcon.fill( Qt::transparent );
 
 	QPainter painter( &scaledAndAlignedIcon );
-	painter.drawImage( ( scaledAndAlignedIcon.width() - scaledIcon.width() ) / 2,
-					   ( scaledAndAlignedIcon.height() - scaledIcon.height() ) / 2,
-					   scaledIcon );
+	const QRect targetRect( ( size.width() - iconSize ) / 2,
+							( size.height() - iconSize ) / 2,
+							iconSize,
+							iconSize );
+	painter.drawPixmap( targetRect, pixmap );
 
 	return scaledAndAlignedIcon;
 }

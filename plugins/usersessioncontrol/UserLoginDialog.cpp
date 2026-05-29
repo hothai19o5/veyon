@@ -23,6 +23,7 @@
  */
 
 #include <QPushButton>
+#include <QIcon>
 
 #include "UserLoginDialog.h"
 
@@ -34,6 +35,10 @@ UserLoginDialog::UserLoginDialog( QWidget *parent ) :
 	ui( new Ui::UserLoginDialog )
 {
 	ui->setupUi( this );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 
 	if( ui->username->text().isEmpty() == false )
 	{

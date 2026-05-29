@@ -23,8 +23,10 @@
  */
 
 #include <QFileDialog>
+#include <QHeaderView>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QVBoxLayout>
 
 #include "ComputerSelectPanel.h"
 #include "ComputerManager.h"
@@ -50,9 +52,26 @@ ComputerSelectPanel::ComputerSelectPanel( ComputerManager& computerManager, QWid
 
 	// capture keyboard events for tree view
 	ui->treeView->installEventFilter( this );
+	ui->treeView->header()->hide();
+	ui->treeView->header()->setMinimumSectionSize( 140 );
+	ui->treeView->setIndentation( 18 );
+	ui->treeView->setRootIsDecorated( true );
+	ui->treeView->setUniformRowHeights( true );
+	ui->treeView->setAllColumnsShowFocus( true );
+	ui->treeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+
+	if( auto panelLayout = qobject_cast<QVBoxLayout *>( layout() ) )
+	{
+		panelLayout->setContentsMargins( 8, 8, 8, 8 );
+		panelLayout->setSpacing( 8 );
+	}
 
 	// set computer tree model as data model
 	ui->treeView->setModel( m_filterProxyModel );
+	for( int column = 1; column < m_filterProxyModel->columnCount(); ++column )
+	{
+		ui->treeView->hideColumn( column );
+	}
 
 	// set default sort order
 	ui->treeView->sortByColumn( 0, Qt::AscendingOrder );
@@ -60,7 +79,7 @@ ComputerSelectPanel::ComputerSelectPanel( ComputerManager& computerManager, QWid
 	ui->addLocationButton->setVisible( VeyonCore::config().showCurrentLocationOnly() &&
 									   VeyonCore::config().allowAddingHiddenLocations() );
 
-	ui->filterLineEdit->setHidden( VeyonCore::config().hideComputerFilter() );
+	ui->filterLineEdit->hide();
 
 	connect( ui->filterLineEdit, &QLineEdit::textChanged,
 			 this, &ComputerSelectPanel::updateFilter );
