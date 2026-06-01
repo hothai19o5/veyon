@@ -239,7 +239,7 @@
          </font>
         </property>
         <property name="text">
-         <string>The import of CSV files is possible through the command line interface. For more information, see the &lt;a href=&quot;https://docs.veyon.io/en/latest/admin/cli.html#network-object-directory&quot;&gt;online documentation&lt;/a&gt;.</string>
+         <string>The import of CSV files is possible through the command line interface. For more information, see the &lt;a href=&quot;https://docs.edumonitor.io/en/latest/admin/cli.html#network-object-directory&quot;&gt;online documentation&lt;/a&gt;.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

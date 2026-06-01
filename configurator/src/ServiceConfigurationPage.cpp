@@ -86,9 +86,9 @@ void ServiceConfigurationPage::applyConfiguration()
 	VeyonServiceControl serviceControl(this);
 
 	if (serviceControl.isServiceRunning() &&
-		QMessageBox::question(this, tr("Restart Veyon Service"),
+		QMessageBox::question(this, tr("Restart EduMonitor Service"),
 			tr("All settings were saved successfully. In order to take "
-			   "effect the Veyon service needs to be restarted. "
+			   "effect the EduMonitor service needs to be restarted. "
 			   "Restart it now?"),
 			QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
 	{

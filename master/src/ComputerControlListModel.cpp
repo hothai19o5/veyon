@@ -568,7 +568,7 @@ QString ComputerControlListModel::computerStateDescription( const ComputerContro
 		return tr("Hostname could not be resolved");
 
 	case ComputerControlInterface::State::ServerNotRunning:
-		return tr( "Veyon Server unreachable or not running" );
+		return tr( "EduMonitor Server unreachable or not running" );
 
 	case ComputerControlInterface::State::AuthenticationFailed:
 		return tr( "Authentication failed or access denied" );

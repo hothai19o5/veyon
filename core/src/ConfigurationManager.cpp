@@ -54,7 +54,7 @@ bool ConfigurationManager::applyConfiguration()
 	// update Veyon Service configuration
 	if( VeyonServiceControl().setAutostart( m_configuration.autostartService() ) == false )
 	{
-		m_errorString = tr("Could not modify the autostart property for the Veyon Service.");
+		m_errorString = tr("Could not modify the autostart property for the EduMonitor Service.");
 		return false;
 	}
 
