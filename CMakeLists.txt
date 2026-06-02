@@ -231,6 +231,7 @@ else()
 	set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 	set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 endif()
+set(VEYON_WITH_TESTS ${WITH_TESTS})
 
 add_definitions(
 	)

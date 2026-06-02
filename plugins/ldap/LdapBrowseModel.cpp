@@ -107,7 +107,7 @@ LdapBrowseModel::LdapBrowseModel( Mode mode, const LdapConfiguration& configurat
 	m_mode( mode ),
 	m_client( new LdapClient( configuration, QUrl(), this ) ),
 	m_root( new Node( Node::Root, {}, nullptr ) ),
-	m_objectIcon( QStringLiteral(":/core/document-open.png") ),
+	m_objectIcon( QStringLiteral(":/configurator/style/icons/file_open.svg") ),
 	m_ouIcon( QStringLiteral( ":/ldap/folder-stash.png") ),
 	m_attributeIcon( QStringLiteral(":/ldap/attribute.png") )
 {

@@ -86,8 +86,8 @@
            <string>Start service</string>
           </property>
           <property name="icon">
-           <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/media-playback-start.png</normaloff>:/core/media-playback-start.png</iconset>
+            <iconset resource="../resources/configurator.qrc">
+            <normaloff>:/configurator/style/icons/play.svg</normaloff>:/configurator/style/icons/play.svg</iconset>
           </property>
          </widget>
         </item>
@@ -97,8 +97,8 @@
            <string>Stop service</string>
           </property>
           <property name="icon">
-           <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/media-playback-stop.png</normaloff>:/core/media-playback-stop.png</iconset>
+            <iconset resource="../resources/configurator.qrc">
+            <normaloff>:/configurator/style/icons/stop.svg</normaloff>:/configurator/style/icons/stop.svg</iconset>
           </property>
          </widget>
         </item>
@@ -436,6 +436,7 @@ Example: [^-]*-(PC[0-9]*)</string>
   <tabstop>sessionMetaDataRegistryKey</tabstop>
  </tabstops>
  <resources>
+  <include location="../resources/configurator.qrc"/>
   <include location="../../core/resources/core.qrc"/>
  </resources>
  <connections>

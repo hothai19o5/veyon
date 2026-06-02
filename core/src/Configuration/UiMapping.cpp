@@ -38,6 +38,15 @@ namespace Configuration
 static constexpr auto WidgetConfigPropertyFlags = "ConfigPropertyFlags";
 
 
+static void setColorButtonColor( QPushButton* widget, const QColor& color )
+{
+	auto palette = widget->palette();
+	palette.setColor( QPalette::Button, color );
+	widget->setPalette( palette );
+	widget->setStyleSheet( QStringLiteral( "background-color: %1;" ).arg( color.name() ) );
+}
+
+
 void UiMapping::initWidgetFromProperty( const Configuration::TypedProperty<bool>& property, QCheckBox* widget )
 {
 	widget->setChecked( property.value() );
@@ -82,9 +91,7 @@ void UiMapping::initWidgetFromProperty( const Configuration::TypedProperty<Passw
 
 void UiMapping::initWidgetFromProperty( const Configuration::TypedProperty<QColor>& property, QPushButton* widget )
 {
-	auto palette = widget->palette();
-	palette.setColor( QPalette::Button, property.value() );
-	widget->setPalette( palette );
+	setColorButtonColor( widget, property.value() );
 }
 
 
@@ -175,13 +182,11 @@ void UiMapping::connectWidgetToProperty( const Configuration::TypedProperty<Pass
 void UiMapping::connectWidgetToProperty( const Configuration::TypedProperty<QColor>& property, QPushButton* widget )
 {
 	QObject::connect( widget, &QAbstractButton::clicked, property.lambdaContext(), [&property, widget]() {
-		auto palette = widget->palette();
 		QColorDialog d( widget->palette().color( QPalette::Button ), widget );
 		if( d.exec() )
 		{
 			property.setValue( d.selectedColor() );
-			palette.setColor( QPalette::Button, d.selectedColor() );
-			widget->setPalette( palette );
+			setColorButtonColor( widget, d.selectedColor() );
 		}
 	} );
 }

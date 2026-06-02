@@ -23,7 +23,9 @@
  */
 
 #include <QDir>
+#include <QIcon>
 #include <QMessageBox>
+#include <QPushButton>
 
 #include "AuthenticationCredentials.h"
 #include "Configuration/UiMapping.h"
@@ -151,8 +153,14 @@ void GeneralConfigurationPage::testAuthentication()
 		break;
 	}
 
-	QMessageBox::information( this, authenticationTestTitle(),
-							  tr( "Authentication is set up properly on this computer." ) );
+	QMessageBox messageBox( QMessageBox::Information,
+						 authenticationTestTitle(),
+						 tr( "Authentication is set up properly on this computer." ),
+						 QMessageBox::Ok,
+						 this );
+	messageBox.setIcon( QMessageBox::NoIcon );
+	messageBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+	messageBox.exec();
 }
 
 
@@ -170,8 +178,14 @@ bool GeneralConfigurationPage::testKeyFileAuthentication()
 {
 	if( VeyonCore::instance()->initAuthentication() == false )
 	{
-		QMessageBox::critical( this, authenticationTestTitle(),
-							   tr( "Authentication keys are not set up properly on this computer." ) );
+		QMessageBox messageBox( QMessageBox::Critical,
+							 authenticationTestTitle(),
+							 tr( "Authentication keys are not set up properly on this computer." ),
+							 QMessageBox::Ok,
+							 this );
+		messageBox.setIcon( QMessageBox::NoIcon );
+		messageBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		messageBox.exec();
 		return false;
 	}
 

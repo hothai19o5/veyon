@@ -123,8 +123,8 @@
          <string>Test</string>
         </property>
         <property name="icon">
-         <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+          <iconset resource="../resources/configurator.qrc">
+           <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
         </property>
        </widget>
       </item>
@@ -220,8 +220,8 @@
         <item row="0" column="2">
          <widget class="QToolButton" name="openLogFileDirectory">
           <property name="icon">
-           <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+            <iconset resource="../resources/configurator.qrc">
+            <normaloff>:/configurator/style/icons/folder_open.svg</normaloff>:/configurator/style/icons/folder_open.svg</iconset>
           </property>
          </widget>
         </item>
@@ -378,8 +378,8 @@
            <string>Clear all log files</string>
           </property>
           <property name="icon">
-           <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/edit-delete.png</normaloff>:/core/edit-delete.png</iconset>
+            <iconset resource="../resources/configurator.qrc">
+            <normaloff>:/configurator/style/icons/trash.svg</normaloff>:/configurator/style/icons/trash.svg</iconset>
           </property>
          </widget>
         </item>
@@ -424,6 +424,7 @@
   <tabstop>clearLogFiles</tabstop>
  </tabstops>
  <resources>
+  <include location="../resources/configurator.qrc"/>
   <include location="../../core/resources/core.qrc"/>
  </resources>
  <connections>

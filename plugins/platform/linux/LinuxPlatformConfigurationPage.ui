@@ -6,8 +6,8 @@
    <string>Linux</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="linux.qrc">
-    <normaloff>:/linux/tux.png</normaloff>:/linux/tux.png</iconset>
+   <iconset resource="../../../configurator/resources/configurator.qrc">
+    <normaloff>:/configurator/style/icons/fa_brands_linux.svg</normaloff>:/configurator/style/icons/fa_brands_linux.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

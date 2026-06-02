@@ -6,8 +6,8 @@
    <string>Locations &amp; computers</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="builtindirectory.qrc">
-    <normaloff>:/builtindirectory/builtindirectory.png</normaloff>:/builtindirectory/builtindirectory.png</iconset>
+   <iconset resource="../../configurator/resources/configurator.qrc">
+    <normaloff>:/configurator/style/icons/fa_solid_computer.svg</normaloff>:/configurator/style/icons/fa_solid_computer.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="topMargin">
@@ -48,7 +48,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/list-add.png</normaloff>:/core/list-add.png</iconset>
+             <normaloff>:/configurator/style/icons/plus.svg</normaloff>:/configurator/style/icons/plus.svg</iconset>
           </property>
          </widget>
         </item>
@@ -62,7 +62,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/edit-delete.png</normaloff>:/core/edit-delete.png</iconset>
+             <normaloff>:/configurator/style/icons/trash.svg</normaloff>:/configurator/style/icons/trash.svg</iconset>
           </property>
          </widget>
         </item>
@@ -152,7 +152,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/list-add.png</normaloff>:/core/list-add.png</iconset>
+             <normaloff>:/configurator/style/icons/plus.svg</normaloff>:/configurator/style/icons/plus.svg</iconset>
           </property>
          </widget>
         </item>
@@ -166,7 +166,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/edit-delete.png</normaloff>:/core/edit-delete.png</iconset>
+             <normaloff>:/configurator/style/icons/trash.svg</normaloff>:/configurator/style/icons/trash.svg</iconset>
           </property>
          </widget>
         </item>
@@ -252,6 +252,7 @@
   </layout>
  </widget>
  <resources>
+  <include location="../../configurator/resources/configurator.qrc"/>
   <include location="../../core/resources/core.qrc"/>
   <include location="builtindirectory.qrc"/>
  </resources>

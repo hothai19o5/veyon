@@ -6,8 +6,8 @@
    <string>Authentication keys</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../core/resources/core.qrc">
-    <normaloff>:/core/application-x-pem-key.png</normaloff>:/core/application-x-pem-key.png</iconset>
+   <iconset resource="../../configurator/resources/configurator.qrc">
+    <normaloff>:/configurator/style/icons/fa_solid_key.svg</normaloff>:/configurator/style/icons/fa_solid_key.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="topMargin">
@@ -132,7 +132,7 @@
          <widget class="QToolButton" name="openPublicKeyBaseDir">
           <property name="icon">
            <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+             <normaloff>:/configurator/style/icons/folder_open.svg</normaloff>:/configurator/style/icons/folder_open.svg</iconset>
           </property>
          </widget>
         </item>
@@ -140,7 +140,7 @@
          <widget class="QToolButton" name="openPrivateKeyBaseDir">
           <property name="icon">
            <iconset resource="../../core/resources/core.qrc">
-            <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+             <normaloff>:/configurator/style/icons/folder_open.svg</normaloff>:/configurator/style/icons/folder_open.svg</iconset>
           </property>
          </widget>
         </item>
@@ -238,6 +238,7 @@ The public key is used on client computers to authenticate incoming connection r
   </layout>
  </widget>
  <resources>
+  <include location="../../configurator/resources/configurator.qrc"/>
   <include location="../../core/resources/core.qrc"/>
  </resources>
  <connections/>

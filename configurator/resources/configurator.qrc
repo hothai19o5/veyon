@@ -21,5 +21,24 @@
         <file>style/icons/edit.svg</file>
         <file>style/icons/arrow_up.svg</file>
         <file>style/icons/arrow_down.svg</file>
+        <file>style/icons/folder_open.svg</file>
+        <file>style/icons/file_open.svg</file>
+        <file>style/icons/play.svg</file>
+        <file>style/icons/stop.svg</file>
+        <file>style/icons/search.svg</file>
+        <file>style/icons/save.svg</file>
+        <file>style/icons/info.svg</file>
+        <file>style/icons/fa_solid_sliders.svg</file>
+        <file>style/icons/fa_solid_gears.svg</file>
+        <file>style/icons/fa_solid_object_group.svg</file>
+        <file>style/icons/fa_solid_shield.svg</file>
+        <file>style/icons/fa_brands_linux.svg</file>
+        <file>style/icons/fa_solid_key.svg</file>
+        <file>style/icons/fa_solid_computer.svg</file>
+        <file>style/icons/fa_solid_window_restore.svg</file>
+        <file>style/icons/fa_regular_window_restore.svg</file>
+        <file>style/icons/fa_solid_file_export.svg</file>
+        <file>style/icons/fa_solid_bezier_curve.svg</file>
+        <file>style/icons/fa_brands_dev.svg</file>
     </qresource>
 </RCC>

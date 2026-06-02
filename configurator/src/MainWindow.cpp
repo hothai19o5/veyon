@@ -30,6 +30,7 @@
 #include <QIcon>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QPainter>
 #include <QScrollBar>
 #include <QSettings>
 #include <QTimer>
@@ -48,6 +49,49 @@
 #include "ui_MainWindow.h"
 
 
+namespace
+{
+QPixmap colorizedIconPixmap( const QIcon& icon, const QSize& size, const QColor& color )
+{
+	auto pixmap = icon.pixmap( size );
+	QPixmap colorizedPixmap( size );
+	colorizedPixmap.fill( Qt::transparent );
+
+	QPainter painter( &colorizedPixmap );
+	painter.drawPixmap( 0, 0, pixmap );
+	painter.setCompositionMode( QPainter::CompositionMode_SourceIn );
+	painter.fillRect( colorizedPixmap.rect(), color );
+
+	return colorizedPixmap;
+}
+
+
+
+QIcon pageSelectorIcon( const QIcon& icon )
+{
+	const QSize iconSize( 24, 24 );
+	QIcon pageIcon;
+	pageIcon.addPixmap( colorizedIconPixmap( icon, iconSize, QColor( 0x5f, 0x63, 0x68 ) ), QIcon::Normal );
+	pageIcon.addPixmap( colorizedIconPixmap( icon, iconSize, QColor( 0x5f, 0x63, 0x68 ) ), QIcon::Active );
+	pageIcon.addPixmap( colorizedIconPixmap( icon, iconSize, QColor( 0x1a, 0x73, 0xe8 ) ), QIcon::Selected );
+
+	return pageIcon;
+}
+
+
+
+void updatePageSelectorIcons( QListWidget* pageSelector )
+{
+	for( int i = 0; i < pageSelector->count(); ++i )
+	{
+		auto item = pageSelector->item( i );
+		item->setIcon( pageSelectorIcon( item->icon() ) );
+	}
+}
+}
+
+
+
 MainWindow::MainWindow( QWidget* parent ) :
 	QMainWindow( parent ),
 	ui( new Ui::MainWindow ),
@@ -60,6 +104,7 @@ MainWindow::MainWindow( QWidget* parent ) :
 	setWindowTitle(tr("EduMonitor Configurator %1").arg(VeyonCore::versionString()));
 
 	loadConfigurationPagePlugins();
+	updatePageSelectorIcons( ui->pageSelector );
 
 	// reset all widget's values to current configuration
 	reset( true );
@@ -245,10 +290,17 @@ void MainWindow::saveSettingsToFile()
 
 void MainWindow::resetConfiguration()
 {
-	if( QMessageBox::warning( this, tr( "Reset configuration" ),
-							  tr( "Do you really want to reset the local configuration and revert "
-								  "all settings to their defaults?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) ==
-		QMessageBox::Yes )
+	QMessageBox msgBox( this );
+	msgBox.setWindowTitle( tr( "Reset configuration" ) );
+	msgBox.setText( tr( "Do you really want to reset the local configuration and revert "
+						"all settings to their defaults?" ) );
+	msgBox.setIcon( QMessageBox::NoIcon );
+	msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+	msgBox.setDefaultButton( QMessageBox::No );
+	msgBox.button( QMessageBox::Yes )->setIcon( QIcon() );
+	msgBox.button( QMessageBox::No )->setIcon( QIcon() );
+
+	if( msgBox.exec() == QMessageBox::Yes )
 	{
 		ConfigurationManager().clearConfiguration();
 		reset( false );

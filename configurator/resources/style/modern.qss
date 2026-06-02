@@ -44,8 +44,8 @@ QListWidget#pageSelector {
 
 QListWidget#pageSelector::item {
     background-color: transparent;
-    color: #000000;
-    padding: 10px;
+    color: #5f6368;
+    padding: 10px 15px 10px 5px;
     border-radius: 8px;
     margin-bottom: 5px;
 }
@@ -461,13 +461,33 @@ QMenu {
     background-color: #ffffff;
     border: 1px solid #dadce0;
     border-radius: 6px;
-    padding: 4px;
+    padding: 6px;
 }
 
 QMenu::item {
-    padding: 6px 24px 6px 20px;
+    padding: 7px 28px 7px 38px;
     border-radius: 4px;
     color: #202124;
+}
+
+QMenu::icon {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+QMenu::indicator {
+    width: 16px;
+    height: 16px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+QMenu::indicator:checked {
+    image: url(:/configurator/style/icons/check.svg);
+}
+
+QMenu::indicator:unchecked {
+    image: none;
 }
 
 QMenu::item:selected {

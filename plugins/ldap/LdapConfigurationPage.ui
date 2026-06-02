@@ -6,8 +6,8 @@
    <string notr="true">LDAP/AD</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="ldap.qrc">
-    <normaloff>:/ldap/application-x-kexi-connectiondata.png</normaloff>:/ldap/application-x-kexi-connectiondata.png</iconset>
+   <iconset resource="../../configurator/resources/configurator.qrc">
+    <normaloff>:/configurator/style/icons/fa_solid_bezier_curve.svg</normaloff>:/configurator/style/icons/fa_solid_bezier_curve.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <property name="topMargin">
@@ -74,7 +74,7 @@
              <widget class="QPushButton" name="testBindInteractively">
               <property name="icon">
                <iconset resource="../../core/resources/core.qrc">
-                <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+                <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
               </property>
              </widget>
             </item>
@@ -223,7 +223,7 @@
            <widget class="QPushButton" name="browseCACertificateFile">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+               <normaloff>:/configurator/style/icons/file_open.svg</normaloff>:/configurator/style/icons/file_open.svg</iconset>
             </property>
            </widget>
           </item>
@@ -287,7 +287,7 @@
            <widget class="QPushButton" name="browseBaseDn">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -295,7 +295,7 @@
            <widget class="QPushButton" name="testBaseDn">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -306,7 +306,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -406,7 +406,7 @@
            <widget class="QPushButton" name="browseUserTree">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -414,7 +414,7 @@
            <widget class="QPushButton" name="browseGroupTree">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -422,7 +422,7 @@
            <widget class="QPushButton" name="browseComputerTree">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -430,7 +430,7 @@
            <widget class="QPushButton" name="browseComputerGroupTree">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -438,7 +438,7 @@
            <widget class="QPushButton" name="testUserTree">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -446,7 +446,7 @@
            <widget class="QPushButton" name="testGroupTree">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -454,7 +454,7 @@
            <widget class="QPushButton" name="testComputerTree">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -462,7 +462,7 @@
            <widget class="QPushButton" name="testComputerGroupTree">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -493,7 +493,7 @@
            <widget class="QPushButton" name="browseUserLoginNameAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -532,7 +532,7 @@
            <widget class="QPushButton" name="testComputerMacAddressAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -547,7 +547,7 @@
            <widget class="QPushButton" name="testUserLoginNameAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -576,7 +576,7 @@
            <widget class="QPushButton" name="browseComputerHostNameAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -584,7 +584,7 @@
            <widget class="QPushButton" name="testComputerHostNameAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -595,7 +595,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -603,7 +603,7 @@
            <widget class="QPushButton" name="testGroupMemberAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -614,7 +614,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -650,7 +650,7 @@
            <widget class="QPushButton" name="browseGroupMemberAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -658,7 +658,7 @@
            <widget class="QPushButton" name="browseLocationNameAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -666,7 +666,7 @@
            <widget class="QPushButton" name="browseComputerMacAddressAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -674,7 +674,7 @@
            <widget class="QPushButton" name="testLocationNameAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -689,7 +689,7 @@
            <widget class="QPushButton" name="browseComputerDisplayNameAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/edit-find.png</normaloff>:/core/edit-find.png</iconset>
+               <normaloff>:/configurator/style/icons/search.svg</normaloff>:/configurator/style/icons/search.svg</iconset>
             </property>
            </widget>
           </item>
@@ -697,7 +697,7 @@
            <widget class="QPushButton" name="testComputerDisplayNameAttribute">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -807,7 +807,7 @@
            <widget class="QPushButton" name="testUsersFilter">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -815,7 +815,7 @@
            <widget class="QPushButton" name="testUserGroupsFilter">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -823,7 +823,7 @@
            <widget class="QPushButton" name="testComputersFilter">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -831,7 +831,7 @@
            <widget class="QPushButton" name="testComputerGroupsFilter">
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -842,7 +842,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../core/resources/core.qrc">
-              <normaloff>:/core/dialog-ok-apply.png</normaloff>:/core/dialog-ok-apply.png</iconset>
+              <normaloff>:/configurator/style/icons/check.svg</normaloff>:/configurator/style/icons/check.svg</iconset>
             </property>
            </widget>
           </item>
@@ -1129,6 +1129,7 @@
   <tabstop>testLocations</tabstop>
  </tabstops>
  <resources>
+  <include location="../../configurator/resources/configurator.qrc"/>
   <include location="../../core/resources/core.qrc"/>
   <include location="ldap.qrc"/>
  </resources>
