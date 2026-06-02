@@ -28,6 +28,7 @@
 #include <QNetworkInterface>
 #include <QProgressBar>
 #include <QProgressDialog>
+#include <QPushButton>
 #include <QUdpSocket>
 
 #include "Computer.h"
@@ -338,10 +339,16 @@ bool PowerControlFeaturePlugin::confirmFeatureExecution( const Feature& feature,
 
 	if( feature == m_rebootFeature )
 	{
-		return QMessageBox::question( parent, tr( "Confirm reboot" ),
-									  all ? tr( "Do you really want to reboot <b>ALL</b> computers?" )
-										  : tr( "Do you really want to reboot the selected computers?" ) ) ==
-				QMessageBox::Yes;
+		QMessageBox messageBox( QMessageBox::Question,
+								tr( "Confirm reboot" ),
+								all ? tr( "Do you really want to reboot <b>ALL</b> computers?" )
+									: tr( "Do you really want to reboot the selected computers?" ),
+								QMessageBox::Yes | QMessageBox::No,
+								parent );
+		messageBox.button( QMessageBox::Yes )->setIcon( QIcon() );
+		messageBox.button( QMessageBox::No )->setIcon( QIcon() );
+
+		return messageBox.exec() == QMessageBox::Yes;
 	}
 	else if( feature == m_powerDownFeature ||
 			 feature == m_powerDownNowFeature ||
@@ -349,10 +356,16 @@ bool PowerControlFeaturePlugin::confirmFeatureExecution( const Feature& feature,
 			 feature == m_powerDownConfirmedFeature ||
 			 feature == m_powerDownDelayedFeature )
 	{
-		return QMessageBox::question( parent, tr( "Confirm power down" ),
-									  all ? tr( "Do you really want to power down <b>ALL</b> computers?" )
-										  : tr( "Do you really want to power down the selected computers?" ) ) ==
-				QMessageBox::Yes;
+		QMessageBox messageBox( QMessageBox::Question,
+								tr( "Confirm power down" ),
+								all ? tr( "Do you really want to power down <b>ALL</b> computers?" )
+									: tr( "Do you really want to power down the selected computers?" ),
+								QMessageBox::Yes | QMessageBox::No,
+								parent );
+		messageBox.button( QMessageBox::Yes )->setIcon( QIcon() );
+		messageBox.button( QMessageBox::No )->setIcon( QIcon() );
+
+		return messageBox.exec() == QMessageBox::Yes;
 	}
 
 	return true;
@@ -422,6 +435,8 @@ void PowerControlFeaturePlugin::confirmShutdown()
 	QMessageBox m( QMessageBox::Question, tr( "Confirm power down" ),
 				   tr( "The computer was remotely requested to power down. Do you want to power down the computer now?" ),
 				   QMessageBox::Yes | QMessageBox::No );
+	m.button( QMessageBox::Yes )->setIcon( QIcon() );
+	m.button( QMessageBox::No )->setIcon( QIcon() );
 	m.show();
 	VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 

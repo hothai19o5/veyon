@@ -22,6 +22,7 @@
  *
  */
 
+#include <QIcon>
 #include <QPushButton>
 
 #include "PowerDownTimeInputDialog.h"
@@ -35,6 +36,10 @@ PowerDownTimeInputDialog::PowerDownTimeInputDialog( QWidget *parent ) :
 	m_seconds( 0 )
 {
 	ui->setupUi( this );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 
 	updateSeconds();
 

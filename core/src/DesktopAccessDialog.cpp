@@ -142,9 +142,13 @@ DesktopAccessDialog::Choice DesktopAccessDialog::requestDesktopAccess( const QSt
 				   arg( user, hostName ), QMessageBox::Yes | QMessageBox::No );
 
 	m.setStyleSheet( QStringLiteral("button-layout:%1").arg(QDialogButtonBox::WinLayout) );
+	m.button( QMessageBox::Yes )->setIcon( QIcon() );
+	m.button( QMessageBox::No )->setIcon( QIcon() );
 
 	auto neverBtn = m.addButton( tr( "Never for this session" ), QMessageBox::NoRole );
 	auto alwaysBtn = m.addButton( tr( "Always for this session" ), QMessageBox::YesRole );
+	neverBtn->setIcon( QIcon() );
+	alwaysBtn->setIcon( QIcon() );
 
 	m.setEscapeButton( m.button( QMessageBox::No ) );
 	m.setDefaultButton( neverBtn );

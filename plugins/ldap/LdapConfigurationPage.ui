@@ -981,58 +981,38 @@
          <property name="text">
           <string>List all groups of a user</string>
          </property>
-         <property name="icon">
-          <iconset resource="ldap.qrc">
-           <normaloff>:/ldap/user-group-properties.png</normaloff>:/ldap/user-group-properties.png</iconset>
-         </property>
         </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="testGroupsOfComputer">
-         <property name="text">
-          <string>List all groups of a computer</string>
-         </property>
-         <property name="icon">
-          <iconset resource="ldap.qrc">
-           <normaloff>:/ldap/computer.png</normaloff>:/ldap/computer.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="testComputerObjectByIpAddress">
-         <property name="text">
-          <string>Get computer object by IP address</string>
-         </property>
-         <property name="icon">
-          <iconset resource="ldap.qrc">
-           <normaloff>:/ldap/computer.png</normaloff>:/ldap/computer.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="testLocationEntries">
-         <property name="text">
-          <string>List all entries of a location</string>
-         </property>
-         <property name="icon">
-          <iconset resource="ldap.qrc">
-           <normaloff>:/ldap/configure.png</normaloff>:/ldap/configure.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="testLocations">
-         <property name="text">
-          <string>List all locations</string>
-         </property>
-         <property name="icon">
-          <iconset resource="ldap.qrc">
-           <normaloff>:/ldap/distribute-vertical-margin.png</normaloff>:/ldap/distribute-vertical-margin.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_10">
+        </item>
+        <item>
+         <widget class="QPushButton" name="testGroupsOfComputer">
+          <property name="text">
+           <string>List all groups of a computer</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="testComputerObjectByIpAddress">
+          <property name="text">
+           <string>Get computer object by IP address</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="testLocationEntries">
+          <property name="text">
+           <string>List all entries of a location</string>
+          </property>
+         </widget>
+        </item>
+         <item>
+          <widget class="QPushButton" name="testLocations">
+           <property name="text">
+            <string>List all locations</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_10">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
          </property>

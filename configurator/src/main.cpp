@@ -24,6 +24,7 @@
 
 #include <QApplication>
 #include <QFontDatabase>
+#include <QIcon>
 #include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
@@ -67,21 +68,28 @@ int main( int argc, char **argv )
 			return 0;
 		}
 
-		QMessageBox::warning( nullptr, MainWindow::tr( "Insufficient privileges" ),
-							  MainWindow::tr( "Could not start with administrative privileges. "
-											  "Please make sure a sudo-like program is installed "
-											  "for your desktop environment! The program will "
-											  "be run with normal user privileges.") );
+		QMessageBox msgBox( QMessageBox::Warning, MainWindow::tr( "Insufficient privileges" ),
+							MainWindow::tr( "Could not start with administrative privileges. "
+											"Please make sure a sudo-like program is installed "
+											"for your desktop environment! The program will "
+											"be run with normal user privileges."),
+							QMessageBox::Ok, nullptr );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 
 	if( VeyonConfiguration().isStoreWritable() == false &&
 		VeyonCore::config().logLevel() != Logger::LogLevel::Debug )
 	{
-		QMessageBox::critical(nullptr,
-							  MainWindow::tr("Configuration not writable"),
-							  MainWindow::tr("The local configuration backend reported that the "
-											 "configuration is not writable! Please run EduMonitor "
-											 "Configurator with higher privileges."));
+		QMessageBox msgBox( QMessageBox::Critical, MainWindow::tr("Configuration not writable"),
+							MainWindow::tr("The local configuration backend reported that the "
+										   "configuration is not writable! Please run EduMonitor "
+										   "Configurator with higher privileges."),
+							QMessageBox::Ok, nullptr );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 		return -1;
 	}
 

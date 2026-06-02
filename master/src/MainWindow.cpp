@@ -23,7 +23,9 @@
  */
 
 #include <QCloseEvent>
+#include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QIcon>
 #include <QJsonDocument>
 #include <QKeyEvent>
 #include <QHostAddress>
@@ -266,13 +268,16 @@ bool MainWindow::initAuthentication()
 
 	if( VeyonCore::config().authenticationMethod() == VeyonCore::AuthenticationMethod::KeyFileAuthentication )
 	{
-		QMessageBox::information(nullptr,
-								 tr("Authentication impossible"),
-								 tr("No authentication key files were found or your current ones "
-									"are outdated. Please create new key files using EduMonitor "
-									"Configurator. Alternatively set up logon authentication "
-									"using EduMonitor Configurator. Otherwise you won't be "
-									"able to access computers using EduMonitor."));
+		QMessageBox msgBox( QMessageBox::Information, tr("Authentication impossible"),
+							tr("No authentication key files were found or your current ones "
+							   "are outdated. Please create new key files using EduMonitor "
+							   "Configurator. Alternatively set up logon authentication "
+							   "using EduMonitor Configurator. Otherwise you won't be "
+							   "able to access computers using EduMonitor."),
+							QMessageBox::Ok, nullptr );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 
 	return false;
@@ -295,10 +300,14 @@ bool MainWindow::initAccessControl()
 		{
 			vWarning() << "user" << VeyonCore::authenticationCredentials().logonUsername()
 					   << "is not allowed to access computers";
-			QMessageBox::critical( nullptr, tr( "Access denied" ),
-								   tr( "According to the local configuration you're not allowed "
-									   "to access computers in the network. Please log in with a different "
-									   "account or let your system administrator check the local configuration." ) );
+			QMessageBox msgBox( QMessageBox::Critical, tr( "Access denied" ),
+								tr( "According to the local configuration you're not allowed "
+									"to access computers in the network. Please log in with a different "
+									"account or let your system administrator check the local configuration." ),
+								QMessageBox::Ok, nullptr );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 			return false;
 		}
 	}
@@ -335,9 +344,13 @@ void MainWindow::closeEvent( QCloseEvent* event )
 	{
 		const Feature& activeFeature = VeyonCore::featureManager().feature( m_master.currentMode() );
 
-		QMessageBox::information(this, tr("Feature active"),
-								 tr("The feature \"%1\" is still active. Please stop it before closing EduMonitor.")
-								 .arg(activeFeature.displayName()));
+		QMessageBox msgBox( QMessageBox::Information, tr("Feature active"),
+							tr("The feature \"%1\" is still active. Please stop it before closing EduMonitor.")
+							.arg(activeFeature.displayName()),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 		event->ignore();
 		return;
 	}
@@ -535,20 +548,32 @@ void MainWindow::updateModeButtonGroup()
 
 void MainWindow::loadComputerPositions()
 {
-	if (const auto fileName = QFileDialog::getOpenFileName(this, tr("Load computer positions"),
-														   QDir::homePath(), tr("JSON files (*.json)"));
-		!fileName.isEmpty())
+	QFileDialog dialog( this, tr("Load computer positions"), QDir::homePath(), tr("JSON files (*.json)") );
+	dialog.setFileMode( QFileDialog::ExistingFile );
+	if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
 	{
-		if (QFile file(fileName); file.open(QFile::ReadOnly))
+		for( auto button : buttonBox->buttons() )
 		{
-			const auto& computerPositionsProperty = m_master.userConfig().computerPositionsProperty();
-			const auto config = QJsonDocument::fromJson(file.readAll()).object();
-			const auto uiConfig = config[computerPositionsProperty.parentKey()].toObject();
-			const auto computerPositions = uiConfig[computerPositionsProperty.key()].toObject()[QStringLiteral("JsonStoreArray")].toArray();
+			button->setIcon( QIcon() );
+		}
+	}
+	if( dialog.exec() == QDialog::Accepted )
+	{
+		const auto fileNames = dialog.selectedFiles();
+		if( fileNames.isEmpty() == false )
+		{
+			const auto fileName = fileNames.first();
+			if (QFile file(fileName); file.open(QFile::ReadOnly))
+			{
+				const auto& computerPositionsProperty = m_master.userConfig().computerPositionsProperty();
+				const auto config = QJsonDocument::fromJson(file.readAll()).object();
+				const auto uiConfig = config[computerPositionsProperty.parentKey()].toObject();
+				const auto computerPositions = uiConfig[computerPositionsProperty.key()].toObject()[QStringLiteral("JsonStoreArray")].toArray();
 
-			ui->computerMonitoringWidget->loadPositions(computerPositions);
-			ui->computerMonitoringWidget->setUseCustomComputerPositions(true);
-			ui->computerMonitoringWidget->doItemsLayout();
+				ui->computerMonitoringWidget->loadPositions(computerPositions);
+				ui->computerMonitoringWidget->setUseCustomComputerPositions(true);
+				ui->computerMonitoringWidget->doItemsLayout();
+			}
 		}
 	}
 }
@@ -557,10 +582,24 @@ void MainWindow::loadComputerPositions()
 
 void MainWindow::saveComputerPositions()
 {
-	if (const auto fileName = QFileDialog::getSaveFileName(this, tr("Save computer positions"),
-														   QDir::homePath(), tr("JSON files (*.json)"));
-		!fileName.isEmpty())
+	QFileDialog dialog( this, tr("Save computer positions"), QDir::homePath(), tr("JSON files (*.json)") );
+	dialog.setFileMode( QFileDialog::AnyFile );
+	dialog.setAcceptMode( QFileDialog::AcceptSave );
+	if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
 	{
+		for( auto button : buttonBox->buttons() )
+		{
+			button->setIcon( QIcon() );
+		}
+	}
+	if( dialog.exec() == QDialog::Accepted )
+	{
+		const auto fileNames = dialog.selectedFiles();
+		if( fileNames.isEmpty() )
+		{
+			return;
+		}
+		const auto fileName = fileNames.first();
 		if (QFile file(fileName); file.open(QFile::WriteOnly | QFile::Truncate))
 		{
 			const auto& computerPositionsProperty = m_master.userConfig().computerPositionsProperty();

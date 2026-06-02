@@ -22,10 +22,12 @@
  *
  */
 
+#include <QAbstractButton>
 #include <QCoreApplication>
 #include <QFile>
 #include <QHostAddress>
 #include <QHostInfo>
+#include <QIcon>
 #include <QMessageBox>
 #include <QTime>
 
@@ -58,11 +60,14 @@ ComputerManager::ComputerManager( UserConfig& config, QObject* parent ) :
 {
 	if( m_networkObjectDirectory == nullptr )
 	{
-		QMessageBox::critical(nullptr,
-							  tr("Missing network object directory plugin"),
-							  tr("No default network object directory plugin was found. "
-								 "Please check your installation or configure a different "
-								 "network object directory backend via EduMonitor Configurator."));
+		QMessageBox msgBox( QMessageBox::Critical, tr("Missing network object directory plugin"),
+							tr("No default network object directory plugin was found. "
+							   "Please check your installation or configure a different "
+							   "network object directory backend via EduMonitor Configurator."),
+							QMessageBox::Ok, nullptr );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 		qFatal( "ComputerManager: missing network object directory plugin!" );
 	}
 
@@ -273,11 +278,14 @@ void ComputerManager::initLocations()
 	{
 		if( m_currentLocations.isEmpty() )
 		{
-			QMessageBox::warning(nullptr,
-								 tr("Location detection failed"),
-								 tr("The location of this computer could not be determined. "
-									"This indicates a problem with the system configuration. "
-									"No locations and computers will be displayed in the \"Locations & computers\" panel."));
+			QMessageBox msgBox( QMessageBox::Warning, tr("Location detection failed"),
+								tr("The location of this computer could not be determined. "
+								   "This indicates a problem with the system configuration. "
+								   "No locations and computers will be displayed in the \"Locations & computers\" panel."),
+								QMessageBox::Ok, nullptr );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 			vWarning() << "location detection failed";
 			m_currentLocations = QStringList{tr("Unknown location")};
 		}

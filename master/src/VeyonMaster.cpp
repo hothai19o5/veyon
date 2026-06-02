@@ -22,7 +22,9 @@
  *
  */
 
+#include <QAbstractButton>
 #include <QHostAddress>
+#include <QIcon>
 #include <QMessageBox>
 
 #include "VeyonMaster.h"
@@ -56,10 +58,13 @@ VeyonMaster::VeyonMaster( QObject* parent ) :
 {
 	if (m_userConfig->isStoreWritable() == false)
 	{
-		QMessageBox::information(nullptr,
-								 tr("No write access"),
-								 tr("Could not save your personal settings! Please check the user configuration "
-									"file path using EduMonitor Configurator."));
+		QMessageBox msgBox( QMessageBox::Information, tr("No write access"),
+							tr("Could not save your personal settings! Please check the user configuration "
+							   "file path using EduMonitor Configurator."),
+							QMessageBox::Ok, nullptr );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 
 	connect(m_computerControlListModel, &ComputerControlListModel::modelAboutToBeReset,

@@ -75,9 +75,12 @@ GeneralConfigurationPage::GeneralConfigurationPage() :
 	const auto backends = VeyonCore::userGroupsBackendManager().availableBackends();
 	if (backends.count() <= 0)
 	{
-		QMessageBox::critical(this,
-							  tr("Missing user groups backend"),
-							  tr("No user groups plugin was found. Please check your installation!"));
+		QMessageBox msgBox( QMessageBox::Critical, tr("Missing user groups backend"),
+							tr("No user groups plugin was found. Please check your installation!"),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 		qFatal("GeneralConfigurationPage: missing user groups backend");
 	}
 
@@ -211,11 +214,15 @@ void GeneralConfigurationPage::clearLogFiles()
 
 	if( serviceControl.isServiceRunning() )
 	{
-		if (QMessageBox::question(this, tr("EduMonitor service"),
-								   tr("The EduMonitor service needs to be stopped temporarily "
-									  "in order to remove the log files. Continue?"),
-								  QMessageBox::Yes | QMessageBox::No,
-								  QMessageBox::Yes) == QMessageBox::Yes)
+		QMessageBox questionBox( QMessageBox::Question, tr("EduMonitor service"),
+								 tr("The EduMonitor service needs to be stopped temporarily "
+									"in order to remove the log files. Continue?"),
+								 QMessageBox::Yes | QMessageBox::No, this );
+		questionBox.setIcon( QMessageBox::NoIcon );
+		questionBox.setDefaultButton( QMessageBox::Yes );
+		questionBox.button( QMessageBox::Yes )->setIcon( QIcon() );
+		questionBox.button( QMessageBox::No )->setIcon( QIcon() );
+		if( questionBox.exec() == QMessageBox::Yes )
 		{
 			serviceControl.stopService();
 			serviceStopped = true;
@@ -261,13 +268,21 @@ void GeneralConfigurationPage::clearLogFiles()
 
 	if( success )
 	{
-		QMessageBox::information( this, tr( "Log files cleared" ),
-								  tr( "All log files were cleared successfully." ) );
+		QMessageBox msgBox( QMessageBox::Information, tr( "Log files cleared" ),
+							tr( "All log files were cleared successfully." ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 	else
 	{
-		QMessageBox::critical( this, tr( "Error" ),
-							   tr( "Could not remove all log files." ) );
+		QMessageBox msgBox( QMessageBox::Critical, tr( "Error" ),
+							tr( "Could not remove all log files." ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 }
 

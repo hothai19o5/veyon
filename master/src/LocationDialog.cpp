@@ -22,6 +22,9 @@
  *
  */
 
+#include <QIcon>
+#include <QPushButton>
+
 #include "LocationDialog.h"
 
 #include "ui_LocationDialog.h"
@@ -31,6 +34,10 @@ LocationDialog::LocationDialog( QAbstractItemModel* locationListModel, QWidget* 
 	ui(new Ui::LocationDialog)
 {
 	ui->setupUi( this );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 
 	m_networkObjectFilterProxyModel.setSourceModel(locationListModel);
 	m_networkObjectFilterProxyModel.setComputersExcluded(true);

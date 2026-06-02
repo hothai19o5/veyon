@@ -188,7 +188,12 @@ void MainWindow::apply()
 	const auto showError = [this](const ConfigurationManager& configurationManager) {
 		vCritical() << configurationManager.errorString().toUtf8().constData();
 
-		QMessageBox::critical(this, tr("EduMonitor Configurator"), configurationManager.errorString());
+		QMessageBox msgBox( QMessageBox::Critical, tr("EduMonitor Configurator"),
+							configurationManager.errorString(),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	};
 
 	ConfigurationManager configurationManager;
@@ -251,26 +256,51 @@ void MainWindow::resetOrApply( QAbstractButton *btn )
 
 void MainWindow::loadSettingsFromFile()
 {
-	QString fileName = QFileDialog::getOpenFileName( this, tr( "Load settings from file" ),
-													 QDir::homePath(), tr( "JSON files (*.json)" ) );
-	if( !fileName.isEmpty() )
+	QFileDialog dialog( this, tr( "Load settings from file" ), QDir::homePath(), tr( "JSON files (*.json)" ) );
+	dialog.setFileMode( QFileDialog::ExistingFile );
+	if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
 	{
-		// write current configuration to output file
-		Configuration::JsonStore(Configuration::JsonStore::Scope::System, fileName).load(&VeyonCore::config());
-		reset( true );
-		configurationChanged();	// give user a chance to apply possible changes
+		for( auto button : buttonBox->buttons() )
+		{
+			button->setIcon( QIcon() );
+		}
+	}
+	if( dialog.exec() == QDialog::Accepted )
+	{
+		const auto fileNames = dialog.selectedFiles();
+		if( fileNames.isEmpty() == false )
+		{
+			const auto fileName = fileNames.first();
+			// write current configuration to output file
+			Configuration::JsonStore(Configuration::JsonStore::Scope::System, fileName).load(&VeyonCore::config());
+			reset( true );
+			configurationChanged();	// give user a chance to apply possible changes
+		}
 	}
 }
 
 
 
-
 void MainWindow::saveSettingsToFile()
 {
-	QString fileName = QFileDialog::getSaveFileName( this, tr( "Save settings to file" ),
-													 QDir::homePath(), tr( "JSON files (*.json)" ) );
-	if( !fileName.isEmpty() )
+	QFileDialog dialog( this, tr( "Save settings to file" ), QDir::homePath(), tr( "JSON files (*.json)" ) );
+	dialog.setFileMode( QFileDialog::AnyFile );
+	dialog.setAcceptMode( QFileDialog::AcceptSave );
+	if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
 	{
+		for( auto button : buttonBox->buttons() )
+		{
+			button->setIcon( QIcon() );
+		}
+	}
+	if( dialog.exec() == QDialog::Accepted )
+	{
+		const auto fileNames = dialog.selectedFiles();
+		if( fileNames.isEmpty() )
+		{
+			return;
+		}
+		auto fileName = fileNames.first();
 		if( !fileName.endsWith( QStringLiteral(".json"), Qt::CaseInsensitive ) )
 		{
 			fileName += QStringLiteral(".json");

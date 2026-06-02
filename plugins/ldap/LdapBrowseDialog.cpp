@@ -2,6 +2,9 @@
 // This file is part of Veyon - https://veyon.io
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
+#include <QIcon>
+#include <QPushButton>
+
 #include "LdapBrowseDialog.h"
 #include "LdapBrowseModel.h"
 #include "LdapConfiguration.h"
@@ -15,6 +18,10 @@ LdapBrowseDialog::LdapBrowseDialog( const LdapConfiguration& configuration, QWid
 	m_configuration( configuration )
 {
 	ui->setupUi( this );
+	for( auto button : ui->buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
 }
 
 

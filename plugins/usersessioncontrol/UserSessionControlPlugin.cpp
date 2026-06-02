@@ -23,6 +23,7 @@
  */
 
 #include <QMessageBox>
+#include <QPushButton>
 
 #include "PlatformSessionFunctions.h"
 #include "PlatformUserFunctions.h"
@@ -168,10 +169,16 @@ bool UserSessionControlPlugin::confirmFeatureExecution( const Feature& feature, 
 
 	if( feature == m_userLogoffFeature )
 	{
-		return QMessageBox::question( parent, tr( "Confirm user logoff" ),
-									  all ? tr( "Do you really want to log off <b>ALL</b> users?" )
-										  : tr( "Do you really want to log off the selected users?" ) ) ==
-				QMessageBox::Yes;
+		QMessageBox messageBox( QMessageBox::Question,
+								tr( "Confirm user logoff" ),
+								all ? tr( "Do you really want to log off <b>ALL</b> users?" )
+									: tr( "Do you really want to log off the selected users?" ),
+								QMessageBox::Yes | QMessageBox::No,
+								parent );
+		messageBox.button( QMessageBox::Yes )->setIcon( QIcon() );
+		messageBox.button( QMessageBox::No )->setIcon( QIcon() );
+
+		return messageBox.exec() == QMessageBox::Yes;
 	}
 
 	return true;

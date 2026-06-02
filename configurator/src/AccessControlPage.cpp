@@ -22,8 +22,11 @@
  *
  */
 
+#include <QDialogButtonBox>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QTimer>
 
 #include "AccessControlPage.h"
 #include "AccessControlRule.h"
@@ -261,8 +264,31 @@ void AccessControlPage::moveAccessControlRuleUp()
 
 void AccessControlPage::testUserGroupsAccessControl()
 {
-	const auto username = QInputDialog::getText( this, tr( "Enter username" ),
-												 tr( "Please enter a user login name whose access permissions to test:" ) );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter username" ) );
+	dialog.setLabelText( tr( "Please enter a user login name whose access permissions to test:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const auto username = dialog.textValue();
 
 	if (username.isEmpty())
 	{
@@ -271,13 +297,21 @@ void AccessControlPage::testUserGroupsAccessControl()
 
 	if( AccessControlProvider().processAuthorizedGroups( username ) )
 	{
-		QMessageBox::information( this, tr( "Access allowed" ),
-								  tr( "The specified user is allowed to access computers with this configuration." ) );
+		QMessageBox msgBox( QMessageBox::Information, tr( "Access allowed" ),
+							tr( "The specified user is allowed to access computers with this configuration." ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 	else
 	{
-		QMessageBox::warning( this, tr( "Access denied" ),
-								  tr( "The specified user is not allowed to access computers with this configuration." ) );
+		QMessageBox msgBox( QMessageBox::Warning, tr( "Access denied" ),
+							tr( "The specified user is not allowed to access computers with this configuration." ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 }
 

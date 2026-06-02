@@ -22,8 +22,10 @@
  *
  */
 
+#include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QIcon>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QVBoxLayout>
@@ -144,15 +146,33 @@ void ComputerSelectPanel::removeLocation()
 
 void ComputerSelectPanel::saveList()
 {
-	QString fileName = QFileDialog::getSaveFileName( this, tr( "Select output filename" ),
-													 QDir::homePath(), tr( "CSV files (*.csv)" ) );
-	if( fileName.isEmpty() == false )
+	QFileDialog dialog( this, tr( "Select output filename" ), QDir::homePath(), tr( "CSV files (*.csv)" ) );
+	dialog.setFileMode( QFileDialog::AnyFile );
+	dialog.setAcceptMode( QFileDialog::AcceptSave );
+	if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
 	{
+		for( auto button : buttonBox->buttons() )
+		{
+			button->setIcon( QIcon() );
+		}
+	}
+	if( dialog.exec() == QDialog::Accepted )
+	{
+		const auto fileNames = dialog.selectedFiles();
+		if( fileNames.isEmpty() )
+		{
+			return;
+		}
+		const auto fileName = fileNames.first();
 		if( m_computerManager.saveComputerAndUsersList( fileName ) == false )
 		{
-			QMessageBox::critical( this, tr( "File error"),
-								   tr( "Could not write the computer and users list to %1! "
-									   "Please check the file access permissions." ).arg( fileName ) );
+			QMessageBox msgBox( QMessageBox::Critical, tr( "File error"),
+								tr( "Could not write the computer and users list to %1! "
+									"Please check the file access permissions." ).arg( fileName ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 	}
 }

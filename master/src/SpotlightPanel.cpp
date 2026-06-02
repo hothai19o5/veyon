@@ -22,7 +22,9 @@
  *
  */
 
+#include <QAbstractButton>
 #include <QGuiApplication>
+#include <QIcon>
 #include <QMessageBox>
 
 #include "ComputerMonitoringModel.h"
@@ -101,8 +103,12 @@ void SpotlightPanel::add()
 
 	if( selectedComputerControlInterfaces.isEmpty() )
 	{
-		QMessageBox::information( this, tr("Spotlight"),
-								  tr( "Please select at least one computer to add.") );
+		QMessageBox msgBox( QMessageBox::Information, tr("Spotlight"),
+							tr( "Please select at least one computer to add."),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 		return;
 	}
 
@@ -127,8 +133,12 @@ void SpotlightPanel::remove()
 	const auto selection = ui->monitoringWidget->selectionModel()->selectedIndexes();
 	if( selection.isEmpty() )
 	{
-		QMessageBox::information( this, tr("Spotlight"),
-								  tr( "Please select at least one computer to remove.") );
+		QMessageBox msgBox( QMessageBox::Information, tr("Spotlight"),
+							tr( "Please select at least one computer to remove."),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 		return;
 	}
 
