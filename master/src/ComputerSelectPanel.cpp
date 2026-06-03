@@ -56,7 +56,7 @@ ComputerSelectPanel::ComputerSelectPanel( ComputerManager& computerManager, QWid
 	ui->treeView->installEventFilter( this );
 	ui->treeView->header()->hide();
 	ui->treeView->header()->setMinimumSectionSize( 140 );
-	ui->treeView->setIndentation( 18 );
+	ui->treeView->setIndentation( 28 );
 	ui->treeView->setRootIsDecorated( true );
 	ui->treeView->setUniformRowHeights( true );
 	ui->treeView->setAllColumnsShowFocus( true );
@@ -74,6 +74,7 @@ ComputerSelectPanel::ComputerSelectPanel( ComputerManager& computerManager, QWid
 	{
 		ui->treeView->hideColumn( column );
 	}
+	ui->treeView->header()->setSectionResizeMode( 0, QHeaderView::Stretch );
 
 	// set default sort order
 	ui->treeView->sortByColumn( 0, Qt::AscendingOrder );
@@ -86,12 +87,9 @@ ComputerSelectPanel::ComputerSelectPanel( ComputerManager& computerManager, QWid
 	connect( ui->filterLineEdit, &QLineEdit::textChanged,
 			 this, &ComputerSelectPanel::updateFilter );
 
-	if (VeyonCore::config().expandLocations())
-	{
-		connect(m_filterProxyModel, &QAbstractItemModel::modelReset,
-				this, &ComputerSelectPanel::fetchAndExpandAll);
-		fetchAndExpandAll();
-	}
+	connect(m_filterProxyModel, &QAbstractItemModel::modelReset,
+			this, &ComputerSelectPanel::fetchAndExpandAll);
+	fetchAndExpandAll();
 }
 
 

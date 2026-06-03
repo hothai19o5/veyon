@@ -98,13 +98,20 @@ QTreeView#treeView::item {
 }
 
 QTreeView#treeView::item:hover {
+    border-radius: 0px;
     background-color: #f1f3f4;
 }
 
 QTreeView#treeView::item:selected {
+    border-radius: 0px;
     background-color: #e8f0fe;
     color: #1a73e8;
     font-weight: bold;
+}
+
+QTreeView#treeView::branch {
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 QTreeView#treeView::indicator {
@@ -359,7 +366,7 @@ QSlider#gridSizeSlider::handle:horizontal {
     width: 14px;
     height: 14px;
     margin: -6px 0;
-    border-radius: 14px;
+    border-radius: 9px;
 }
 
 QScrollBar:vertical {

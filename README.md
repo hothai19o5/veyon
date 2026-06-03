@@ -56,8 +56,15 @@ Tạo thư mục build riêng để không trộn file build vào source tree.
 ```bash
 cmake -S . -B build-linux -G Ninja \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-  -DCMAKE_INSTALL_PREFIX=/usr
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCPACK_DIST=ubuntu.24.04
 ```
+
+- `CPACK_DIST` là release tag ghi vào file `.deb`/`.rpm` (ví dụ `ubuntu.24.04`,
+  `ubuntu.22.04`, `fedora.40`). Bắt buộc phải set, nếu không release tag trong
+  package sẽ rỗng.
+- Nếu chưa build/copy đầy đủ translation files (thư mục `translations/` rỗng
+  hoặc thiếu `.ts`), thêm `-DWITH_TRANSLATIONS=OFF` để bỏ qua bước dịch.
 
 Nếu CMake báo thiếu dependency, cài package tương ứng rồi chạy lại lệnh trên.
 
@@ -67,23 +74,154 @@ Nếu CMake báo thiếu dependency, cài package tương ứng rồi chạy l�
 cmake --build build-linux
 ```
 
+Khi sửa source, chỉ cần chạy lại lệnh này — CMake sẽ tự detect file thay đổi
+và chỉ rebuild những target liên quan.
+
 ### 1.6. Tạo package Linux
 
 ```bash
 cd build-linux
-fakeroot cpack
+fakeroot cpack -G DEB
 cd ..
 ```
 
-Kết quả thường là file `.deb` trên Debian/Ubuntu hoặc `.rpm` trên các distro RPM.
+Kết quả là file `.deb` trong `build-linux/` (ví dụ `build-linux/veyon-4.10.3.2-Linux.deb`
+hoặc tên tương tự tùy version).
 
-### 1.7. Cài thử local
+### 1.7. Build & chạy bản dev (không cài)
 
-Không khuyến nghị cài trực tiếp lên máy production. Chỉ dùng để kiểm tra nhanh trên máy build.
+Dành cho lập trình viên muốn sửa code và chạy thử nhanh mà không cần tạo
+`.deb` và cài vào hệ thống.
+
+#### 1.7.1. Cấu hình bản Debug
+
+Nếu đã có `build-linux/` ở `RelWithDebInfo` (dùng cho release), tạo thêm
+thư mục build riêng cho dev để không ảnh hưởng bản release:
 
 ```bash
-sudo cmake --install build-linux
+cmake -S . -B build-dev -G Ninja \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCPACK_DIST=ubuntu.24.04
+cmake --build build-dev
 ```
+
+#### 1.7.2. Chạy binary từ thư mục build
+
+Sau khi build xong, các binary nằm trong các thư mục con của `build-dev/`:
+
+```bash
+# Master (giao diện điều khiển chính)
+./build-dev/master/veyon-master
+
+# Configurator (cấu hình hệ thống)
+./build-dev/configurator/veyon-configurator
+
+# CLI (dòng lệnh)
+./build-dev/cli/veyon-cli
+
+# Server / Service / Worker (chạy nền)
+./build-dev/server/veyon-server
+./build-dev/service/veyon-service
+./build-dev/worker/veyon-worker
+```
+
+Binary sẽ tìm plugin `.so` và resource tương đối với vị trí của nó, nên
+chỉ cần chạy từ trong thư mục build là đủ — không cần `sudo` và không cần
+cài đặt.
+
+#### 1.7.3. Workflow lặp khi sửa code
+
+```bash
+# Sửa code, sau đó:
+cmake --build build-dev
+
+# Chạy lại binary đã build
+./build-dev/master/veyon-master
+```
+
+Nếu thay đổi file `.ui` (Qt Designer form), CMake sẽ tự chạy lại `uic` để
+sinh lại code. Không cần xóa cache trừ khi thêm/sửa option CMake hoặc thay
+đổi `CMakeLists.txt` cấu trúc lớn.
+
+#### 1.7.4. Chạy test
+
+Nếu project có test (target `test` hoặc `unittest`):
+
+```bash
+cmake --build build-dev --target test
+# hoặc
+ctest --test-dir build-dev --output-on-failure
+```
+
+#### 1.7.5. Debug với gdb
+
+```bash
+gdb --args ./build-dev/master/veyon-master
+```
+
+Hoặc attach vào tiến trình đang chạy:
+
+```bash
+# Trong terminal 1: chạy app bình thường
+./build-dev/master/veyon-master
+
+# Trong terminal 2: tìm PID và attach
+pgrep -f veyon-master
+sudo gdb -p <PID>
+```
+
+#### 1.7.6. Mở trong Qt Creator
+
+Qt Creator hỗ trợ CMake project trực tiếp: `File → Open File or Project…`
+rồi chọn `CMakeLists.txt` ở thư mục gốc. Sau đó Qt Creator tự dò thư mục
+build (`build-dev/`), cho phép sửa code, build, debug, và chạy trong cùng
+một cửa sổ.
+
+### 1.8. Cài thử local
+
+Không khuyến nghị cài trực tiếp lên máy production. Chỉ dùng để kiểm tra
+nhanh trên máy build.
+
+File `.deb` đã tạo ở bước 1.6 nằm trong `build-linux/`. **Không dùng**
+`cmake --install` trên hệ thống đã cài `.deb`, vì `cmake --install` copy
+file vào `/usr/` mà dpkg không quản lý — gây xung đột khi cài hoặc gỡ
+sau này.
+
+Cài bằng dpkg (khuyến nghị):
+
+```bash
+sudo dpkg -i build-linux/veyon-*.deb
+sudo apt-get -f install   # tự cài dependency nếu thiếu
+```
+
+### 1.9. Gỡ phiên bản cũ
+
+Trước khi cài version mới, gỡ bản cũ để tránh xung đột:
+
+```bash
+# 1. Gỡ package cũ (đã cài qua .deb trước đó)
+sudo apt remove --purge veyon
+
+# 2. Nếu trước đó đã từng cài bằng `cmake --install` trên hệ thống này,
+#    xóa các file sót lại bằng manifest. Chỉ chạy khi manifest vẫn còn
+#    khớp với lần install gần nhất (chưa bị ghi đè bởi build mới):
+sudo xargs rm -v < build-linux/install_manifest.txt
+
+# 3. Nếu vẫn còn file ở /usr/local/ từ bản .deb cũ build với prefix lạ:
+sudo rm -rf /usr/local/lib/veyon \
+            /usr/local/bin/veyon-* \
+            /usr/local/share/{applications,icons,pixmaps,polkit-1}/veyon* \
+            /usr/local/share/polkit-1/actions/io.veyon.*
+
+# 4. Verify đã sạch
+which veyon-master veyon-configurator   # phải báo "not found"
+ls /usr/bin/veyon-* /usr/lib/x86_64-linux-gnu/veyon/ \
+   /usr/local/bin/veyon-* /usr/local/lib/veyon/ 2>&1   # phải trống
+dpkg -l | grep veyon                    # phải trống
+```
+
+Sau đó cài bản mới theo bước 1.8.
 
 ## 2. Setup Môi Trường Cross MXE Windows Từ Linux
 
