@@ -132,7 +132,7 @@ QSpinBox, QDoubleSpinBox {
     qproperty-buttonSymbols: NoButtons; /* Loại bỏ nút bấm tăng giảm của các ô nhập số */
 }
 
-QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox, QTimeEdit, QDateEdit, QDateTimeEdit {
+QLineEdit, QSpinBox, QDoubleSpinBox, QTimeEdit, QDateEdit, QDateTimeEdit {
     background-color: #ffffff;
     border: 1px solid #dadce0;
     border-radius: 6px;
@@ -142,24 +142,69 @@ QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox, QTimeEdit, QDateEdit, QDateTimeE
     selection-color: #ffffff;
 }
 
-QLineEdit:hover, QSpinBox:hover, QDoubleSpinBox:hover, QComboBox:hover {
+QLineEdit:hover, QSpinBox:hover, QDoubleSpinBox:hover {
     border: 1px solid #bdc1c6;
 }
 
-QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus {
+QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus {
     border: 2px solid #1a73e8;
     padding: 5px 9px; /* adjust padding to prevent visual jump */
     background-color: #ffffff;
 }
 
-/* QComboBox Styling */
+/* QComboBox */
+QComboBox {
+    combobox-popup: 0;
+    background-color: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #202124;
+    selection-background-color: #1a73e8;
+    selection-color: #ffffff;
+}
+
+QComboBox:hover {
+    background-color: #f8f9fa;
+    border: 1px solid #bdc1c6;
+    border-radius: 6px;
+}
+
+QComboBox:focus {
+    background-color: #ffffff;
+    border: 2px solid #1a73e8;
+    border-radius: 6px;
+    padding: 5px 9px;
+}
+
 QComboBox::drop-down {
-    subcontrol-origin: padding;
+    subcontrol-origin: border;
     subcontrol-position: top right;
-    width: 24px;
-    border-left-width: 0px;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    width: 0px;
+    height: 0px;
+    border: none;
+    background-color: transparent;
+}
+
+QComboBox::drop-down:on {
+    width: 0px;
+    height: 0px;
+    border: none;
+    background-color: transparent;
+}
+
+QComboBox::down-arrow {
+    image: url(:/configurator/style/icons/transparent.svg);
+    width: 0px;
+    height: 0px;
+    border: none;
+}
+
+QComboBox::down-arrow:on {
+    image: url(:/configurator/style/icons/transparent.svg);
+    width: 0px;
+    height: 0px;
+    border: none;
 }
 
 QComboBox QFrame {
@@ -175,17 +220,38 @@ QComboBox QAbstractItemView {
     selection-color: #ffffff;
     color: #202124;
     outline: none;
-    padding: 0px;
+    padding: 2px;
     margin: 0px;
 }
 
 QComboBox QAbstractItemView::item {
-    padding: 6px 10px;
+    min-height: 24px;
+    padding: 4px 10px;
+    margin: 0px;
+    border-radius: 4px;
+}
+
+QComboBox QAbstractItemView::item:hover {
+    background-color: #1a73e8;
+    color: #ffffff;
+    border-radius: 4px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background-color: #1a73e8;
+    color: #ffffff;
+    border-radius: 4px;
+}
+
+QComboBox QAbstractItemView::item:selected:hover {
+    background-color: #1a73e8;
+    color: #ffffff;
+    border-radius: 4px;
 }
 
 QComboBox QLineEdit {
-    border: none;
     background-color: transparent;
+    border: none;
     padding: 0px;
     margin: 0px;
 }
