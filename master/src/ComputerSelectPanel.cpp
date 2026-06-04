@@ -22,8 +22,10 @@
  *
  */
 
+#include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QIcon>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QVBoxLayout>
@@ -54,7 +56,7 @@ ComputerSelectPanel::ComputerSelectPanel( ComputerManager& computerManager, QWid
 	ui->treeView->installEventFilter( this );
 	ui->treeView->header()->hide();
 	ui->treeView->header()->setMinimumSectionSize( 140 );
-	ui->treeView->setIndentation( 18 );
+	ui->treeView->setIndentation( 28 );
 	ui->treeView->setRootIsDecorated( true );
 	ui->treeView->setUniformRowHeights( true );
 	ui->treeView->setAllColumnsShowFocus( true );
@@ -72,6 +74,7 @@ ComputerSelectPanel::ComputerSelectPanel( ComputerManager& computerManager, QWid
 	{
 		ui->treeView->hideColumn( column );
 	}
+	ui->treeView->header()->setSectionResizeMode( 0, QHeaderView::Stretch );
 
 	// set default sort order
 	ui->treeView->sortByColumn( 0, Qt::AscendingOrder );
@@ -84,12 +87,9 @@ ComputerSelectPanel::ComputerSelectPanel( ComputerManager& computerManager, QWid
 	connect( ui->filterLineEdit, &QLineEdit::textChanged,
 			 this, &ComputerSelectPanel::updateFilter );
 
-	if (VeyonCore::config().expandLocations())
-	{
-		connect(m_filterProxyModel, &QAbstractItemModel::modelReset,
-				this, &ComputerSelectPanel::fetchAndExpandAll);
-		fetchAndExpandAll();
-	}
+	connect(m_filterProxyModel, &QAbstractItemModel::modelReset,
+			this, &ComputerSelectPanel::fetchAndExpandAll);
+	fetchAndExpandAll();
 }
 
 
@@ -144,15 +144,33 @@ void ComputerSelectPanel::removeLocation()
 
 void ComputerSelectPanel::saveList()
 {
-	QString fileName = QFileDialog::getSaveFileName( this, tr( "Select output filename" ),
-													 QDir::homePath(), tr( "CSV files (*.csv)" ) );
-	if( fileName.isEmpty() == false )
+	QFileDialog dialog( this, tr( "Select output filename" ), QDir::homePath(), tr( "CSV files (*.csv)" ) );
+	dialog.setFileMode( QFileDialog::AnyFile );
+	dialog.setAcceptMode( QFileDialog::AcceptSave );
+	if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
 	{
+		for( auto button : buttonBox->buttons() )
+		{
+			button->setIcon( QIcon() );
+		}
+	}
+	if( dialog.exec() == QDialog::Accepted )
+	{
+		const auto fileNames = dialog.selectedFiles();
+		if( fileNames.isEmpty() )
+		{
+			return;
+		}
+		const auto fileName = fileNames.first();
 		if( m_computerManager.saveComputerAndUsersList( fileName ) == false )
 		{
-			QMessageBox::critical( this, tr( "File error"),
-								   tr( "Could not write the computer and users list to %1! "
-									   "Please check the file access permissions." ).arg( fileName ) );
+			QMessageBox msgBox( QMessageBox::Critical, tr( "File error"),
+								tr( "Could not write the computer and users list to %1! "
+									"Please check the file access permissions." ).arg( fileName ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 	}
 }

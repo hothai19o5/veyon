@@ -24,8 +24,13 @@
 
 #include <QApplication>
 #include <QFontDatabase>
+#include <QIcon>
 #include <QMessageBox>
 #include <QFile>
+#include <QPainter>
+#include <QProxyStyle>
+#include <QStyleFactory>
+#include <QStyleOptionComboBox>
 #include <QTextStream>
 
 #include "VeyonConfiguration.h"
@@ -35,12 +40,66 @@
 #include "Logger.h"
 
 
+class ConfiguratorStyle : public QProxyStyle
+{
+public:
+    using QProxyStyle::QProxyStyle;
+
+    QRect subControlRect( ComplexControl control, const QStyleOptionComplex* option, SubControl subControl,
+                          const QWidget* widget = nullptr ) const override
+    {
+        if( control == CC_ComboBox && subControl == SC_ComboBoxArrow )
+        {
+            return QRect();
+        }
+
+        return QProxyStyle::subControlRect( control, option, subControl, widget );
+    }
+
+    void drawComplexControl( ComplexControl control, const QStyleOptionComplex* option, QPainter* painter,
+                             const QWidget* widget = nullptr ) const override
+    {
+        if( control == CC_ComboBox )
+        {
+            if( auto comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox*>( option ) )
+            {
+                auto optionWithoutArrow = *comboBoxOption;
+                optionWithoutArrow.subControls &= ~SC_ComboBoxArrow;
+                optionWithoutArrow.activeSubControls &= ~SC_ComboBoxArrow;
+
+                QProxyStyle::drawComplexControl( control, &optionWithoutArrow, painter, widget );
+                return;
+            }
+        }
+
+        QProxyStyle::drawComplexControl( control, option, painter, widget );
+    }
+
+    int styleHint( StyleHint hint, const QStyleOption* option = nullptr,
+                   const QWidget* widget = nullptr, QStyleHintReturn* returnData = nullptr ) const override
+    {
+        if( hint == SH_ComboBox_Popup )
+        {
+            return 0;
+        }
+
+        return QProxyStyle::styleHint( hint, option, widget, returnData );
+    }
+};
+
+
 
 int main( int argc, char **argv )
 {
 	VeyonCore::setupApplicationParameters();
 
 	QApplication app( argc, argv );
+	auto configuratorBaseStyle = QStyleFactory::create( app.style()->objectName() );
+	if( configuratorBaseStyle == nullptr )
+	{
+		configuratorBaseStyle = QStyleFactory::create( QStringLiteral( "Fusion" ) );
+	}
+	app.setStyle( new ConfiguratorStyle( configuratorBaseStyle ) );
 
 	VeyonCore core( &app, VeyonCore::Component::Configurator, QStringLiteral("Configurator") );
 
@@ -67,21 +126,28 @@ int main( int argc, char **argv )
 			return 0;
 		}
 
-		QMessageBox::warning( nullptr, MainWindow::tr( "Insufficient privileges" ),
-							  MainWindow::tr( "Could not start with administrative privileges. "
-											  "Please make sure a sudo-like program is installed "
-											  "for your desktop environment! The program will "
-											  "be run with normal user privileges.") );
+		QMessageBox msgBox( QMessageBox::Warning, MainWindow::tr( "Insufficient privileges" ),
+							MainWindow::tr( "Could not start with administrative privileges. "
+											"Please make sure a sudo-like program is installed "
+											"for your desktop environment! The program will "
+											"be run with normal user privileges."),
+							QMessageBox::Ok, nullptr );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 
 	if( VeyonConfiguration().isStoreWritable() == false &&
 		VeyonCore::config().logLevel() != Logger::LogLevel::Debug )
 	{
-		QMessageBox::critical(nullptr,
-							  MainWindow::tr("Configuration not writable"),
-							  MainWindow::tr("The local configuration backend reported that the "
-											 "configuration is not writable! Please run Veyon "
-											 "Configurator with higher privileges."));
+		QMessageBox msgBox( QMessageBox::Critical, MainWindow::tr("Configuration not writable"),
+							MainWindow::tr("The local configuration backend reported that the "
+										   "configuration is not writable! Please run EduMonitor "
+										   "Configurator with higher privileges."),
+							QMessageBox::Ok, nullptr );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 		return -1;
 	}
 

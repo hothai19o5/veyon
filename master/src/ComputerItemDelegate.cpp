@@ -98,7 +98,16 @@ void ComputerItemDelegate::drawComputerCard(QPainter* painter, const QStyleOptio
 	painter->setClipPath(cardPath);
 
 	QPainterPath thumbnailPath;
-	thumbnailPath.addRoundedRect(thumbnailRect, CardRadius, CardRadius);
+	thumbnailPath.moveTo(thumbnailRect.left() + CardRadius, thumbnailRect.top());
+	thumbnailPath.lineTo(thumbnailRect.right() - CardRadius, thumbnailRect.top());
+	thumbnailPath.arcTo(thumbnailRect.right() - CardRadius * 2, thumbnailRect.top(),
+						CardRadius * 2, CardRadius * 2, 90, -90);
+	thumbnailPath.lineTo(thumbnailRect.right(), thumbnailRect.bottom());
+	thumbnailPath.lineTo(thumbnailRect.left(), thumbnailRect.bottom());
+	thumbnailPath.lineTo(thumbnailRect.left(), thumbnailRect.top() + CardRadius);
+	thumbnailPath.arcTo(thumbnailRect.left(), thumbnailRect.top(),
+						CardRadius * 2, CardRadius * 2, 180, -90);
+	thumbnailPath.closeSubpath();
 	painter->fillPath(thumbnailPath, QColor(QStringLiteral("#202124")));
 
 	if( image.isNull() == false )

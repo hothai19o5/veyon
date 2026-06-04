@@ -6,8 +6,8 @@
    <string>Demo server</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="demo.qrc">
-    <normaloff>:/demo/window-duplicate.png</normaloff>:/demo/window-duplicate.png</iconset>
+   <iconset resource="../../configurator/resources/configurator.qrc">
+    <normaloff>:/configurator/style/icons/fa_solid_window_restore.svg</normaloff>:/configurator/style/icons/fa_solid_window_restore.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="topMargin">

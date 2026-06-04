@@ -512,11 +512,11 @@ void RemoteAccessWidget::updateRemoteAccessTitle()
 
 	if (username.isEmpty() )
 	{
-		setWindowTitle(tr("%1 - Veyon Remote Access").arg(m_computerControlInterface->computerName()));
+		setWindowTitle(tr("%1 - EduMonitor Remote Access").arg(m_computerControlInterface->computerName()));
 	}
 	else
 	{
-		setWindowTitle(tr("%1 - %2 - Veyon Remote Access").arg(username,
+		setWindowTitle(tr("%1 - %2 - EduMonitor Remote Access").arg(username,
 															m_computerControlInterface->computerName()));
 	}
 }

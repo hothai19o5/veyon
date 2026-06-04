@@ -6,8 +6,8 @@
    <string>Web API</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="webapi.qrc">
-    <normaloff>:/webapi/webapi.png</normaloff>:/webapi/webapi.png</iconset>
+   <iconset resource="../../configurator/resources/configurator.qrc">
+    <normaloff>:/configurator/style/icons/fa_brands_dev.svg</normaloff>:/configurator/style/icons/fa_brands_dev.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="topMargin">
@@ -201,7 +201,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+           <normaloff>:/configurator/style/icons/file_open.svg</normaloff>:/configurator/style/icons/file_open.svg</iconset>
         </property>
        </widget>
       </item>
@@ -212,7 +212,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+           <normaloff>:/configurator/style/icons/file_open.svg</normaloff>:/configurator/style/icons/file_open.svg</iconset>
         </property>
        </widget>
       </item>
@@ -242,6 +242,7 @@
   </layout>
  </widget>
  <resources>
+  <include location="../../configurator/resources/configurator.qrc"/>
   <include location="../../core/resources/core.qrc"/>
   <include location="webapi.qrc"/>
  </resources>

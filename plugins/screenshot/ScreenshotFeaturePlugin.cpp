@@ -86,6 +86,7 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 							   arg( computerControlInterfaces.count() ),
 							   QMessageBox::Ok,
 							   master.mainWindow());
+		messageBox.setIcon(QMessageBox::NoIcon);
 		messageBox.button(QMessageBox::Ok)->setIcon(QIcon());
 		messageBox.exec();
 

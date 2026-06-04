@@ -13,7 +13,7 @@ function(add_windows_resources TARGET)
 	endif()
 
 	if (NOT arg_DESCRIPTION)
-		set(arg_DESCRIPTION "Veyon ${arg_NAME}")
+		set(arg_DESCRIPTION "EduMonitor ${arg_NAME}")
 	endif()
 
 	if (arg_CONSOLE)
@@ -45,13 +45,13 @@ function(add_windows_resources TARGET)
 		"	BEGIN\n"
 		"		BLOCK \"040904E4\"\n"
 		"		BEGIN\n"
-		"			VALUE \"Comments\",         \"Virtual Eye On Networks (https://veyon.io)\\0\"\n"
-		"			VALUE \"CompanyName\",      \"Veyon Solutions\\0\"\n"
-		"			VALUE \"ProductName\",      \"Veyon\\0\"\n"
+		"			VALUE \"Comments\",         \"Education Monitor\\0\"\n"
+		"			VALUE \"CompanyName\",      \"iTelecom\\0\"\n"
+		"			VALUE \"ProductName\",      \"EduMonitor\\0\"\n"
 		"			VALUE \"ProductVersion\",   \"${VERSION_STRING}\\0\"\n"
 		"			VALUE \"FileDescription\",  \"${arg_DESCRIPTION}\\0\"\n"
 		"			VALUE \"FileVersion\",      \"${VERSION_STRING}\\0\"\n"
-		"			VALUE \"LegalCopyright\",   \"Copyright (c) 2017-2026 Veyon Solutions / Tobias Junghans\\0\"\n"
+		"			VALUE \"LegalCopyright\",   \"Copyright (c) 2017-2026 iTelecom\\0\"\n"
 		"			VALUE \"OriginalFilename\", \"${TARGET}.${SUFFIX}\\0\"\n"
 		"		END\n"
 		"	END\n"
@@ -79,7 +79,7 @@ function(add_windows_resources TARGET)
 
 	string(CONCAT MANIFEST_DATA "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
 		"<assembly xmlns=\"urn:schemas-microsoft-com:asm.v1\" manifestVersion=\"1.0\">\n"
-		"	<assemblyIdentity version=\"${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.${VERSION_BUILD}\" name=\"Veyon.${arg_NAME}\" type=\"win32\"/>\n"
+		"	<assemblyIdentity version=\"${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.${VERSION_BUILD}\" name=\"EduMonitor.${arg_NAME}\" type=\"win32\"/>\n"
 		"	<description>${arg_DESCRIPTION}</description>\n"
 		"	<compatibility xmlns=\"urn:schemas-microsoft-com:compatibility.v1\">\n"
 		"		<application>\n"

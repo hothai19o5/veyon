@@ -2,9 +2,12 @@
 // This file is part of Veyon - https://veyon.io
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
+#include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QTimer>
 
 #include "LdapConfiguration.h"
 #include "LdapConfigurationPage.h"
@@ -177,17 +180,25 @@ void LdapConfigurationPage::testBaseDn()
 
 		if( entries.isEmpty() )
 		{
-			QMessageBox::critical( this, tr( "LDAP base DN test failed"),
-								   tr( "Could not query the configured base DN. "
-									   "Please check the base DN parameter.\n\n"
-									   "%1" ).arg( ldapClient.errorDescription() ) );
+			QMessageBox msgBox( QMessageBox::Critical, tr( "LDAP base DN test failed" ),
+								tr( "Could not query the configured base DN. "
+									"Please check the base DN parameter.\n\n"
+									"%1" ).arg( ldapClient.errorDescription() ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 		else
 		{
-			QMessageBox::information( this, tr( "LDAP base DN test successful" ),
-									  tr( "The LDAP base DN has been queried successfully. "
-										  "The following entries were found:\n\n%1" ).
-									  arg( entries.join(QLatin1Char('\n')) ) );
+			QMessageBox msgBox( QMessageBox::Information, tr( "LDAP base DN test successful" ),
+								tr( "The LDAP base DN has been queried successfully. "
+									"The following entries were found:\n\n%1" ).
+								arg( entries.join(QLatin1Char('\n')) ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 	}
 }
@@ -205,17 +216,25 @@ void LdapConfigurationPage::testNamingContext()
 
 		if( baseDn.isEmpty() )
 		{
-			QMessageBox::critical( this, tr( "LDAP naming context test failed"),
-								   tr( "Could not query the base DN via naming contexts. "
-									   "Please check the naming context attribute parameter.\n\n"
-									   "%1" ).arg( ldapClient.errorDescription() ) );
+			QMessageBox msgBox( QMessageBox::Critical, tr( "LDAP naming context test failed" ),
+								tr( "Could not query the base DN via naming contexts. "
+									"Please check the naming context attribute parameter.\n\n"
+									"%1" ).arg( ldapClient.errorDescription() ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 		else
 		{
-			QMessageBox::information( this, tr( "LDAP naming context test successful" ),
-									  tr( "The LDAP naming context has been queried successfully. "
-										  "The following base DN was found:\n%1" ).
-									  arg( baseDn ) );
+			QMessageBox msgBox( QMessageBox::Information, tr( "LDAP naming context test successful" ),
+								tr( "The LDAP naming context has been queried successfully. "
+									"The following base DN was found:\n%1" ).
+								arg( baseDn ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 	}
 }
@@ -296,8 +315,31 @@ void LdapConfigurationPage::testComputerGroupTree()
 
 void LdapConfigurationPage::testUserLoginNameAttribute()
 {
-	QString userFilter = QInputDialog::getText( this, tr( "Enter username" ),
-												tr( "Please enter a user login name (wildcards allowed) which to query:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter username" ) );
+	dialog.setLabelText( tr( "Please enter a user login name (wildcards allowed) which to query:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const QString userFilter = dialog.textValue();
 	if( userFilter.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing user login attribute for" << userFilter;
@@ -314,8 +356,31 @@ void LdapConfigurationPage::testUserLoginNameAttribute()
 
 void LdapConfigurationPage::testGroupMemberAttribute()
 {
-	QString groupFilter = QInputDialog::getText( this, tr( "Enter group name" ),
-												 tr( "Please enter a group name whose members to query:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter group name" ) );
+	dialog.setLabelText( tr( "Please enter a group name whose members to query:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const QString groupFilter = dialog.textValue();
 	if( groupFilter.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing group member attribute for" << groupFilter;
@@ -332,10 +397,14 @@ void LdapConfigurationPage::testGroupMemberAttribute()
 		}
 		else
 		{
-			QMessageBox::warning( this, tr( "Group not found"),
-								  tr( "Could not find a group with the name \"%1\". "
-									  "Please check the group name or the group "
-									  "tree parameter.").arg( groupFilter ) );
+			QMessageBox msgBox( QMessageBox::Warning, tr( "Group not found" ),
+								tr( "Could not find a group with the name \"%1\". "
+									"Please check the group name or the group "
+									"tree parameter.").arg( groupFilter ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 	}
 }
@@ -344,8 +413,31 @@ void LdapConfigurationPage::testGroupMemberAttribute()
 
 void LdapConfigurationPage::testComputerDisplayNameAttribute()
 {
-	auto computerName = QInputDialog::getText( this, tr( "Enter computer display name" ),
-											   tr( "Please enter a computer display name to query:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter computer display name" ) );
+	dialog.setLabelText( tr( "Please enter a computer display name to query:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const auto computerName = dialog.textValue();
 	if( computerName.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing computer display name attribute";
@@ -363,26 +455,57 @@ void LdapConfigurationPage::testComputerDisplayNameAttribute()
 
 void LdapConfigurationPage::testComputerHostNameAttribute()
 {
-	QString computerName = QInputDialog::getText( this, tr( "Enter computer name" ),
-												  tr( "Please enter a computer hostname to query:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter computer name" ) );
+	dialog.setLabelText( tr( "Please enter a computer hostname to query:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const QString computerName = dialog.textValue();
 	if( computerName.isEmpty() == false )
 	{
 		if( m_configuration.computerHostNameAsFQDN() &&
 			computerName.contains( QLatin1Char('.') ) == false )
 		{
-			QMessageBox::critical( this, tr( "Invalid hostname" ),
-								   tr( "You configured computer hostnames to be stored "
-									   "as fully qualified domain names (FQDN) but entered "
-									   "a hostname without domain." ) );
+			QMessageBox msgBox( QMessageBox::Critical, tr( "Invalid hostname" ),
+								tr( "You configured computer hostnames to be stored "
+									"as fully qualified domain names (FQDN) but entered "
+									"a hostname without domain." ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 			return;
 		}
 		else if( m_configuration.computerHostNameAsFQDN() == false &&
 				 computerName.contains( QLatin1Char('.') ) )
 		{
-			QMessageBox::critical( this, tr( "Invalid hostname" ),
-								   tr( "You configured computer hostnames to be stored "
-									   "as simple hostnames without a domain name but "
-									   "entered a hostname with a domain name part." ) );
+			QMessageBox msgBox( QMessageBox::Critical, tr( "Invalid hostname" ),
+								tr( "You configured computer hostnames to be stored "
+									"as simple hostnames without a domain name but "
+									"entered a hostname with a domain name part." ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 			return;
 		}
 
@@ -400,8 +523,31 @@ void LdapConfigurationPage::testComputerHostNameAttribute()
 
 void LdapConfigurationPage::testComputerMacAddressAttribute()
 {
-	QString computerDn = QInputDialog::getText( this, tr( "Enter computer DN" ),
-												tr( "Please enter the DN of a computer whose MAC address to query:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter computer DN" ) );
+	dialog.setLabelText( tr( "Please enter the DN of a computer whose MAC address to query:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const QString computerDn = dialog.textValue();
 	if( computerDn.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing computer MAC address attribute";
@@ -421,8 +567,31 @@ void LdapConfigurationPage::testComputerMacAddressAttribute()
 
 void LdapConfigurationPage::testComputerLocationAttribute()
 {
-	const auto locationName = QInputDialog::getText( this, tr( "Enter computer location name" ),
-													 tr( "Please enter the name of a computer location (wildcards allowed):") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter computer location name" ) );
+	dialog.setLabelText( tr( "Please enter the name of a computer location (wildcards allowed):" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const auto locationName = dialog.textValue();
 	if( locationName.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing computer location attribute for" << locationName;
@@ -438,8 +607,31 @@ void LdapConfigurationPage::testComputerLocationAttribute()
 
 void LdapConfigurationPage::testLocationNameAttribute()
 {
-	const auto locationName = QInputDialog::getText( this, tr( "Enter location name" ),
-													 tr( "Please enter the name of a computer location (wildcards allowed):") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter location name" ) );
+	dialog.setLabelText( tr( "Please enter the name of a computer location (wildcards allowed):" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const auto locationName = dialog.textValue();
 	if( locationName.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing location name attribute for" << locationName;
@@ -515,8 +707,31 @@ void LdapConfigurationPage::testComputerContainersFilter()
 
 void LdapConfigurationPage::testGroupsOfUser()
 {
-	QString username = QInputDialog::getText( this, tr( "Enter username" ),
-											  tr( "Please enter a user login name whose group memberships to query:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter username" ) );
+	dialog.setLabelText( tr( "Please enter a user login name whose group memberships to query:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const QString username = dialog.textValue();
 	if( username.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing groups of user" << username;
@@ -533,9 +748,13 @@ void LdapConfigurationPage::testGroupsOfUser()
 		}
 		else
 		{
-			QMessageBox::warning( this, tr( "User not found" ),
-								  tr( "Could not find a user with the name \"%1\". Please check the username "
-									  "or the user tree parameter.").arg( username ) );
+			QMessageBox msgBox( QMessageBox::Warning, tr( "User not found" ),
+								tr( "Could not find a user with the name \"%1\". Please check the username "
+									"or the user tree parameter.").arg( username ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 	}
 }
@@ -544,8 +763,31 @@ void LdapConfigurationPage::testGroupsOfUser()
 
 void LdapConfigurationPage::testGroupsOfComputer()
 {
-	QString computerHostName = QInputDialog::getText( this, tr( "Enter hostname" ),
-													  tr( "Please enter a computer hostname whose group memberships to query:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter hostname" ) );
+	dialog.setLabelText( tr( "Please enter a computer hostname whose group memberships to query:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const QString computerHostName = dialog.textValue();
 	if( computerHostName.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing groups of computer for" << computerHostName;
@@ -562,10 +804,14 @@ void LdapConfigurationPage::testGroupsOfComputer()
 		}
 		else
 		{
-			QMessageBox::warning( this, tr( "Computer not found" ),
-								  tr( "Could not find a computer with the hostname \"%1\". "
-									  "Please check the hostname or the computer tree "
-									  "parameter.").arg( computerHostName ) );
+			QMessageBox msgBox( QMessageBox::Warning, tr( "Computer not found" ),
+								tr( "Could not find a computer with the hostname \"%1\". "
+									"Please check the hostname or the computer tree "
+									"parameter.").arg( computerHostName ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 	}
 }
@@ -574,8 +820,31 @@ void LdapConfigurationPage::testGroupsOfComputer()
 
 void LdapConfigurationPage::testComputerObjectByIpAddress()
 {
-	QString computerIpAddress = QInputDialog::getText( this, tr( "Enter computer IP address" ),
-													   tr( "Please enter a computer IP address which to resolve to an computer object:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter computer IP address" ) );
+	dialog.setLabelText( tr( "Please enter a computer IP address which to resolve to an computer object:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const QString computerIpAddress = dialog.textValue();
 	if( computerIpAddress.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing computer object resolve by IP address" << computerIpAddress;
@@ -588,9 +857,13 @@ void LdapConfigurationPage::testComputerObjectByIpAddress()
 
 		if( computerName.isEmpty() )
 		{
-			QMessageBox::critical( this, tr( "Hostname lookup failed" ),
-								   tr( "Could not lookup hostname for IP address %1. "
-									   "Please check your DNS server settings." ).arg( computerIpAddress ) );
+			QMessageBox msgBox( QMessageBox::Critical, tr( "Hostname lookup failed" ),
+								tr( "Could not lookup hostname for IP address %1. "
+									"Please check your DNS server settings." ).arg( computerIpAddress ),
+								QMessageBox::Ok, this );
+			msgBox.setIcon( QMessageBox::NoIcon );
+			msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+			msgBox.exec();
 		}
 		else
 		{
@@ -605,8 +878,31 @@ void LdapConfigurationPage::testComputerObjectByIpAddress()
 
 void LdapConfigurationPage::testLocationEntries()
 {
-	const auto locationName = QInputDialog::getText( this, tr( "Enter location name" ),
-													 tr( "Please enter the name of a location whose entries to query:") );
+	QInputDialog dialog( this );
+	dialog.setWindowTitle( tr( "Enter location name" ) );
+	dialog.setLabelText( tr( "Please enter the name of a location whose entries to query:" ) );
+	const auto removeButtonIcons = [&dialog]() {
+		if( auto buttonBox = dialog.findChild<QDialogButtonBox *>() )
+		{
+			for( auto button : buttonBox->buttons() )
+			{
+				button->setIcon( QIcon() );
+			}
+		}
+	};
+	removeButtonIcons();
+	QTimer::singleShot( 0, &dialog, removeButtonIcons );
+	for( auto button : dialog.findChildren<QPushButton *>() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	if( dialog.exec() != QDialog::Accepted )
+	{
+		return;
+	}
+
+	const auto locationName = dialog.textValue();
 	if( locationName.isEmpty() == false )
 	{
 		vDebug() << "[TEST][LDAP] Testing location entries for" << locationName;
@@ -652,26 +948,38 @@ bool LdapConfigurationPage::testBind( bool quiet )
 
 	if( ldapClient.isConnected() == false )
 	{
-		QMessageBox::critical( this, tr( "LDAP connection failed"),
-							   tr( "Could not connect to the LDAP server. "
-								   "Please check the server parameters.\n\n"
-								   "%1" ).arg( ldapClient.errorDescription() ) );
+		QMessageBox msgBox( QMessageBox::Critical, tr( "LDAP connection failed" ),
+							tr( "Could not connect to the LDAP server. "
+								"Please check the server parameters.\n\n"
+								"%1" ).arg( ldapClient.errorDescription() ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 	else if( ldapClient.isBound() == false )
 	{
-		QMessageBox::critical( this, tr( "LDAP bind failed"),
-							   tr( "Could not bind to the LDAP server. "
-								   "Please check the server parameters "
-								   "and bind credentials.\n\n"
-								   "%1" ).arg( ldapClient.errorDescription() ) );
+		QMessageBox msgBox( QMessageBox::Critical, tr( "LDAP bind failed" ),
+							tr( "Could not bind to the LDAP server. "
+								"Please check the server parameters "
+								"and bind credentials.\n\n"
+								"%1" ).arg( ldapClient.errorDescription() ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 	else if( quiet == false )
 	{
-		QMessageBox::information( this, tr( "LDAP bind successful"),
-								  tr( "Successfully connected to the LDAP "
-									  "server and performed an LDAP bind. "
-									  "The basic LDAP settings are "
-									  "configured correctly." ) );
+		QMessageBox msgBox( QMessageBox::Information, tr( "LDAP bind successful" ),
+							tr( "Successfully connected to the LDAP "
+								"server and performed an LDAP bind. "
+								"The basic LDAP settings are "
+								"configured correctly." ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 
 	return ldapClient.isConnected() && ldapClient.isBound();
@@ -685,16 +993,24 @@ void LdapConfigurationPage::reportLdapTreeQueryResult( const QString& name, int 
 {
 	if( count <= 0 )
 	{
-		QMessageBox::critical( this, tr( "LDAP %1 test failed").arg( name ),
-							   tr( "Could not query any entries in configured %1. "
-								   "Please check the parameter \"%2\".\n\n"
-								   "%3" ).arg( name, parameter, errorDescription ) );
+		QMessageBox msgBox( QMessageBox::Critical, tr( "LDAP %1 test failed").arg( name ),
+							tr( "Could not query any entries in configured %1. "
+								"Please check the parameter \"%2\".\n\n"
+								"%3" ).arg( name, parameter, errorDescription ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 	else
 	{
-		QMessageBox::information( this, tr( "LDAP %1 test successful" ).arg( name ),
-								  tr( "The %1 has been queried successfully and "
-									  "%2 entries were found." ).arg( name ).arg( count ) );
+		QMessageBox msgBox( QMessageBox::Information, tr( "LDAP %1 test successful" ).arg( name ),
+							tr( "The %1 has been queried successfully and "
+								"%2 entries were found." ).arg( name ).arg( count ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 }
 
@@ -715,18 +1031,26 @@ void LdapConfigurationPage::reportLdapObjectQueryResults( const QString &objects
 			parameters += QStringLiteral("\"%1\"").arg( parameterName );
 		}
 
-		QMessageBox::critical( this, tr( "LDAP test failed"),
-							   tr( "Could not query any %1. "
-								   "Please check the parameter(s) %2 and enter the name of an existing object.\n\n"
-								   "%3" ).arg( objectsName, parameters.join( QStringLiteral(" %1 ").arg( tr("and") ) ),
-											   directory.client().errorDescription() ) );
+		QMessageBox msgBox( QMessageBox::Critical, tr( "LDAP test failed" ),
+							tr( "Could not query any %1. "
+								"Please check the parameter(s) %2 and enter the name of an existing object.\n\n"
+								"%3" ).arg( objectsName, parameters.join( QStringLiteral(" %1 ").arg( tr("and") ) ),
+											directory.client().errorDescription() ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 	else
 	{
-		QMessageBox::information( this, tr( "LDAP test successful" ),
-								  tr( "%1 %2 have been queried successfully:\n\n%3" ).
-								  arg( results.count() ).
-								  arg( objectsName, formatResultsString( results ) ) );
+		QMessageBox msgBox( QMessageBox::Information, tr( "LDAP test successful" ),
+							tr( "%1 %2 have been queried successfully:\n\n%3" ).
+							arg( results.count() ).
+							arg( objectsName, formatResultsString( results ) ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 }
 
@@ -738,16 +1062,24 @@ void LdapConfigurationPage::reportLdapFilterTestResult( const QString &filterObj
 {
 	if( count <= 0 )
 	{
-		QMessageBox::critical( this, tr( "LDAP filter test failed"),
-							   tr( "Could not query any %1 using the configured filter. "
-								   "Please check the LDAP filter for %1.\n\n"
-								   "%2" ).arg( filterObjects, errorDescription ) );
+		QMessageBox msgBox( QMessageBox::Information, tr( "LDAP filter test failed" ),
+							tr( "Could not query any %1 using the configured filter. "
+								"Please check the LDAP filter for %1.\n\n"
+								"%2" ).arg( filterObjects, errorDescription ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 	else
 	{
-		QMessageBox::information( this, tr( "LDAP filter test successful" ),
-								  tr( "%1 %2 have been queried successfully using the configured filter." ).
-								  arg( count ).arg( filterObjects ) );
+		QMessageBox msgBox( QMessageBox::Information, tr( "LDAP filter test successful" ),
+							tr( "%1 %2 have been queried successfully using the configured filter." ).
+							arg( count ).arg( filterObjects ),
+							QMessageBox::Ok, this );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		msgBox.exec();
 	}
 }
 

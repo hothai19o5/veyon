@@ -94,5 +94,8 @@ void AccessControlRulesTestDialog::accept()
 		break;
 	}
 
-	QMessageBox::information( this, tr( "Test result" ), resultText );
+	QMessageBox msgBox( QMessageBox::Information, tr( "Test result" ), resultText, QMessageBox::Ok, this );
+	msgBox.setIcon( QMessageBox::NoIcon );
+	msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+	msgBox.exec();
 }

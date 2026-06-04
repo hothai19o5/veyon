@@ -6,8 +6,8 @@
    <string>File transfer</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="filetransfer.qrc">
-    <normaloff>:/filetransfer/distribute-files-dark.png</normaloff>:/filetransfer/distribute-files-dark.png</iconset>
+   <iconset resource="../../configurator/resources/configurator.qrc">
+    <normaloff>:/configurator/style/icons/fa_solid_file_export.svg</normaloff>:/configurator/style/icons/fa_solid_file_export.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="topMargin">
@@ -50,7 +50,7 @@
        <widget class="QToolButton" name="browseDestinationDirectory">
         <property name="icon">
          <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+           <normaloff>:/configurator/style/icons/folder_open.svg</normaloff>:/configurator/style/icons/folder_open.svg</iconset>
         </property>
        </widget>
       </item>
@@ -61,7 +61,7 @@
        <widget class="QToolButton" name="browseDefaultSourceDirectory">
         <property name="icon">
          <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+           <normaloff>:/configurator/style/icons/folder_open.svg</normaloff>:/configurator/style/icons/folder_open.svg</iconset>
         </property>
        </widget>
       </item>
@@ -112,7 +112,7 @@
        <widget class="QToolButton" name="browseCollectedFilesDestinationDirectory">
         <property name="icon">
          <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+           <normaloff>:/configurator/style/icons/folder_open.svg</normaloff>:/configurator/style/icons/folder_open.svg</iconset>
         </property>
        </widget>
       </item>
@@ -120,7 +120,7 @@
        <widget class="QToolButton" name="browseFilesToCollectSourceDirectory">
         <property name="icon">
          <iconset resource="../../core/resources/core.qrc">
-          <normaloff>:/core/document-open.png</normaloff>:/core/document-open.png</iconset>
+           <normaloff>:/configurator/style/icons/folder_open.svg</normaloff>:/configurator/style/icons/folder_open.svg</iconset>
         </property>
        </widget>
       </item>
@@ -396,6 +396,7 @@
   <tabstop>collectedFilesGroupingAttribute3</tabstop>
  </tabstops>
  <resources>
+  <include location="../../configurator/resources/configurator.qrc"/>
   <include location="../../core/resources/core.qrc"/>
   <include location="filetransfer.qrc"/>
  </resources>

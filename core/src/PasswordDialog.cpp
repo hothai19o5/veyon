@@ -89,9 +89,14 @@ void PasswordDialog::accept()
 {
 	if( VeyonCore::platform().userFunctions().authenticate( username(), password() ) == false )
 	{
-		QMessageBox::critical( window(),
-							   tr( "Authentication error" ),
-							   tr( "Logon failed with given username and password. Please try again!" ) );
+		QMessageBox messageBox( QMessageBox::Critical,
+							 tr( "Authentication error" ),
+							 tr( "Logon failed with given username and password. Please try again!" ),
+							 QMessageBox::Ok,
+							 window() );
+		messageBox.setIcon( QMessageBox::NoIcon );
+		messageBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+		messageBox.exec();
 	}
 	else
 	{

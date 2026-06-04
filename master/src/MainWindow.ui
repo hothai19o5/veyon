@@ -110,7 +110,7 @@
         </rect>
        </property>
        <property name="toolTip">
-        <string>About Veyon</string>
+        <string>About EduMonitor</string>
        </property>
        <property name="text">
         <string>About</string>

@@ -27,6 +27,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QPushButton>
 
 #include "BuiltinFeatures.h"
 #include "Filesystem.h"
@@ -408,6 +409,8 @@ FileTransferPlugin::LockedFileAction FileTransferPlugin::queryLockedFileAction(c
 									   + QLatin1Char(' ') +
 									   tr("Please save your changes and close the program so that the transfer can be completed.")
 									   , QMessageBox::Retry | QMessageBox::Ignore);
+	lockedFileNotification.button( QMessageBox::Retry )->setIcon( QIcon() );
+	lockedFileNotification.button( QMessageBox::Ignore )->setIcon( QIcon() );
 
 	VeyonCore::platform().coreFunctions().raiseWindow(&lockedFileNotification, true);
 
@@ -420,6 +423,8 @@ FileTransferPlugin::LockedFileAction FileTransferPlugin::queryLockedFileAction(c
 							  tr("File transfer"),
 							  tr("Are you sure you want to skip transferring the file %1?").
 							  arg(fileName, QString{}), QMessageBox::Yes | QMessageBox::No);
+	confirmDialog.button( QMessageBox::Yes )->setIcon( QIcon() );
+	confirmDialog.button( QMessageBox::No )->setIcon( QIcon() );
 
 	VeyonCore::platform().coreFunctions().raiseWindow(&confirmDialog, true);
 
