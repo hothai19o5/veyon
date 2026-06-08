@@ -51,7 +51,7 @@ bool ConfigurationManager::clearConfiguration()
 
 bool ConfigurationManager::applyConfiguration()
 {
-	// update Veyon Service configuration
+	// update EduMonitor Service configuration
 	if( VeyonServiceControl().setAutostart( m_configuration.autostartService() ) == false )
 	{
 		m_errorString = tr("Could not modify the autostart property for the EduMonitor Service.");
@@ -61,18 +61,18 @@ bool ConfigurationManager::applyConfiguration()
 	auto& network = VeyonCore::platform().networkFunctions();
 
 	if( network.configureFirewallException( VeyonCore::filesystem().serverFilePath(),
-											QStringLiteral("Veyon Server"),
+											QStringLiteral("EduMonitor Server"),
 											m_configuration.isFirewallExceptionEnabled() ) == false )
 	{
-		m_errorString = tr("Could not configure the firewall configuration for the Veyon Server.");
+		m_errorString = tr("Could not configure the firewall configuration for the EduMonitor Server.");
 		return false;
 	}
 
 	if( network.configureFirewallException( VeyonCore::filesystem().workerFilePath(),
-											QStringLiteral("Veyon Worker"),
+											QStringLiteral("EduMonitor Worker"),
 											m_configuration.isFirewallExceptionEnabled() ) == false )
 	{
-		m_errorString = tr("Could not configure the firewall configuration for the Veyon Worker.");
+		m_errorString = tr("Could not configure the firewall configuration for the EduMonitor Worker.");
 		return false;
 	}
 

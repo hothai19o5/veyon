@@ -29,6 +29,7 @@
 
 #include "ComputerMonitoringModel.h"
 #include "ComputerMonitoringWidget.h"
+#include "IconUtils.h"
 #include "SpotlightModel.h"
 #include "SpotlightPanel.h"
 #include "UserConfig.h"
@@ -52,15 +53,12 @@ SpotlightPanel::SpotlightPanel( UserConfig& config, ComputerMonitoringWidget* co
 	ui->monitoringWidget->setIgnoreWheelEvent( true );
 	ui->monitoringWidget->setModel( m_model );
 
-	if (VeyonCore::useDarkMode())
-	{
-		QIcon realtimeViewIcon;
-		realtimeViewIcon.addPixmap(QPixmap(QStringLiteral(":/master/fa/arrows-rotate.svg")), QIcon::Mode::Normal, QIcon::State::On);
-		realtimeViewIcon.addPixmap(QPixmap(QStringLiteral(":/master/fa/arrows-rotate.svg")), QIcon::Mode::Normal, QIcon::State::Off);
-		ui->realtimeViewButton->setIcon(realtimeViewIcon);
-		ui->addButton->setIcon(QIcon(QStringLiteral(":/master/fa/arrow-up.svg")));
-		ui->removeButton->setIcon(QIcon(QStringLiteral(":/master/fa/arrow-down.svg")));
-	}
+	QIcon realtimeViewIcon;
+	realtimeViewIcon.addPixmap( IconUtils::pixmapFromUrl( QStringLiteral( ":/master/fa/arrows-rotate.svg" ) ), QIcon::Mode::Normal, QIcon::State::On );
+	realtimeViewIcon.addPixmap( IconUtils::pixmapFromUrl( QStringLiteral( ":/master/fa/arrows-rotate.svg" ) ), QIcon::Mode::Normal, QIcon::State::Off );
+	ui->realtimeViewButton->setIcon( realtimeViewIcon );
+	ui->addButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/arrow-up.svg" ) ) );
+	ui->removeButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/arrow-down.svg" ) ) );
 
 	connect( ui->addButton, &QAbstractButton::clicked, this, &SpotlightPanel::add );
 	connect( ui->removeButton, &QAbstractButton::clicked, this, &SpotlightPanel::remove );

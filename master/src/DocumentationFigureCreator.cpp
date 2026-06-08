@@ -40,6 +40,7 @@
 #include "ComputerMonitoringWidget.h"
 #include "DocumentationFigureCreator.h"
 #include "FeatureManager.h"
+#include "IconUtils.h"
 #include "LocationDialog.h"
 #include "MainToolBar.h"
 #include "MainWindow.h"
@@ -346,7 +347,7 @@ void DocumentationFigureCreator::createWebsiteMenuFigure()
 	QMenu menu;
 	menu.addAction( QStringLiteral("Intranet") );
 	menu.addAction( QStringLiteral("Wikipedia") );
-	menu.addAction( QIcon( QStringLiteral(":/master/fa/pen-to-square.svg") ), tr("Custom website") );
+	menu.addAction( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/pen-to-square.svg" ) ), tr("Custom website") );
 
 	openWebsiteButton->setMenu( &menu );
 
@@ -378,7 +379,7 @@ void DocumentationFigureCreator::createAppMenuFigure()
 	menu.addAction( tr("Open file manager") );
 	menu.addAction( tr("Start learning tool") );
 	menu.addAction( tr("Play tutorial video") );
-	menu.addAction( QIcon( QStringLiteral(":/master/fa/pen-to-square.svg") ), tr("Custom application") );
+	menu.addAction( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/pen-to-square.svg" ) ), tr("Custom application") );
 
 	runProgramButton->setMenu( &menu );
 

@@ -22,9 +22,17 @@
  *
  */
 
+#include <QAbstractButton>
+#include <QComboBox>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QIcon>
 #include <QInputDialog>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
+#include <QVBoxLayout>
 
 #include "AuthKeysConfigurationPage.h"
 #include "AuthKeysManager.h"
@@ -34,6 +42,83 @@
 #include "Configuration/UiMapping.h"
 
 #include "ui_AuthKeysConfigurationPage.h"
+
+
+namespace
+{
+static void clearDialogButtonIcons( QDialog* dialog )
+{
+	if( auto buttonBox = dialog->findChild<QDialogButtonBox *>() )
+	{
+		for( auto button : buttonBox->buttons() )
+		{
+			button->setIcon( QIcon() );
+		}
+	}
+}
+
+
+QString getTextWithoutButtonIcons( QWidget* parent, const QString& title, const QString& label )
+{
+	QInputDialog dialog( parent );
+	dialog.setInputMode( QInputDialog::TextInput );
+	dialog.setWindowTitle( title );
+	dialog.setLabelText( label );
+	dialog.setTextEchoMode( QLineEdit::Normal );
+
+	clearDialogButtonIcons( &dialog );
+
+	if( dialog.exec() == QDialog::Accepted )
+	{
+		return dialog.textValue();
+	}
+
+	return {};
+}
+
+
+QString getItemWithoutButtonIcons( QWidget* parent, const QString& title, const QString& label,
+								   const QStringList& items, int current, bool editable, bool* ok )
+{
+	QDialog dialog( parent );
+	dialog.setWindowTitle( title );
+
+	auto* mainLayout = new QVBoxLayout( &dialog );
+	auto* labelWidget = new QLabel( label, &dialog );
+	auto* comboBox = new QComboBox( &dialog );
+	comboBox->setEditable( editable );
+	comboBox->addItems( items );
+	comboBox->setCurrentIndex( current >= 0 ? current : 0 );
+
+	auto* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog );
+	for( auto button : buttonBox->buttons() )
+	{
+		button->setIcon( QIcon() );
+	}
+
+	mainLayout->addWidget( labelWidget );
+	mainLayout->addWidget( comboBox );
+	mainLayout->addWidget( buttonBox );
+
+	QObject::connect( buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
+	QObject::connect( buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject );
+
+	if( dialog.exec() == QDialog::Accepted )
+	{
+		if( ok )
+		{
+			*ok = true;
+		}
+		return comboBox->currentText();
+	}
+
+	if( ok )
+	{
+		*ok = false;
+	}
+	return {};
+}
+}
 
 
 AuthKeysConfigurationPage::AuthKeysConfigurationPage() :
@@ -108,8 +193,8 @@ void AuthKeysConfigurationPage::openPrivateKeyBaseDir()
 
 void AuthKeysConfigurationPage::createKeyPair()
 {
-	const auto keyName = QInputDialog::getText( this, tr( "Authentication key name" ),
-												tr( "Please enter the name of the user group or role for which to create an authentication key pair:") );
+	const auto keyName = getTextWithoutButtonIcons( this, tr( "Authentication key name" ),
+											  tr( "Please enter the name of the user group or role for which to create an authentication key pair:") );
 	if( keyName.isEmpty() == false )
 	{
 		AuthKeysManager authKeysManager;
@@ -134,8 +219,16 @@ void AuthKeysConfigurationPage::deleteKey()
 		const auto name = nameAndType[0];
 		const auto type = nameAndType[1];
 
-		if( QMessageBox::question( this, title, tr( "Do you really want to delete authentication key \"%1/%2\"?" ).arg( name, type ) ) ==
-				QMessageBox::Yes )
+		QMessageBox msgBox( this );
+		msgBox.setWindowTitle( title );
+		msgBox.setText( tr( "Do you really want to delete authentication key \"%1/%2\"?" ).arg( name, type ) );
+		msgBox.setIcon( QMessageBox::NoIcon );
+		msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+		msgBox.setDefaultButton( QMessageBox::No );
+		msgBox.button( QMessageBox::Yes )->setIcon( QIcon() );
+		msgBox.button( QMessageBox::No )->setIcon( QIcon() );
+
+		if( msgBox.exec() == QMessageBox::Yes )
 		{
 			AuthKeysManager authKeysManager;
 			const auto success = authKeysManager.deleteKey( name, type );
@@ -157,7 +250,11 @@ void AuthKeysConfigurationPage::importKey()
 {
 	const auto title = ui->importKey->text();
 
-	const auto inputFile = QFileDialog::getOpenFileName( this, title, {}, m_keyFilesFilter );
+	QFileDialog fileDialog( this, title, {}, m_keyFilesFilter );
+	fileDialog.setAcceptMode( QFileDialog::AcceptOpen );
+	fileDialog.setOption( QFileDialog::DontUseNativeDialog );
+	clearDialogButtonIcons( &fileDialog );
+	const auto inputFile = fileDialog.exec() == QDialog::Accepted ? fileDialog.selectedFiles().value( 0 ) : QString();
 	if( inputFile.isEmpty() )
 	{
 		return;
@@ -166,9 +263,8 @@ void AuthKeysConfigurationPage::importKey()
 	auto keyName = AuthKeysManager::keyNameFromExportedKeyFile(inputFile);
 	if (keyName.isEmpty())
 	{
-		keyName = QInputDialog::getText(this, tr("Authentication key name"),
-										 tr("Please enter the name of the user group or role for which to import the authentication key.\n\nMake sure that the names of the keys belonging to each other are identical on all computers."),
-										QLineEdit::Normal);
+		keyName = getTextWithoutButtonIcons( this, tr("Authentication key name"),
+												  tr("Please enter the name of the user group or role for which to import the authentication key.\n\nMake sure that the names of the keys belonging to each other are identical on all computers.") );
 	}
 
 	if( keyName.isEmpty() )
@@ -198,9 +294,13 @@ void AuthKeysConfigurationPage::exportKey()
 		const auto name = nameAndType[0];
 		const auto type = nameAndType[1];
 
-		const auto outputFile = QFileDialog::getSaveFileName( this, title, QDir::homePath() + QDir::separator() +
-															  AuthKeysManager::exportedKeyFileName( name, type ),
-															  m_keyFilesFilter );
+		QFileDialog fileDialog( this, title, QDir::homePath() + QDir::separator() +
+								 AuthKeysManager::exportedKeyFileName( name, type ),
+								 m_keyFilesFilter );
+		fileDialog.setAcceptMode( QFileDialog::AcceptSave );
+		fileDialog.setOption( QFileDialog::DontUseNativeDialog );
+		clearDialogButtonIcons( &fileDialog );
+		const auto outputFile = fileDialog.exec() == QDialog::Accepted ? fileDialog.selectedFiles().value( 0 ) : QString();
 		if( outputFile.isEmpty() == false )
 		{
 			AuthKeysManager authKeysManager;
@@ -229,9 +329,9 @@ void AuthKeysConfigurationPage::setAccessGroup()
 		const auto currentGroup = AuthKeysManager().accessGroup( key );
 
 		bool ok = false;
-		const auto selectedGroup = QInputDialog::getItem( this, title,
-														  tr( "Please select a user group which to grant access to key \"%1\":" ).arg( key ),
-														  userGroups, userGroups.indexOf( currentGroup ), true, &ok );
+		const auto selectedGroup = getItemWithoutButtonIcons( this, title,
+															  tr( "Please select a user group which to grant access to key \"%1\":" ).arg( key ),
+															  userGroups, userGroups.indexOf( currentGroup ), true, &ok );
 
 		if( ok && selectedGroup.isEmpty() == false )
 		{
@@ -279,12 +379,12 @@ void AuthKeysConfigurationPage::showResultMessage( bool success, const QString& 
 		return;
 	}
 
-	if( success )
-	{
-		QMessageBox::information( this, title, message );
-	}
-	else
-	{
-		QMessageBox::critical( this, title, message );
-	}
+	QMessageBox msgBox( this );
+	msgBox.setWindowTitle( title );
+	msgBox.setText( message );
+	msgBox.setIcon( QMessageBox::NoIcon );
+	msgBox.setStandardButtons( QMessageBox::Ok );
+	msgBox.setDefaultButton( QMessageBox::Ok );
+	msgBox.button( QMessageBox::Ok )->setIcon( QIcon() );
+	msgBox.exec();
 }

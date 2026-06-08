@@ -28,6 +28,7 @@
 #include "ComputerControlListModel.h"
 #include "ComputerItemDelegate.h"
 #include "FeatureManager.h"
+#include "IconUtils.h"
 
 
 ComputerItemDelegate::ComputerItemDelegate(QObject* parent) :
@@ -159,7 +160,7 @@ void ComputerItemDelegate::initFeaturePixmaps()
 	{
 		if (feature.testFlag(Feature::Flag::Master) && !feature.iconUrl().isEmpty())
 		{
-			m_featurePixmaps[feature.uid()] = QIcon(feature.iconUrl()).pixmap(QSize(OverlayIconSize, OverlayIconSize));
+			m_featurePixmaps[feature.uid()] = IconUtils::iconFromUrl( feature.iconUrl() ).pixmap( QSize( OverlayIconSize, OverlayIconSize ) );
 		}
 	}
 }

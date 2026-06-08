@@ -52,7 +52,7 @@ LogoffEventFilter::LogoffEventFilter() :
 
 
 
-bool LogoffEventFilter::nativeEventFilter(const QByteArray& eventType, void* message, qintptr* result)
+bool LogoffEventFilter::nativeEventFilter(const QByteArray& eventType, void* message, NativeEventResult* result)
 {
 	Q_UNUSED(eventType);
 	Q_UNUSED(result);

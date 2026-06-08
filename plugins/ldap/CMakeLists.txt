@@ -1,5 +1,9 @@
 include(BuildVeyonPlugin)
 
+if(NOT WITH_LDAP)
+	return()
+endif()
+
 add_subdirectory(kldap)
 
 build_veyon_plugin(ldap

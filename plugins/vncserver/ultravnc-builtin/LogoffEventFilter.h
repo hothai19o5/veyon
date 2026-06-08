@@ -28,13 +28,19 @@
 
 #include <QAbstractNativeEventFilter>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+using NativeEventResult = long;
+#else
+using NativeEventResult = qintptr;
+#endif
+
 // event filter which makes ICA recognize logoff events etc.
 class LogoffEventFilter : public QAbstractNativeEventFilter
 {
 public:
 	LogoffEventFilter();
 
-	bool nativeEventFilter(const QByteArray& eventType, void* message, qintptr* result) override;
+	bool nativeEventFilter(const QByteArray& eventType, void* message, NativeEventResult* result) override;
 
 private:
 	HANDLE m_shutdownEventHandle;

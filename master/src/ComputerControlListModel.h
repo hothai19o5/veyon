@@ -26,7 +26,7 @@
 
 #include <QAbstractListModel>
 #include <QImage>
-#include <QIcon>
+#include <QString>
 
 #include "ComputerListModel.h"
 #include "ComputerControlInterface.h"
@@ -82,7 +82,7 @@ private:
 
 	double averageAspectRatio() const;
 
-	QImage scaleAndAlignIcon( const QIcon& icon, QSize size ) const;
+	QImage scaleAndAlignIcon( const QString& iconUrl, QSize size ) const;
 	QImage computerDecorationRole( const ComputerControlInterface::Pointer& controlInterface ) const;
 	QString computerToolTipRole( const ComputerControlInterface::Pointer& controlInterface ) const;
 	QString computerDisplayRole( const ComputerControlInterface::Pointer& controlInterface ) const;
@@ -93,11 +93,11 @@ private:
 
 	VeyonMaster* m_master;
 
-	QIcon m_iconHostOffline;
-	QIcon m_iconHostOnline;
-	QIcon m_iconHostNameResolutionFailed;
-	QIcon m_iconHostAccessDenied;
-	QIcon m_iconHostServiceError;
+	QString m_iconHostOffline;
+	QString m_iconHostOnline;
+	QString m_iconHostNameResolutionFailed;
+	QString m_iconHostAccessDenied;
+	QString m_iconHostServiceError;
 
 	QSize m_computerScreenSize{};
 

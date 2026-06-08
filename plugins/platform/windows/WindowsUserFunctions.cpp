@@ -25,6 +25,8 @@
 #include <dsgetdc.h>
 #include <wtsapi32.h>
 
+#include <optional>
+
 #include <QBuffer>
 
 #include "DesktopInputController.h"

@@ -1,7 +1,9 @@
 include(BuildVeyonPlugin)
 
 set(QT_NO_PRIVATE_MODULE_WARNING ON)
-find_package(Qt6 REQUIRED COMPONENTS GuiPrivate)
+if(WITH_QT6)
+	find_package(Qt6 REQUIRED COMPONENTS GuiPrivate)
+endif()
 
 build_veyon_plugin(windows-platform
 	NAME WindowsPlatform
@@ -66,7 +68,12 @@ target_include_directories(windows-platform PRIVATE
 	)
 
 target_link_libraries(windows-platform PRIVATE -lws2_32 -lwtsapi32 -lnetapi32 -luserenv -limm32 -lntdll -linterception -liphlpapi -lsetupapi -lsecur32)
-target_link_libraries(windows-platform PRIVATE Qt6::GuiPrivate)
+if(WITH_QT6)
+	target_link_libraries(windows-platform PRIVATE Qt6::GuiPrivate)
+else()
+	target_include_directories(windows-platform PRIVATE
+		${MINGW_PREFIX}/qt5/include/QtGui/${Qt5Gui_VERSION}/QtGui)
+endif()
 target_compile_definitions(windows-platform PRIVATE ULTRAVNC_VEYON_SUPPORT)
 target_compile_options(windows-platform PRIVATE "-Wno-unknown-pragmas")
 set_source_files_properties(WindowsNetworkFunctions.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION TRUE SKIP_PRECOMPILE_HEADERS TRUE)

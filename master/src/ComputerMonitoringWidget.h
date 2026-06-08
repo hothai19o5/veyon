@@ -67,9 +67,8 @@ private:
 
 	void handleSizeHintChanges(const QModelIndex& topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
 
-	void populateFeatureMenu( const ComputerControlInterfaceList& computerControlInterfaces );
-	void addFeatureToMenu( const Feature& feature, const QString& label );
-	void addSubFeaturesToMenu( const Feature& parentFeature, const FeatureList& subFeatures, const QString& label );
+	void populateFeatureMenu( QWidget* popup, const ComputerControlInterfaceList& computerControlInterfaces );
+	void closeToolTipPopup();
 
 	void runDoubleClickFeature( const QModelIndex& index );
 	void runMousePressAndHoldFeature( );
@@ -78,12 +77,15 @@ private:
 	void mousePressEvent( QMouseEvent* event ) override;
 	void mouseReleaseEvent( QMouseEvent* event ) override;
 	void mouseMoveEvent( QMouseEvent* event ) override;
+	bool viewportEvent( QEvent* event ) override;
 
 	void resizeEvent( QResizeEvent* event ) override;
 	void showEvent( QShowEvent* event ) override;
 	void wheelEvent( QWheelEvent* event ) override;
 
-	QMenu* m_featureMenu{};
+	QWidget* m_featurePopup{};
+	QWidget* m_toolTipPopup{};
+	QModelIndex m_toolTipIndex;
 	bool m_ignoreMousePressAndHoldEvent{false};
 	bool m_ignoreWheelEvent{false};
 	bool m_ignoreResizeEvent{false};

@@ -22,7 +22,10 @@
  *
  */
 
+#include <QHeaderView>
 #include <QJsonObject>
+#include <QLineEdit>
+#include <QStyledItemDelegate>
 
 #include "BuiltinDirectoryConfiguration.h"
 #include "BuiltinDirectoryConfigurationPage.h"
@@ -32,12 +35,52 @@
 
 #include "ui_BuiltinDirectoryConfigurationPage.h"
 
+
+namespace
+{
+class TableLineEditDelegate : public QStyledItemDelegate
+{
+public:
+	using QStyledItemDelegate::QStyledItemDelegate;
+
+	QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const override
+	{
+		auto editor = QStyledItemDelegate::createEditor( parent, option, index );
+
+		if( auto lineEdit = qobject_cast<QLineEdit *>( editor ) )
+		{
+			lineEdit->setMinimumHeight( option.rect.height() - 4 );
+		}
+
+		return editor;
+	}
+
+	void updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const override
+	{
+		Q_UNUSED(index)
+
+		const auto editorGeometry = option.rect.adjusted( 2, 2, -2, -2 );
+		editor->setMinimumHeight( editorGeometry.height() );
+		editor->setMaximumHeight( editorGeometry.height() );
+		editor->setGeometry( editorGeometry );
+	}
+};
+}
+
 BuiltinDirectoryConfigurationPage::BuiltinDirectoryConfigurationPage( BuiltinDirectoryConfiguration& configuration, QWidget* parent ) :
 	ConfigurationPage( parent ),
 	ui(new Ui::BuiltinDirectoryConfigurationPage),
 	m_configuration( configuration )
 {
 	ui->setupUi(this);
+
+	const auto tableRowHeight = fontMetrics().height() + 20;
+	for( auto tableWidget : { ui->locationTableWidget, ui->computerTableWidget } )
+	{
+		tableWidget->verticalHeader()->setMinimumSectionSize( tableRowHeight );
+		tableWidget->verticalHeader()->setDefaultSectionSize( tableRowHeight );
+		tableWidget->setItemDelegate( new TableLineEditDelegate( tableWidget ) );
+	}
 
 	populateLocations();
 

@@ -44,6 +44,7 @@
 #include "ComputerSelectPanel.h"
 #include "ScreenshotManagementPanel.h"
 #include "FeatureManager.h"
+#include "IconUtils.h"
 #include "MonitoringMode.h"
 #include "NetworkObjectDirectory.h"
 #include "NetworkObjectDirectoryManager.h"
@@ -97,22 +98,17 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 	auto screenshotManagementPanel = new ScreenshotManagementPanel();
 	auto sidebarIslandContainer = new QWidget( mainSplitter );
 	sidebarIslandContainer->setObjectName( QStringLiteral( "sidebarIslandContainer" ) );
-	sidebarIslandContainer->setMinimumWidth( 176 );
-	sidebarIslandContainer->setMaximumWidth( 300 );
 	auto sidebarIslandLayout = new QVBoxLayout( sidebarIslandContainer );
 	sidebarIslandLayout->setContentsMargins( 10, 10, 10, 10 );
 	sidebarIslandLayout->setSpacing( 0 );
 	sidebarIslandLayout->addWidget( computerSelectPanel );
 	sidebarIslandLayout->addWidget( screenshotManagementPanel );
-	computerSelectPanel->setMinimumWidth( 148 );
-	computerSelectPanel->setMaximumWidth( 280 );
-	screenshotManagementPanel->setMinimumWidth( 148 );
-	screenshotManagementPanel->setMaximumWidth( 280 );
 
 	mainSplitter->addWidget( sidebarIslandContainer );
 	mainSplitter->addWidget( ui->computerMonitoringWidget );
 
-	mainSplitter->setStretchFactor( mainSplitter->indexOf(ui->computerMonitoringWidget), 1 );
+	mainSplitter->setStretchFactor( mainSplitter->indexOf( sidebarIslandContainer ), 1 );
+	mainSplitter->setStretchFactor( mainSplitter->indexOf( ui->computerMonitoringWidget ), 4 );
 
 
 	auto panelButtonGroup = new QButtonGroup( this );
@@ -140,6 +136,13 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 		splitter->installEventFilter( this );
 
 		int index = 0;
+
+		if( splitter == mainSplitter )
+		{
+			const auto availableWidth = qMax( ui->centralWidget->width(), QMainWindow::width() );
+			splitter->setSizes( QList<int>{ availableWidth / 5, availableWidth - ( availableWidth / 5 ) } );
+			continue;
+		}
 
 		const auto splitterStates = m_master.userConfig().splitterStates()[splitter->objectName()].toArray();
 		splitterSizes.clear();
@@ -229,13 +232,10 @@ MainWindow::MainWindow( VeyonMaster &masterCore, QWidget* parent ) :
 		btn->setIconSize(QSize(20, 20));
 	}
 
-	if (VeyonCore::useDarkMode())
-	{
-		ui->aboutButton->setIcon(QIcon(QStringLiteral(":/master/fa/circle-info.svg")));
-		ui->filterComputersWithLoggedOnUsersButton->setIcon(QIcon(QStringLiteral(":/master/fa/users.svg")));
-		ui->autoAdjustComputerIconSizeButton->setIcon(QIcon(QStringLiteral(":/master/fa/expand-arrows.svg")));
-		ui->filterPoweredOnComputersButton->setIcon(QIcon(QStringLiteral(":/master/fa/power-off.svg")));
-	}
+	ui->aboutButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/circle-info.svg" ) ) );
+	ui->filterComputersWithLoggedOnUsersButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/users.svg" ) ) );
+	ui->autoAdjustComputerIconSizeButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/expand-arrows.svg" ) ) );
+	ui->filterPoweredOnComputersButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/power-off.svg" ) ) );
 
 	// Keep toolbar actions available internally, but use the spacious context-driven master layout.
 	ui->toolBar->layout()->setSpacing( 2 );
@@ -448,7 +448,7 @@ void MainWindow::addFeaturesToToolBar()
 			continue;
 		}
 
-		auto btn = new ToolButton( QIcon( feature.iconUrl() ),
+		auto btn = new ToolButton( IconUtils::iconFromUrl( feature.iconUrl() ),
 										  feature.displayName(),
 										  feature.displayNameActive(),
 										  feature.description(),
@@ -498,7 +498,7 @@ void MainWindow::addSubFeaturesToToolButton( QToolButton* button, const Feature&
 
 	for( const auto& subFeature : subFeatures )
 	{
-		auto action = menu->addAction(QIcon(subFeature.iconUrl()), subFeature.displayName(),
+		auto action = menu->addAction( IconUtils::iconFromUrl( subFeature.iconUrl() ), subFeature.displayName(),
 							   #if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
 									  subFeature.shortcut(),
 							   #endif

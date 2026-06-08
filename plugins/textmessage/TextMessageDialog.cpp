@@ -22,6 +22,7 @@
  *
  */
 
+#include <QAbstractButton>
 #include <QIcon>
 #include <QMessageBox>
 

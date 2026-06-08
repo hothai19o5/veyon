@@ -22,7 +22,12 @@
  *
  */
 
+#include <QIcon>
+#include <QDialog>
+#include <QLabel>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "TextMessageFeaturePlugin.h"
 #include "TextMessageDialog.h"
@@ -135,14 +140,58 @@ bool TextMessageFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worke
 
 	if( message.featureUid() == m_textMessageFeature.uid() )
 	{
-		auto messageBox = new QMessageBox( static_cast<QMessageBox::Icon>( message.argument( Argument::Icon ).toInt() ),
-										   tr( "Message from teacher" ),
-										   message.argument( Argument::Text ).toString() );
-		messageBox->setTextFormat( Qt::RichText );
-		messageBox->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
-		messageBox->show();
+		auto dialog = new QDialog();
+		dialog->setAttribute( Qt::WA_DeleteOnClose );
+		dialog->setWindowTitle( tr( "Message from teacher" ) );
+		dialog->setWindowIcon( QIcon() );
+		dialog->setWindowFlags( Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
+		dialog->setMinimumWidth( 420 );
+		dialog->setStyleSheet( QStringLiteral(
+			"QDialog {"
+			"    background-color: #ffffff;"
+			"    color: #202124;"
+			"}"
+			"QLabel {"
+			"    background-color: transparent;"
+			"    color: #202124;"
+			"    font-size: 13px;"
+			"}"
+			"QPushButton {"
+			"    background-color: #ffffff;"
+			"    border: 1px solid #dadce0;"
+			"    border-radius: 7px;"
+			"    color: #1a73e8;"
+			"    font-weight: bold;"
+			"    min-width: 96px;"
+			"    padding: 7px 12px;"
+			"}"
+			"QPushButton:hover {"
+			"    background-color: #f8f9fa;"
+			"    border-color: #1a73e8;"
+			"}"
+			"QPushButton:pressed {"
+			"    background-color: #f1f3f4;"
+			"}"
+		) );
 
-		connect( messageBox, &QMessageBox::accepted, messageBox, &QMessageBox::deleteLater );
+		auto layout = new QVBoxLayout( dialog );
+		layout->setContentsMargins( 24, 18, 24, 18 );
+		layout->setSpacing( 18 );
+
+		auto label = new QLabel( message.argument( Argument::Text ).toString(), dialog );
+		label->setTextFormat( Qt::RichText );
+		label->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
+		label->setOpenExternalLinks( true );
+		label->setWordWrap( true );
+		layout->addWidget( label );
+
+		auto okButton = new QPushButton( tr( "OK" ), dialog );
+		okButton->setIcon( QIcon() );
+		layout->addWidget( okButton, 0, Qt::AlignRight );
+		connect( okButton, &QPushButton::clicked, dialog, &QDialog::accept );
+		connect( dialog, &QDialog::accepted, dialog, &QDialog::deleteLater );
+
+		dialog->show();
 
 		return true;
 	}

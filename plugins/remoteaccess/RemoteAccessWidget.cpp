@@ -39,6 +39,7 @@
 #include "VeyonMasterInterface.h"
 #include "Computer.h"
 #include "ComputerControlInterface.h"
+#include "IconUtils.h"
 #include "PlatformCoreFunctions.h"
 #include "ToolButton.h"
 #include "Screenshot.h"
@@ -326,7 +327,7 @@ RemoteAccessWidget::RemoteAccessWidget( const ComputerControlInterface::Pointer&
 	updateRemoteAccessTitle();
 	connect( m_computerControlInterface.data(), &ComputerControlInterface::userChanged, this, &RemoteAccessWidget::updateRemoteAccessTitle );
 
-	setWindowIcon( QPixmap( QStringLiteral(":/master/fa/magnifying-glass.svg") ) );
+	setWindowIcon( IconUtils::pixmapFromUrl( QStringLiteral( ":/master/fa/magnifying-glass.svg" ) ) );
 	setAttribute( Qt::WA_DeleteOnClose, true );
 
 	m_vncView->move( 0, 0 );

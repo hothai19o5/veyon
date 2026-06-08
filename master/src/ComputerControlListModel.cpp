@@ -27,6 +27,7 @@
 #include "ComputerControlListModel.h"
 #include "ComputerManager.h"
 #include "FeatureManager.h"
+#include "IconUtils.h"
 #include "PlatformSessionFunctions.h"
 #include "VeyonMaster.h"
 #include "UserConfig.h"
@@ -39,11 +40,11 @@
 ComputerControlListModel::ComputerControlListModel( VeyonMaster* masterCore, QObject* parent ) :
 	ComputerListModel( parent ),
 	m_master( masterCore ),
-	m_iconHostOffline(QStringLiteral(":/master/fa/circle-xmark.svg")),
-	m_iconHostOnline(QStringLiteral(":/master/fa/circle-check.svg")),
-	m_iconHostNameResolutionFailed(QStringLiteral(":/master/fa/triangle-exclamation.svg")),
-	m_iconHostAccessDenied(QStringLiteral(":/master/fa/ban.svg")),
-	m_iconHostServiceError(QStringLiteral(":/master/fa/screwdriver-wrench.svg"))
+	m_iconHostOffline( QStringLiteral( ":/master/fa/circle-xmark.svg" ) ),
+	m_iconHostOnline( QStringLiteral( ":/master/fa/circle-check.svg" ) ),
+	m_iconHostNameResolutionFailed( QStringLiteral( ":/master/fa/triangle-exclamation.svg" ) ),
+	m_iconHostAccessDenied( QStringLiteral( ":/master/fa/ban.svg" ) ),
+	m_iconHostServiceError( QStringLiteral( ":/master/fa/screwdriver-wrench.svg" ) )
 {
 #if defined(QT_TESTLIB_LIB)
 	new QAbstractItemModelTester( this, QAbstractItemModelTester::FailureReportingMode::Warning, this );
@@ -400,10 +401,10 @@ double ComputerControlListModel::averageAspectRatio() const
 
 
 
-QImage ComputerControlListModel::scaleAndAlignIcon( const QIcon& icon, QSize size ) const
+QImage ComputerControlListModel::scaleAndAlignIcon( const QString& iconUrl, QSize size ) const
 {
 	const int iconSize = int( qMin( size.width(), size.height() ) * 0.5 );
-	const auto pixmap = icon.pixmap( QSize( iconSize, iconSize ) );
+	const auto pixmap = IconUtils::pixmapFromUrl( iconUrl, QSize( iconSize, iconSize ) );
 
 	QImage scaledAndAlignedIcon( size, QImage::Format_ARGB32 );
 	scaledAndAlignedIcon.fill( Qt::transparent );

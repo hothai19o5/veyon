@@ -27,6 +27,7 @@
 #include <QKeyEvent>
 
 #include "ComputerZoomWidget.h"
+#include "IconUtils.h"
 #include "VeyonConfiguration.h"
 #include "VeyonMasterInterface.h"
 #include "PlatformCoreFunctions.h"
@@ -53,7 +54,7 @@ ComputerZoomWidget::ComputerZoomWidget( const ComputerControlInterface::Pointer&
 	connect( m_vncView->computerControlInterface().data(), &ComputerControlInterface::userChanged,
 			 this, &ComputerZoomWidget::updateComputerZoomWidgetTitle );
 
-	setWindowIcon( QPixmap( QStringLiteral(":/master/fa/magnifying-glass.svg") ) );
+	setWindowIcon( IconUtils::pixmapFromUrl( QStringLiteral( ":/master/fa/magnifying-glass.svg" ) ) );
 	setAttribute( Qt::WA_DeleteOnClose, true );
 
 	m_vncView->move( 0, 0 );

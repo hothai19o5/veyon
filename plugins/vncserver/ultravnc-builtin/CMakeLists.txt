@@ -89,6 +89,7 @@ build_veyon_plugin(builtin-ultravnc-server
 
 target_link_libraries(builtin-ultravnc-server PRIVATE -lws2_32 -luserenv -lole32 -lversion -lgdi32 -limm32 -lwinmm ${ZLIB_LIBRARIES} ${JPEG_LIBRARIES} ${LZO_LIBRARIES})
 target_include_directories(builtin-ultravnc-server PRIVATE
+	${JPEG_INCLUDE_DIR}
 	${ultravnc_DIR}
 	${ultravnc_DIR}/common
 	${ultravnc_DIR}/omnithread
@@ -107,7 +108,11 @@ if(VEYON_BUILD_WIN64)
 	target_compile_definitions(builtin-ultravnc-server PRIVATE _X64)
 endif()
 
-qt6_disable_unicode_defines(builtin-ultravnc-server)
+if(WITH_QT6)
+	qt6_disable_unicode_defines(builtin-ultravnc-server)
+else()
+	target_compile_options(builtin-ultravnc-server PRIVATE -UUNICODE -U_UNICODE)
+endif()
 
 set(ULTRAVNC_COMPILER_FLAGS "-Wno-comments -Wno-attributes -Wno-write-strings -Wno-parentheses -Wno-misleading-indentation -Wno-unused-result -Wno-unused-label -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable -Wno-deprecated-declarations -Wno-format-zero-length -Wno-sign-compare -Wno-int-to-pointer-cast -fexceptions")
 

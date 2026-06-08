@@ -223,13 +223,17 @@ dpkg -l | grep veyon                    # phải trống
 
 Sau đó cài bản mới theo bước 1.8.
 
-## 2. Setup Môi Trường Cross MXE Windows Từ Linux
+## 2. Setup Môi Trường Build Windows
+
+Workflow Windows đã kiểm chứng hiện tại là cross-build từ Linux qua MXE. Về mặt kỹ thuật có thể build native trên Windows, nhưng chưa phải workflow chính thức của repository này. Nếu bắt buộc build trực tiếp trên Windows, hướng khả thi nhất là MSYS2/MinGW; Visual Studio/MSVC sẽ cần patch đáng kể do project và bước đóng gói hiện dùng nhiều giả định kiểu MinGW/Unix shell.
+
+### 2.1. Cross-build Windows bằng MXE từ Linux
 
 Phần này dùng MXE để build toolchain MinGW-w64 và các thư viện Windows cần thiết ngay trên máy Linux đã setup ở phần 1.
 
 Build Windows qua MXE dùng Qt 5. Không dùng Qt 6 cho phần cross-build Windows trong hướng dẫn này vì MXE hiện tại thiếu `Qca-qt6`, trong khi cấu hình Qt 5 đã build thành công.
 
-### 2.1. Cài dependency để build MXE
+### 2.2. Cài dependency để build MXE
 
 ```bash
 sudo apt install -y \
@@ -239,50 +243,62 @@ sudo apt install -y \
   python3 ruby sed texinfo unzip wget xz-utils
 ```
 
-### 2.2. Lấy source MXE
+### 2.3. Lấy source MXE
 
-Ví dụ đặt MXE ở `/opt/mxe`.
+Ví dụ đặt MXE ở `/home/hp/mxe`. Nếu muốn dùng `/opt/mxe`, thay lại `MXE_PATH` ở các lệnh bên dưới.
 
 ```bash
-sudo git clone https://github.com/mxe/mxe.git /opt/mxe
-sudo chown -R "$USER:$USER" /opt/mxe
+git clone https://github.com/mxe/mxe.git /home/hp/mxe
 ```
 
-### 2.3. Build toolchain và thư viện Windows
+### 2.4. Build toolchain và thư viện Windows
 
 EduMonitor dùng toolchain CMake `cmake/modules/Win64Toolchain.cmake`. Toolchain này đọc biến `MXE_PATH` và mặc định target Windows 64-bit `x86_64-w64-mingw32`.
 
-Build target shared để tạo DLL runtime cho bộ cài Windows:
+Build target shared để tạo DLL runtime cho bộ cài Windows. Không dùng target static, vì target `windows-binaries` sẽ copy DLL runtime từ MXE target `bin` và `qt5/plugins`.
 
 ```bash
-cd /opt/mxe
+cd /home/hp/mxe
 make MXE_TARGETS='x86_64-w64-mingw32.shared' \
   gcc cmake nsis \
-  qtbase qttools \
+  qtbase qttools qtsvg \
   qca openssl libjpeg-turbo libpng zlib lzo \
   libvncserver openldap cyrus-sasl
 ```
 
-Quá trình này có thể mất nhiều thời gian vì MXE phải build compiler và nhiều thư viện từ source.
+Quá trình này có thể mất nhiều thời gian vì MXE phải build compiler và nhiều thư viện từ source. Nếu build với `-DWITH_LDAP=OFF`, có thể bỏ `openldap cyrus-sasl` khỏi lệnh MXE. `qtsvg` vẫn cần cho `Qt5Svg.dll`, `qsvg.dll` và `qsvgicon.dll` trong bộ portable/installer.
 
 Nếu MXE báo không có package nào đó do thay đổi tên package, kiểm tra danh sách package hiện có bằng:
 
 ```bash
-cd /opt/mxe
-make show-package-list | grep -E 'qtbase|qttools|qca|vnc|ldap|sasl|nsis'
+cd /home/hp/mxe
+make show-package-list | grep -E 'qtbase|qttools|qtsvg|qca|vnc|ldap|sasl|nsis'
 ```
 
-### 2.4. Khai báo biến môi trường MXE
+### 2.5. Bổ sung thư viện Interception
+
+Plugin Windows link với `-linterception` và target `windows-binaries` copy `interception.dll` từ MXE target `bin`. Nếu MXE của bạn chưa có thư viện này, cần build hoặc copy thủ công `interception.dll` và import library tương ứng vào target MXE trước khi configure CMake.
+
+Các file cài driver Interception đã có trong repository tại `3rdparty/interception/`, nhưng thư mục này không chứa `interception.dll` dùng để link/package.
+
+Kiểm tra tối thiểu:
 
 ```bash
-export MXE_PATH=/opt/mxe
+ls /home/hp/mxe/usr/x86_64-w64-mingw32.shared/bin/interception.dll
+ls /home/hp/mxe/usr/x86_64-w64-mingw32.shared/lib/libinterception.dll.a
+```
+
+### 2.6. Khai báo biến môi trường MXE
+
+```bash
+export MXE_PATH=/home/hp/mxe
 export MXE_TARGET=x86_64-w64-mingw32.shared
 export PATH="$MXE_PATH/usr/bin:$PATH"
 ```
 
 Nếu muốn giữ cấu hình này cho các terminal sau, thêm 3 dòng trên vào `~/.bashrc` hoặc file shell tương ứng.
 
-### 2.5. Cấu hình cross-build Windows
+### 2.7. Cấu hình cross-build Windows
 
 Quay lại source Veyon:
 
@@ -291,7 +307,7 @@ cd /path/to/veyon
 git submodule update --init --recursive
 ```
 
-Cấu hình build Windows 64-bit bằng toolchain có sẵn trong repository. Lưu ý thêm `-DWITH_QT6=OFF` để dùng Qt 5 và `-DWITH_TRANSLATIONS=OFF` nếu chưa build/copy đầy đủ translation files:
+Cấu hình build Windows 64-bit bằng toolchain có sẵn trong repository. Cấu hình đã kiểm chứng dùng Qt 5, tắt translations, LDAP và WebAPI để giảm dependency khi cross-build:
 
 ```bash
 cmake -S . -B build-win64-qt5-notrans \
@@ -299,12 +315,24 @@ cmake -S . -B build-win64-qt5-notrans \
   -DCMAKE_TOOLCHAIN_FILE=cmake/modules/Win64Toolchain.cmake \
   -DMXE_PATH="$MXE_PATH" \
   -DMINGW_TARGET="$MXE_TARGET" \
+  -DCMAKE_PREFIX_PATH="$MXE_PATH/usr/$MXE_TARGET/qt5" \
   -DCMAKE_INSTALL_PREFIX=/ \
   -DWITH_QT6=OFF \
-  -DWITH_TRANSLATIONS=OFF
+  -DWITH_TRANSLATIONS=OFF \
+  -DWITH_LDAP=OFF \
+  -DWITH_WEBAPI=OFF
 ```
 
-### 2.6. Build Windows binaries
+Các option quan trọng:
+
+- `-DMINGW_TARGET=x86_64-w64-mingw32.shared`: bắt buộc dùng shared target để có DLL runtime.
+- `-DCMAKE_PREFIX_PATH=.../qt5`: giúp CMake tìm đúng Qt 5 của MXE thay vì Qt host Linux.
+- `-DWITH_QT6=OFF`: dùng Qt 5 vì MXE chưa có cấu hình Qt 6/QCA phù hợp cho workflow này.
+- `-DWITH_TRANSLATIONS=OFF`: bỏ qua bước copy `.qm` nếu chưa build translation.
+- `-DWITH_LDAP=OFF`: bỏ LDAP plugin và không cần copy `libsasl`, `libldap`, `liblber`.
+- `-DWITH_WEBAPI=OFF`: bỏ WebAPI plugin để tránh thêm dependency Qt HTTP/WebSocket.
+
+### 2.8. Build Windows binaries
 
 ```bash
 nice -n 19 ionice -c3 cmake --build build-win64-qt5-notrans --parallel 1
@@ -312,7 +340,26 @@ nice -n 19 ionice -c3 cmake --build build-win64-qt5-notrans --parallel 1
 
 Không dùng `cmake --build ... --parallel` không giới hạn job trên máy yếu vì có thể làm máy đơ/lag. Nếu máy đủ mạnh, có thể tăng lên `--parallel 2` hoặc `--parallel 4`.
 
-### 2.7. Tạo thư mục portable Windows
+### 2.9. Kiểm tra runtime DLL trước khi đóng gói
+
+Trước khi chạy target `windows-binaries`, kiểm tra các DLL/plugin chính mà target đóng gói sẽ copy:
+
+```bash
+ls "$MXE_PATH/usr/$MXE_TARGET/bin/libstdc++-6.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/bin/libgcc_s_seh-1.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/bin/libwinpthread-1.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/bin/interception.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/qt5/bin/libqca-qt5.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/qt5/plugins/crypto/libqca-ossl.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/qt5/plugins/platforms/qwindows.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/qt5/plugins/imageformats/qjpeg.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/qt5/plugins/imageformats/qsvg.dll"
+ls "$MXE_PATH/usr/$MXE_TARGET/qt5/plugins/iconengines/qsvgicon.dll"
+```
+
+Nếu thiếu file nào, target `windows-binaries` thường sẽ fail ở bước copy tương ứng.
+
+### 2.10. Tạo thư mục portable Windows
 
 Repository có target `windows-binaries` để gom file `.exe`, `.dll`, plugin, Qt runtime và tài nguyên cần thiết vào một thư mục chạy được trên Windows.
 
@@ -323,10 +370,10 @@ nice -n 19 ionice -c3 cmake --build build-win64-qt5-notrans --target windows-bin
 Thư mục kết quả nằm trong `build-win64-qt5-notrans` và có tên dạng:
 
 ```text
-veyon-win64-x.y.z.build
+veyon-win64-x.y.z.build_number
 ```
 
-### 2.8. Tạo bộ cài Windows bằng NSIS
+### 2.11. Tạo bộ cài Windows bằng NSIS
 
 Nếu MXE đã build `nsis`, tạo installer bằng target sau:
 
@@ -334,14 +381,24 @@ Nếu MXE đã build `nsis`, tạo installer bằng target sau:
 nice -n 19 ionice -c3 cmake --build build-win64-qt5-notrans --target create-windows-installer --parallel 1
 ```
 
-File kết quả là bộ cài `.exe` trong thư mục `build-win64-qt5-notrans`.
+File kết quả là bộ cài `.exe` trong thư mục `build-win64-qt5-notrans`, tên dạng `edumonitor-<version>-win64-setup.exe`.
+
+### 2.12. Build native Windows
+
+Có thể build app trực tiếp trên Windows, nhưng hiện chưa phải workflow đã kiểm chứng của repository này.
+
+- Hướng khả thi nhất là MSYS2/MinGW vì gần với MXE/MinGW.
+- Visual Studio/MSVC không khuyến nghị ở thời điểm hiện tại vì nhiều phần đang dùng GCC/MinGW flags, thư viện dạng `-l...`, và bước packaging dùng lệnh Unix như `cp`, `find`, `rm`, `mv`, `strip`.
+- Nếu build native Windows, cần tự điều chỉnh lại path dependency/runtime vì `WindowsInstaller.cmake` hiện giả định layout MXE: `${MINGW_PREFIX}/bin`, `${MINGW_PREFIX}/qt5/bin`, `${MINGW_PREFIX}/qt5/plugins`.
 
 ## Ghi Chú Build
 
 - Dùng `build-linux` và `build-win64-qt5-notrans` riêng biệt, không dùng chung một build directory cho Linux và Windows.
 - Linux native: dùng Qt 6 mặc định.
-- Windows MXE: dùng Qt 5 với `-DWITH_QT6=OFF`.
+- Windows MXE đã kiểm chứng: dùng Qt 5 với `-DWITH_QT6=OFF`, `-DWITH_TRANSLATIONS=OFF`, `-DWITH_LDAP=OFF`, `-DWITH_WEBAPI=OFF`.
 - Không dùng Qt 6 cho Windows MXE trừ khi đã tự build/cài đầy đủ `Qca-qt6` trong MXE và kiểm tra lại CMake configure thành công.
 - Nếu không cần LDAP, có thể thêm `-DWITH_LDAP=OFF` để giảm dependency.
 - Nếu không cần WebAPI, có thể thêm `-DWITH_WEBAPI=OFF` để giảm dependency Qt HTTP/WebSocket.
 - Khi gặp lỗi thiếu DLL ở bước `windows-binaries`, kiểm tra lại MXE target phải là `x86_64-w64-mingw32.shared`, không phải static target.
+- Khi gặp lỗi thiếu Qt SVG plugin, kiểm tra MXE đã build `qtsvg` và có `Qt5Svg.dll`, `qsvg.dll`, `qsvgicon.dll`.
+- Khi gặp lỗi thiếu `interception.dll`, bổ sung thư viện Interception vào MXE target trước khi chạy lại `windows-binaries`.

@@ -430,7 +430,6 @@ QScrollBar::sub-page:horizontal {
 QMenu {
     background-color: #ffffff;
     border: 1px solid #dadce0;
-    border-radius: 10px;
     padding: 6px;
 }
 
@@ -455,7 +454,6 @@ QToolTip {
     background-color: #ffffff;
     color: #202124;
     border: 1px solid #dadce0;
-    border-radius: 8px;
     padding: 7px 10px;
     opacity: 245;
 }

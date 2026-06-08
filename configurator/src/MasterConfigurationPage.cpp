@@ -26,6 +26,7 @@
 #include "PluginManager.h"
 #include "FeatureManager.h"
 #include "FileSystemBrowser.h"
+#include "IconUtils.h"
 #include "MonitoringMode.h"
 #include "VeyonCore.h"
 #include "VeyonConfiguration.h"
@@ -159,8 +160,8 @@ void MasterConfigurationPage::populateFeatureComboBox()
 		if( feature.testFlag( Feature::Flag::Master ) &&
 			feature.testFlag( Feature::Flag::Meta ) == false )
 		{
-			ui->computerDoubleClickFeature->addItem( QIcon( feature.iconUrl() ),
-													 feature.displayName(),
+			ui->computerDoubleClickFeature->addItem( IconUtils::iconFromUrl( feature.iconUrl() ),
+											 feature.displayName(),
 													 feature.uid() );
 		}
 	}
@@ -185,7 +186,7 @@ void MasterConfigurationPage::updateFeatureLists()
 			continue;
 		}
 
-		auto item = new QListWidgetItem( QIcon( feature.iconUrl() ), feature.displayName() );
+		auto item = new QListWidgetItem( IconUtils::iconFromUrl( feature.iconUrl() ), feature.displayName() );
 		item->setData( Qt::UserRole, feature.uid().toString() );
 
 		if( m_disabledFeatures.contains( feature.uid().toString() ) )

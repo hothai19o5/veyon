@@ -24,6 +24,7 @@
 
 #include "ComputerMonitoringModel.h"
 #include "ComputerMonitoringWidget.h"
+#include "IconUtils.h"
 #include "SlideshowModel.h"
 #include "SlideshowPanel.h"
 #include "UserConfig.h"
@@ -47,16 +48,13 @@ SlideshowPanel::SlideshowPanel( UserConfig& config, ComputerMonitoringWidget* co
 	ui->monitoringWidget->setSelectionMode( QListView::SingleSelection );
 	ui->monitoringWidget->setModel( m_model );
 
-	if (VeyonCore::useDarkMode())
-	{
-		QIcon startStopIcon;
-		startStopIcon.addPixmap(QPixmap(QStringLiteral(":/master/fa/pause.svg")), QIcon::Mode::Normal, QIcon::State::On);
-		startStopIcon.addPixmap(QPixmap(QStringLiteral(":/master/fa/play.svg")), QIcon::Mode::Normal, QIcon::State::Off);
-		ui->startStopButton->setIcon(startStopIcon);
-		ui->showPreviousButton->setIcon(QIcon(QStringLiteral(":/master/fa/chevron-left.svg")));
-		ui->showNextButton->setIcon(QIcon(QStringLiteral(":/master/fa/chevron-right.svg")));
-		ui->viewInSeparateWindowButton->setIcon(QIcon(QStringLiteral(":/master/fa/expand.svg")));
-	}
+	QIcon startStopIcon;
+	startStopIcon.addPixmap( IconUtils::pixmapFromUrl( QStringLiteral( ":/master/fa/pause.svg" ) ), QIcon::Mode::Normal, QIcon::State::On );
+	startStopIcon.addPixmap( IconUtils::pixmapFromUrl( QStringLiteral( ":/master/fa/play.svg" ) ), QIcon::Mode::Normal, QIcon::State::Off );
+	ui->startStopButton->setIcon( startStopIcon );
+	ui->showPreviousButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/chevron-left.svg" ) ) );
+	ui->showNextButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/chevron-right.svg" ) ) );
+	ui->viewInSeparateWindowButton->setIcon( IconUtils::iconFromUrl( QStringLiteral( ":/master/fa/expand.svg" ) ) );
 
 	connect( ui->startStopButton, &QAbstractButton::toggled, this, &SlideshowPanel::updateDuration );
 	connect( ui->durationSlider, &QSlider::valueChanged, this, &SlideshowPanel::updateDuration );

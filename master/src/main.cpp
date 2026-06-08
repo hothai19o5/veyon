@@ -27,9 +27,7 @@
 #include <QFile>
 #include <QFont>
 #include <QFontDatabase>
-#include <QPainterPath>
 #include <QPalette>
-#include <QRegion>
 #include <QSplashScreen>
 #include <QTextStream>
 #include <QToolTip>
@@ -40,10 +38,10 @@
 #include "MainWindow.h"
 
 
-class ToolTipEventFilter : public QObject
+class RoundedPopupEventFilter : public QObject
 {
 public:
-	explicit ToolTipEventFilter( QObject* parent = nullptr ) :
+	explicit RoundedPopupEventFilter( QObject* parent = nullptr ) :
 		QObject( parent )
 	{
 	}
@@ -57,16 +55,11 @@ protected:
 		{
 			if( auto widget = qobject_cast<QWidget *>( obj ) )
 			{
-				if( widget->inherits( "QTipLabel" ) || qstrcmp( widget->metaObject()->className(), "QTipLabel" ) == 0 )
+				const auto className = widget->metaObject()->className();
+				if( widget->inherits( "QTipLabel" ) || qstrcmp( className, "QTipLabel" ) == 0 ||
+					widget->inherits( "QMenu" ) || qstrcmp( className, "QMenu" ) == 0 )
 				{
-					widget->setAttribute( Qt::WA_TranslucentBackground, true );
-					widget->setAttribute( Qt::WA_NoSystemBackground, true );
-					widget->setAutoFillBackground( false );
-					widget->setWindowFlags( widget->windowFlags() | Qt::FramelessWindowHint );
-
-					QPainterPath roundedTooltipPath;
-					roundedTooltipPath.addRoundedRect( widget->rect(), 8, 8 );
-					widget->setMask( QRegion( roundedTooltipPath.toFillPolygon().toPolygon() ) );
+					widget->setWindowFlag( Qt::NoDropShadowWindowHint, true );
 				}
 			}
 		}
@@ -81,8 +74,8 @@ int main( int argc, char** argv )
 	VeyonCore::setupApplicationParameters();
 
 	QApplication app( argc, argv );
-	ToolTipEventFilter toolTipEventFilter( &app );
-	app.installEventFilter( &toolTipEventFilter );
+	RoundedPopupEventFilter roundedPopupEventFilter( &app );
+	app.installEventFilter( &roundedPopupEventFilter );
 	app.connect( &app, &QApplication::lastWindowClosed, &QApplication::quit );
 
 	VeyonCore core( &app, VeyonCore::Component::Master, QStringLiteral("Master") );
