@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+MXE_PATH="${MXE_PATH:-/opt/mxe}"
+MXE_TARGET="${MXE_TARGET:-x86_64-w64-mingw32.shared}"
+INTERCEPTION_URL="${INTERCEPTION_URL:-https://github.com/oblitum/Interception/releases/download/v1.0.1/Interception.zip}"
+INTERCEPTION_ZIP="${INTERCEPTION_ZIP:-}"
+
+target_prefix="${MXE_PATH}/usr/${MXE_TARGET}"
+dlltool="${MXE_PATH}/usr/bin/${MXE_TARGET}-dlltool"
+
+if [[ ! -d "${target_prefix}" ]]; then
+    printf 'ERROR: MXE target is missing: %s\n' "${target_prefix}" >&2
+    exit 2
+fi
+
+if [[ ! -x "${dlltool}" ]]; then
+    printf 'ERROR: dlltool is missing or not executable: %s\n' "${dlltool}" >&2
+    exit 2
+fi
+
+workdir="$(mktemp -d)"
+trap 'rm -rf "${workdir}"' EXIT
+
+if [[ -n "${INTERCEPTION_ZIP}" ]]; then
+    cp "${INTERCEPTION_ZIP}" "${workdir}/Interception.zip"
+else
+    printf '==> Downloading Interception SDK from %s\n' "${INTERCEPTION_URL}"
+    curl -L --fail -o "${workdir}/Interception.zip" "${INTERCEPTION_URL}"
+fi
+
+unzip -q "${workdir}/Interception.zip" -d "${workdir}"
+
+install -D -m 0644 \
+    "${workdir}/Interception/library/interception.h" \
+    "${target_prefix}/include/interception.h"
+install -D -m 0755 \
+    "${workdir}/Interception/library/x64/interception.dll" \
+    "${target_prefix}/bin/interception.dll"
+
+cat > "${workdir}/interception.def" <<'EOF'
+LIBRARY interception.dll
+EXPORTS
+interception_create_context
+interception_destroy_context
+interception_get_precedence
+interception_set_precedence
+interception_get_filter
+interception_set_filter
+interception_wait
+interception_wait_with_timeout
+interception_send
+interception_receive
+interception_get_hardware_id
+interception_is_invalid
+interception_is_keyboard
+interception_is_mouse
+EOF
+
+"${dlltool}" \
+    --dllname interception.dll \
+    --def "${workdir}/interception.def" \
+    --output-lib "${target_prefix}/lib/libinterception.dll.a"
+
+printf '==> Installed Interception into %s\n' "${target_prefix}"
+ls -l \
+    "${target_prefix}/include/interception.h" \
+    "${target_prefix}/bin/interception.dll" \
+    "${target_prefix}/lib/libinterception.dll.a"

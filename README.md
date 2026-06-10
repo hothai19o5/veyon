@@ -391,6 +391,37 @@ Có thể build app trực tiếp trên Windows, nhưng hiện chưa phải work
 - Visual Studio/MSVC không khuyến nghị ở thời điểm hiện tại vì nhiều phần đang dùng GCC/MinGW flags, thư viện dạng `-l...`, và bước packaging dùng lệnh Unix như `cp`, `find`, `rm`, `mv`, `strip`.
 - Nếu build native Windows, cần tự điều chỉnh lại path dependency/runtime vì `WindowsInstaller.cmake` hiện giả định layout MXE: `${MINGW_PREFIX}/bin`, `${MINGW_PREFIX}/qt5/bin`, `${MINGW_PREFIX}/qt5/plugins`.
 
+## 3. Môi Trường Build Bằng Docker
+
+Repository có `Dockerfile` ở thư mục gốc để dựng môi trường build tách biệt với máy host, bám theo các bước Linux/Windows MXE ở trên. Tài liệu chi tiết nằm trong `docker/README.md`.
+
+Build image Linux Ubuntu 24.04/Qt 6 và tạo `.deb`:
+
+```bash
+docker build --target linux-build -t edumonitor-build:ubuntu24.04 .
+docker run --rm -it -v "$PWD:/workspace/veyon" -w /workspace/veyon \
+  edumonitor-build:ubuntu24.04 veyon-build-linux
+```
+
+Build Windows qua MXE có 2 lựa chọn:
+
+- `mxe-full`: build sẵn MXE vào image, đơn giản nhưng image rất lớn và build lâu.
+- `mxe-base` + Docker named volume: phù hợp khi muốn cache `/opt/mxe` giữa nhiều lần build.
+
+Ví dụ dùng named volume:
+
+```bash
+docker build --target mxe-base -t edumonitor-build:mxe-base .
+docker volume create edumonitor-mxe
+docker run --rm -it -v edumonitor-mxe:/opt/mxe \
+  edumonitor-build:mxe-base veyon-build-mxe
+docker run --rm -it -v "$PWD:/workspace/veyon" -v edumonitor-mxe:/opt/mxe \
+  -w /workspace/veyon edumonitor-build:mxe-base veyon-build-windows-mxe
+```
+
+Lưu ý: Docker workflow Windows mặc định bật `-DWITH_BUILTIN_LIBVNC=ON` vì MXE hiện tại có thể không còn package `libvncserver`. Workflow vẫn cần bổ sung `interception.dll` và `libinterception.dll.a` vào MXE target như mô tả ở phần 2.5 trước khi đóng gói portable/installer.
+Có thể bổ sung vào Docker volume bằng `veyon-install-interception-mxe`.
+
 ## Ghi Chú Build
 
 - Dùng `build-linux` và `build-win64-qt5-notrans` riêng biệt, không dùng chung một build directory cho Linux và Windows.

@@ -1,0 +1,31 @@
+# Keep Docker build contexts small and avoid copying local build artifacts.
+.git
+.antigravitycli
+.DS_Store
+
+# CMake/build outputs
+build
+build-*
+build_*
+**/CMakeFiles
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/install_manifest.txt
+
+# Generated packages/artifacts
+*.deb
+*.rpm
+*.AppImage
+*.msi
+*.exe
+*.zip
+*.tar
+*.tar.gz
+*.tar.xz
+*.7z
+
+# Editor/OS noise
+*.swp
+*.swo
+.idea
+.vscode

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+SRC_DIR="${SRC_DIR:-/workspace/veyon}"
+BUILD_DIR="${BUILD_DIR:-${SRC_DIR}/build-linux}"
+BUILD_PARALLEL="${BUILD_PARALLEL:-$(nproc)}"
+CPACK_DIST="${CPACK_DIST:-ubuntu.24.04}"
+CPACK_GENERATOR="${CPACK_GENERATOR:-DEB}"
+CMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE:-RelWithDebInfo}"
+CMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX:-/usr}"
+WITH_TRANSLATIONS="${WITH_TRANSLATIONS:-OFF}"
+PACKAGE="${PACKAGE:-1}"
+
+if [[ ! -f "${SRC_DIR}/CMakeLists.txt" ]]; then
+    printf 'ERROR: SRC_DIR does not look like a Veyon/EduMonitor source tree: %s\n' "${SRC_DIR}" >&2
+    exit 2
+fi
+
+cmake_args=(
+    -S "${SRC_DIR}"
+    -B "${BUILD_DIR}"
+    -G Ninja
+    -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}"
+    -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
+    -DCPACK_DIST="${CPACK_DIST}"
+    -DWITH_TRANSLATIONS="${WITH_TRANSLATIONS}"
+)
+
+if [[ -n "${WITH_LDAP:-}" ]]; then
+    cmake_args+=(-DWITH_LDAP="${WITH_LDAP}")
+fi
+
+if [[ -n "${WITH_WEBAPI:-}" ]]; then
+    cmake_args+=(-DWITH_WEBAPI="${WITH_WEBAPI}")
+fi
+
+if [[ -n "${CMAKE_EXTRA_ARGS:-}" ]]; then
+    # shellcheck disable=SC2206 # Intentional simple splitting for Docker env overrides.
+    extra_args=(${CMAKE_EXTRA_ARGS})
+    cmake_args+=("${extra_args[@]}")
+fi
+
+printf '==> Configuring Linux build in %s\n' "${BUILD_DIR}"
+cmake "${cmake_args[@]}"
+
+build_args=(--build "${BUILD_DIR}" --parallel "${BUILD_PARALLEL}")
+if [[ -n "${BUILD_TARGET:-}" ]]; then
+    build_args+=(--target "${BUILD_TARGET}")
+fi
+
+printf '==> Building Linux targets with %s parallel job(s)\n' "${BUILD_PARALLEL}"
+cmake "${build_args[@]}"
+
+if [[ "${PACKAGE}" == "1" || "${PACKAGE}" == "ON" || "${PACKAGE}" == "true" ]]; then
+    printf '==> Creating package with CPack generator %s\n' "${CPACK_GENERATOR}"
+    (cd "${BUILD_DIR}" && fakeroot cpack -G "${CPACK_GENERATOR}")
+fi

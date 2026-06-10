@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+MXE_PATH="${MXE_PATH:-/opt/mxe}"
+MXE_REPO="${MXE_REPO:-https://github.com/mxe/mxe.git}"
+MXE_REF="${MXE_REF:-master}"
+MXE_TARGET="${MXE_TARGET:-x86_64-w64-mingw32.shared}"
+MXE_JOBS="${MXE_JOBS:-1}"
+
+# While building MXE itself, prefer host tools. If /opt/mxe/usr/bin comes first,
+# Meson can pick MXE's Python wrapper and fail to import host modules like mako.
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PYTHONPATH="$(python3 - <<'PY'
+import site
+print(':'.join(site.getsitepackages()))
+PY
+)${PYTHONPATH:+:${PYTHONPATH}}"
+
+if [[ -n "${MXE_PACKAGES:-}" ]]; then
+    # shellcheck disable=SC2206 # Intentional simple splitting for Docker env overrides.
+    packages=(${MXE_PACKAGES})
+else
+    packages=(
+        gcc
+        cmake
+        nsis
+        qtbase
+        qttools
+        qtsvg
+        qca
+        openssl
+        libjpeg-turbo
+        libpng
+        zlib
+        lzo
+    )
+fi
+
+if [[ ! -d "${MXE_PATH}/.git" ]]; then
+    if [[ -d "${MXE_PATH}" ]] && [[ -n "$(find "${MXE_PATH}" -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null)" ]]; then
+        printf 'ERROR: MXE_PATH exists but is not an MXE git checkout: %s\n' "${MXE_PATH}" >&2
+        printf '       Use an empty directory/volume or set MXE_PATH to an existing MXE checkout.\n' >&2
+        exit 2
+    fi
+
+    printf '==> Cloning MXE %s (%s) into %s\n' "${MXE_REPO}" "${MXE_REF}" "${MXE_PATH}"
+    mkdir -p "${MXE_PATH}"
+    if ! git clone --depth 1 --branch "${MXE_REF}" "${MXE_REPO}" "${MXE_PATH}"; then
+        (
+            shopt -s dotglob nullglob
+            rm -rf "${MXE_PATH}"/*
+        )
+        git clone "${MXE_REPO}" "${MXE_PATH}"
+        git -C "${MXE_PATH}" checkout "${MXE_REF}"
+    fi
+fi
+
+printf '==> Building MXE target %s with %s job(s)\n' "${MXE_TARGET}" "${MXE_JOBS}"
+printf '==> MXE packages: %s\n' "${packages[*]}"
+make -C "${MXE_PATH}" -j"${MXE_JOBS}" MXE_TARGETS="${MXE_TARGET}" "${packages[@]}"
